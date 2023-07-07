@@ -28,9 +28,7 @@ let currentResultId
 let visitorId
 //functions
 
-const fpPromise = import('https://openfpcdn.io/fingerprintjs/v3').then(
-	(FingerprintJS) => FingerprintJS.load(),
-)
+const fpPromise = import('https://openfpcdn.io/fingerprintjs/v3').then((FingerprintJS) => FingerprintJS.load())
 
 async function initFingerPrint() {
 	visitorId = await fpPromise
@@ -46,9 +44,7 @@ initFingerPrint()
 function uiReported_false() {
 	let buttonText = document.querySelector('#button-report_false-text')
 	buttonText.classList.remove('hide')
-	buttonText.textContent = buttonText.getAttribute(
-		'report-button-text-default_reported',
-	)
+	buttonText.textContent = buttonText.getAttribute('report-button-text-default_reported')
 	reportButton_false.classList.add('is-reported')
 	reportButton_true.classList.add('hide')
 }
@@ -56,9 +52,7 @@ function uiReported_false() {
 function uiReported_true() {
 	let buttonText = document.querySelector('#button-report_true-text')
 	buttonText.classList.remove('hide')
-	buttonText.textContent = buttonText.getAttribute(
-		'report-button-text-default_reported',
-	)
+	buttonText.textContent = buttonText.getAttribute('report-button-text-default_reported')
 	reportButton_true.classList.add('is-reported')
 	reportButton_false.classList.add('hide')
 }
@@ -71,12 +65,8 @@ function uiReported_initialState() {
 	buttonText_false.classList.add('hide')
 	buttonText_true.classList.remove('hide')
 
-	buttonText_true.textContent = buttonText_true.getAttribute(
-		'report-button-text-default',
-	)
-	buttonText_false.textContent = buttonText_false.getAttribute(
-		'report-button-text-default',
-	)
+	buttonText_true.textContent = buttonText_true.getAttribute('report-button-text-default')
+	buttonText_false.textContent = buttonText_false.getAttribute('report-button-text-default')
 
 	reportButton_true.classList.remove('is-reported')
 	reportButton_false.classList.remove('is-reported')
@@ -115,18 +105,14 @@ function changeShareUrl(responseId) {
 	let allShareUrl = document.querySelectorAll('.result-screen_share-item')
 
 	allShareUrl.forEach((el) => {
-		el.setAttribute(
-			'data-url',
-			`https://results.aiornot.com/aiornot/${responseId}`,
-		)
+		el.setAttribute('data-url', `https://results.aiornot.com/aiornot/${responseId}`)
 	})
 }
 
 //ui functions
 function fileSizeMessage_ok() {
 	// console.log('Ñ€Ð°Ð·Ð¼ÐµÑ€ Ñ„Ð°Ð¹Ð»Ð° ok')
-	textEl_dropZoneError.textContent =
-		'We support jpeg, png, webp, gif, tiff, bmp. 10 Mb of maximum size.'
+	textEl_dropZoneError.textContent = 'We support jpeg, png, webp, gif, tiff, bmp. 10 Mb of maximum size.'
 	textEl_dropZoneError.classList.remove('text-color-red')
 	textEl_inputError.textContent = 'Something went wrong. Try again.'
 	uiEl_urlError.classList.add('hide')
@@ -176,8 +162,7 @@ function initial_dropZone() {
 	// console.log('ÑÑ‚Ð°Ñ€Ñ‚Ð¾Ð²Ñ‹Ð¹ dropzone')
 	textEl_dropZoneError.classList.remove('error')
 	uiEl_dropZone.classList.remove('red-border')
-	textEl_dropZoneError.textContent =
-		'We support jpeg, png, webp, gif, tiff, bmp. 10 Mb of maximum size.'
+	textEl_dropZoneError.textContent = 'We support jpeg, png, webp, gif, tiff, bmp. 10 Mb of maximum size.'
 }
 
 function screen_homeShow() {
@@ -185,14 +170,10 @@ function screen_homeShow() {
 	document.querySelector('#choose-file-row').classList.add('hide')
 	document.querySelector('#legal-tip').classList.remove('hide')
 	document.querySelector('#processing-screen').classList.add('hide')
-	document
-		.querySelector('#hero-home_title-description')
-		.classList.remove('hide')
+	document.querySelector('#hero-home_title-description').classList.remove('hide')
 	document.querySelector('#hero-home_gallery').classList.remove('hide')
 	document.querySelector('#ai-or-not_dropzone').classList.remove('hide')
-	document
-		.querySelector('#hero-home_drop-zone-divider')
-		.classList.remove('hide')
+	document.querySelector('#hero-home_drop-zone-divider').classList.remove('hide')
 	document.querySelector('#result-screen_col').classList.add('hide')
 	document.querySelector('#result-screen_image-wrapper').classList.add('hide')
 	imageEl_currentImage.classList.add('hide')
@@ -215,9 +196,7 @@ function loadingStart() {
 	document.querySelector('#ai-or-not_dropzone').classList.add('hide')
 	document.querySelector('#hero-home_drop-zone-divider').classList.add('hide')
 	document.querySelector('#result-screen_col').classList.remove('hide')
-	document
-		.querySelector('#result-screen_image-wrapper')
-		.classList.remove('hide')
+	document.querySelector('#result-screen_image-wrapper').classList.remove('hide')
 }
 
 function loadingFinish() {
@@ -277,10 +256,7 @@ function findHighestConfidence(data) {
 			return current.confidence > max.confidence ? current : max
 		}, reports[0])
 
-		if (
-			aiConfidence > maxElement.confidence &&
-			maxElement.confidence < 0.55
-		) {
+		if (aiConfidence > maxElement.confidence && maxElement.confidence < 0.55) {
 			highestConfidenceTask = 'AI'
 			// highestConfidence = aiConfidence
 		} else {
@@ -304,12 +280,8 @@ function findHighestConfidence(data) {
 			'Sorry, but in this case we canâ€™t really say if itâ€™s AI or Not'
 		document.getElementById('title-human').innerHTML =
 			'Sorry, but in this case we canâ€™t really say if itâ€™s AI or Not'
-		document
-			.getElementById('ai-or-not_result-message-50')
-			.classList.remove('hide')
-		document
-			.getElementById('ai-or-not_result-message')
-			.classList.add('hide')
+		document.getElementById('ai-or-not_result-message-50').classList.remove('hide')
+		document.getElementById('ai-or-not_result-message').classList.add('hide')
 		document.getElementById('ai-or-not_result-message-50').innerHTML =
 			'Probly the uploaded image has most likely been modified or compressed'
 	} else {
@@ -317,17 +289,10 @@ function findHighestConfidence(data) {
 			'This image is generated by <span class="text-color-green">AI</span>'
 		document.getElementById('title-human').innerHTML =
 			'This image is generated by <span class="text-color-green">Human</span>'
-		document
-			.getElementById('ai-or-not_result-message-50')
-			.classList.add('hide')
-		document
-			.getElementById('ai-or-not_result-message')
-			.classList.remove('hide')
-		document.querySelector('#ai-or-not_model-name').textContent =
-			highestConfidenceTask
-		document.querySelector(
-			'#ai-or-not_change-size',
-		).textContent = `${Math.ceil(highestConfidence * 100)}%`
+		document.getElementById('ai-or-not_result-message-50').classList.add('hide')
+		document.getElementById('ai-or-not_result-message').classList.remove('hide')
+		document.querySelector('#ai-or-not_model-name').textContent = highestConfidenceTask
+		document.querySelector('#ai-or-not_change-size').textContent = `${Math.ceil(highestConfidence * 100)}%`
 	}
 }
 
@@ -351,6 +316,7 @@ async function postToApi_url() {
 		headers: {
 			Accept: 'application/json',
 			'Content-Type': 'application/json',
+			Authorization: `Bearer ${localStorage.getItem('_ms-mid') ?? ''}`,
 		},
 		body: JSON.stringify({
 			object: pastedUrl,
@@ -381,9 +347,7 @@ async function postToApi_url() {
 //function to check image by dropped file
 const dropzone = document.body
 const tipMessage = document.querySelector('#dropzone-fullscreen_message-tip')
-const formatMessage = document.querySelector(
-	'#dropzone-fullscreen_message-format',
-)
+const formatMessage = document.querySelector('#dropzone-fullscreen_message-format')
 
 // Ð¡Ð¾Ð±Ñ‹Ñ‚Ð¸Ðµ Ð¿Ñ€Ð¸ Ð¿ÐµÑ€ÐµÑ‚Ð°ÑÐºÐ¸Ð²Ð°Ð½Ð¸Ð¸ Ñ„Ð°Ð¹Ð»Ð° Ð½Ð°Ð´ body
 dropzone.addEventListener('dragover', function (event) {
@@ -443,14 +407,13 @@ dropzone.addEventListener('drop', async function (event) {
 				method: 'POST',
 				headers: {
 					Accept: 'application/json',
+					Authorization: `Bearer ${localStorage.getItem('_ms-mid') ?? ''}`,
 				},
 				body: formData,
 			}
 
 			// ÐžÑ‚Ð¾Ð±Ñ€Ð°Ð·Ð¸Ñ‚ÑŒ Ð²Ñ‹Ð±Ñ€Ð°Ð½Ð½Ð¾Ðµ Ð¸Ð·Ð¾Ð±Ñ€Ð°Ð¶ÐµÐ½Ð¸Ðµ Ð² img ÑÐ»ÐµÐ¼ÐµÐ½Ñ‚Ðµ
-			const currentImage = document.querySelector(
-				'#ai-or-not-current-image',
-			)
+			const currentImage = document.querySelector('#ai-or-not-current-image')
 			currentImage.src = URL.createObjectURL(file)
 			imageEl_currentImage.classList.remove('hide')
 			imageEl_currentImageEmpty.classList.add('hide')
@@ -510,6 +473,8 @@ inputEl_fileInput.addEventListener('change', (event) => {
 			method: 'POST',
 			headers: {
 				Accept: 'application/json',
+				Authorization: `Bearer ${localStorage.getItem('_ms-mid') ?? ''}`,
+
 				// 'Content-Type': 'multipart/form-data',
 			},
 			body: formData,
@@ -546,19 +511,15 @@ buttonEl_processClose.addEventListener('click', function () {
 	screen_homeShow()
 })
 
-document
-	.querySelector('#ai-or-not_dropzone')
-	.addEventListener('click', function () {
-		fileUpload_way = 'screen_home'
-		inputEl_fileInput.click()
-	})
+document.querySelector('#ai-or-not_dropzone').addEventListener('click', function () {
+	fileUpload_way = 'screen_home'
+	inputEl_fileInput.click()
+})
 
-document
-	.querySelector('#choose-file-row')
-	.addEventListener('click', function () {
-		fileUpload_way = 'screen_result'
-		inputEl_fileInput.click()
-	})
+document.querySelector('#choose-file-row').addEventListener('click', function () {
+	fileUpload_way = 'screen_result'
+	inputEl_fileInput.click()
+})
 
 buttonEl_urlCheck.addEventListener('click', () => {
 	if (inputEl_urlWaiter.value != '') {
