@@ -2,7 +2,16 @@
 	async function initUsagePage() {
 		const usage = await DashboardService.fetchUsageApi()
 
-		console.log(usage)
+		if (usage.access) {
+			ElementCreator.fillApiKeyCard(usage)
+		} else {
+			const getApiTokenButton = document.getElementById('get-api-token')
+			getApiTokenButton.style.display = 'flex'
+			getApiTokenButton.onclick = async () => {
+				await DashboardService.fetchApiToken()
+				initUsagePage()
+			}
+		}
 	}
 
 	initUsagePage()
