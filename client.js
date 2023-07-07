@@ -144,13 +144,13 @@ class RequestCounter {
 
 	constructor() {}
 
-	static isValid() {
+	static isLimitExceeded() {
 		const count = localStorage.getItem(RequestCounter.key)
 		if (count === null) {
-			return true
+			return false
 		}
 
-		return count <= 5
+		return count > 5
 	}
 
 	static increment() {
