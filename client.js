@@ -201,7 +201,7 @@ class DashboardService {
 	static async login() {
 		try {
 			const client = DashboardService.getInstance().client
-			return await client.post('login')
+			return await client.get('login')
 		} catch (error) {
 			console.console.error('Ошибка login:', error)
 		}
