@@ -1,0 +1,23 @@
+{
+  "semi": false,
+  "trailingComma": "all",
+  "singleQuote": true,
+  "printWidth": 80,
+  "tabWidth": 4,
+  "useTabs": true,
+  "jsxSingleQuote": false,
+  "jsxBracketSameLine": false,
+  "arrowParens": "always",
+  "bracketSpacing": true,
+  "endOfLine": "auto",
+  "overrides": [
+    {
+      "files": "*.js",
+      "options": {
+        "muteWarnings": [
+          "lockdown-install.js"
+        ]
+      }
+    }
+  ]
+}

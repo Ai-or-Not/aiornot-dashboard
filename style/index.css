@@ -1,0 +1,31 @@
+#results {
+	display: grid;
+	grid-template-columns: repeat(4, 182px);
+	grid-template-rows: 182px;
+	gap: 24px;
+}
+
+.request-item {
+	position: relative;
+	width: 182px;
+	height: 182px;
+}
+.request-item > img {
+	width: 100%;
+	height: 100%;
+}
+
+.request-item-verdict {
+	position: absolute;
+	bottom: 2px;
+	right: 2px;
+	color: #10151d;
+	text-align: right;
+	font-family: 'Space Grotesk';
+	font-size: 12px;
+	font-style: normal;
+	font-weight: 700;
+	line-height: 160%;
+	background: #adff00;
+	padding: 2px 8px;
+}
