@@ -246,6 +246,111 @@ class AIGeneratedService {
 		}
 		return AIGeneratedService.instance
 	}
+
+	static async getReportsByBinary(file) {
+		const client = AIGeneratedService.getInstance().client
+
+		try {
+			const formData = new FormData()
+			formData.append('binary', file, 'uploaded-file.png')
+			return await client.post('reports/binary', formData)
+		} catch (error) {
+			console.error('Ошибка getReportsByBinary:', error)
+		}
+	}
+
+	static async getReportsByUrl(url) {
+		const client = AIGeneratedService.getInstance().client
+
+		try {
+			const endpoint = `reports/url?url=${url}`
+			return await client.post(endpoint, {})
+		} catch (error) {
+			console.error('Ошибка getReportsByUrl:', error)
+		}
+	}
+}
+
+class OpenAIGeneratedService {
+	constructor() {}
+
+	static async getReportsByBinary(file, visitorId) {
+		const baseUrl = `https://atrium-prod-api.optic.xyz/results/api/detector/reports/raw?source=web&user_id=${visitorId}`
+		const formData = new FormData()
+		formData.append('binary', file, 'file_name.png')
+
+		const options = {
+			method: 'POST',
+			headers: {
+				Accept: 'application/json',
+				Authorization: `Bearer ${localStorage.getItem('_ms-mid') ?? ''}`,
+			},
+			body: formData,
+		}
+
+		return await fetch(baseUrl, options).then((response) => response.json())
+	}
+
+	static async getReportsByUrl(url, visitorId) {
+		const baseUrl = `https://atrium-prod-api.optic.xyz/results/api/detector/reports/json?source=web&user_id=${visitorId}`
+
+		const options = {
+			method: 'POST',
+			headers: {
+				Accept: 'application/json',
+				'Content-Type': 'application/json',
+				Authorization: `Bearer ${localStorage.getItem('_ms-mid') ?? ''}`,
+			},
+			body: JSON.stringify({
+				object: url,
+			}),
+		}
+
+		return await fetch(baseUrl, options).then((response) => response.json())
+	}
+
+	static async sendFeedback(id, reportPredict, reportComment) {
+		const url = `https://atrium-prod-api.optic.xyz/results/api/detector/reports/result/${id}`
+		const body = {
+			is_proper_predict: reportPredict,
+			comment: reportComment,
+		}
+
+		const options = {
+			method: 'PUT',
+			body: JSON.stringify(body),
+			headers: {
+				Accept: 'application/json',
+				'Content-Type': 'application/json',
+			},
+		}
+
+		await fetch(url, options)
+			.then((response) => response.json())
+			.then((data) => console.log(data))
+			.catch((error) => console.error(error))
+	}
+}
+
+class WrapperAIGeneratedService {
+	static async getReportsByBinary(file, visitorId) {
+		if (localStorage.getItem('_ms-mid') !== null) {
+			return await AIGeneratedService.getReportsByBinary(file)
+		} else {
+			return await OpenAIGeneratedService.getReportsByBinary(file, visitorId)
+		}
+	}
+	static async getReportsByUrl(url, visitorId) {
+		if (localStorage.getItem('_ms-mid') !== null) {
+			return await AIGeneratedService.getReportsByUrl(url)
+		} else {
+			return await OpenAIGeneratedService.getReportsByUrl(url, visitorId)
+		}
+	}
+
+	static async sendFeedback(id, reportPredict, reportComment) {
+		return await OpenAIGeneratedService.sendFeedback(id, reportPredict, reportComment)
+	}
 }
 
 class RequestCounter {
@@ -331,23 +436,11 @@ class ElementCreator {
 
 async function main() {
 	try {
-		// ElementCreator.fillGridResults('results')
-		// const usageApi = await DashboardService.fetchUsageApi()
-
-		// if (usageApi.access) {
-		// 	ElementCreator.fillApiKeyCard(usageApi)
-		// } else {
-		// 	// show create api key
-		// }
-
-		const apiToken = await DashboardService.fetchApiToken()
-		console.log(apiToken)
-
-		// const usageApi = await DashboardService.fetchUsageApi()
-		// console.log(usageApi)
-
-		// const signUp = await DashboardService.signUp()
-		// console.log(signUp)
+		await DashboardService.login()
+		const result = await AIGeneratedService.getReportsByUrl(
+			'https://uploads-ssl.webflow.com/6421ab9aec22a5a8d99cec8f/6426b32923073d0236dcb451_photo_9%4008-10-2022_15-12-44-1.jpg',
+		)
+		console.log(result)
 	} catch (error) {
 		console.error(error)
 	}

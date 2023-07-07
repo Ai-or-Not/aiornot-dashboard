@@ -74,28 +74,6 @@ function uiReported_initialState() {
 	reportButton_false.classList.remove('hide')
 }
 
-function updateReportResult(id, reportPredict, reportComment) {
-	const url = `https://atrium-prod-api.optic.xyz/results/api/detector/reports/result/${id}`
-	const body = {
-		is_proper_predict: reportPredict,
-		comment: reportComment,
-	}
-
-	const options = {
-		method: 'PUT',
-		body: JSON.stringify(body),
-		headers: {
-			Accept: 'application/json',
-			'Content-Type': 'application/json',
-		},
-	}
-
-	fetch(url, options)
-		.then((response) => response.json())
-		.then((data) => console.log(data))
-		.catch((error) => console.error(error))
-}
-
 function changeShareUrl(responseId) {
 	currentResultId = responseId
 	document.querySelector(
@@ -309,22 +287,7 @@ async function postToApi_url() {
 	uiEl_urlError.classList.add('hide')
 	loadingStart()
 
-	const baseUrl = `https://atrium-prod-api.optic.xyz/results/api/detector/reports/json?source=web&user_id=${visitorId}`
-
-	const options = {
-		method: 'POST',
-		headers: {
-			Accept: 'application/json',
-			'Content-Type': 'application/json',
-			Authorization: `Bearer ${localStorage.getItem('_ms-mid') ?? ''}`,
-		},
-		body: JSON.stringify({
-			object: pastedUrl,
-		}),
-	}
-
-	fetch(baseUrl, options)
-		.then((response) => response.json())
+	await WrapperAIGeneratedService.getReportsByUrl(pastedUrl, visitorId)
 		.then((response) => {
 			RequestCounter.increment()
 			changeShareUrl(response.id)
@@ -399,28 +362,12 @@ dropzone.addEventListener('drop', async function (event) {
 				return
 			}
 
-			const baseUrl = `https://atrium-prod-api.optic.xyz/results/api/detector/reports/raw?source=web&user_id=${visitorId}`
-			const formData = new FormData()
-			formData.append('binary', file, 'file_name.png')
-
-			const options = {
-				method: 'POST',
-				headers: {
-					Accept: 'application/json',
-					Authorization: `Bearer ${localStorage.getItem('_ms-mid') ?? ''}`,
-				},
-				body: formData,
-			}
-
-			// ÐžÑ‚Ð¾Ð±Ñ€Ð°Ð·Ð¸Ñ‚ÑŒ Ð²Ñ‹Ð±Ñ€Ð°Ð½Ð½Ð¾Ðµ Ð¸Ð·Ð¾Ð±Ñ€Ð°Ð¶ÐµÐ½Ð¸Ðµ Ð² img ÑÐ»ÐµÐ¼ÐµÐ½Ñ‚Ðµ
 			const currentImage = document.querySelector('#ai-or-not-current-image')
 			currentImage.src = URL.createObjectURL(file)
 			imageEl_currentImage.classList.remove('hide')
 			imageEl_currentImageEmpty.classList.add('hide')
 
-			// ÐžÑ‚Ð¿Ñ€Ð°Ð²Ð¸Ñ‚ÑŒ Ð·Ð°Ð¿Ñ€Ð¾Ñ Ð½Ð° ÑÐµÑ€Ð²ÐµÑ€ Ñ Ð¸ÑÐ¿Ð¾Ð»ÑŒÐ·Ð¾Ð²Ð°Ð½Ð¸ÐµÐ¼ Ð¼ÐµÑ‚Ð¾Ð´Ð° fetch
-			fetch(baseUrl, options)
-				.then((response) => response.json())
+			await WrapperAIGeneratedService.getReportsByBinary(file, visitorId)
 				.then((response) => {
 					RequestCounter.increment()
 					changeShareUrl(response.id)
@@ -440,7 +387,6 @@ dropzone.addEventListener('drop', async function (event) {
 	}
 })
 
-//â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“
 //function to check image by selected file
 inputEl_fileInput.addEventListener('change', (event) => {
 	if (fileSizeAllow == true) {
@@ -454,38 +400,16 @@ inputEl_fileInput.addEventListener('change', (event) => {
 			return
 		}
 
-		// ÐÐ°Ð¹Ñ‚Ð¸ ÑÐ»ÐµÐ¼ÐµÐ½Ñ‚ input Ñ‚Ð¸Ð¿Ð° Ñ„Ð°Ð¹Ð» Ð½Ð° Ñ‚ÐµÐºÑƒÑ‰ÐµÐ¹ Ð²ÐµÐ±-ÑÑ‚Ñ€Ð°Ð½Ð¸Ñ†Ðµ
 		const fileInput = document.querySelector('#file-input')
 		const file = fileInput.files[0]
-
-		// ÐžÑ‚Ð¾Ð±Ñ€Ð°Ð·Ð¸Ñ‚ÑŒ Ð²Ñ‹Ð±Ñ€Ð°Ð½Ð½Ð¾Ðµ Ð¸Ð·Ð¾Ð±Ñ€Ð°Ð¶ÐµÐ½Ð¸Ðµ Ð² img ÑÐ»ÐµÐ¼ÐµÐ½Ñ‚Ðµ
-
-		const baseUrl = `https://atrium-prod-api.optic.xyz/results/api/detector/reports/raw?source=web&user_id=${visitorId}`
-		const formData = new FormData()
-		formData.append('binary', file, 'file_name.png')
 
 		const currentImage = document.querySelector('#ai-or-not-current-image')
 		let currentImageUrl = URL.createObjectURL(fileInput.files[0])
 		currentImage.setAttribute('src', currentImageUrl)
-		// console.log(currentImageUrl)
-
-		const options = {
-			method: 'POST',
-			headers: {
-				Accept: 'application/json',
-				Authorization: `Bearer ${localStorage.getItem('_ms-mid') ?? ''}`,
-				// 'Content-Type': 'multipart/form-data',
-			},
-			body: formData,
-		}
 		imageEl_currentImage.classList.remove('hide')
 		imageEl_currentImageEmpty.classList.add('hide')
 
-		// ÐžÑ‚Ð¿Ñ€Ð°Ð²Ð¸Ñ‚ÑŒ Ð·Ð°Ð¿Ñ€Ð¾Ñ Ð½Ð° ÑÐµÑ€Ð²ÐµÑ€ Ñ Ð¸ÑÐ¿Ð¾Ð»ÑŒÐ·Ð¾Ð²Ð°Ð½Ð¸ÐµÐ¼ Ð¼ÐµÑ‚Ð¾Ð´Ð° fetch
-
-		// ÐžÑ‚Ð¿Ñ€Ð°Ð²Ð¸Ñ‚ÑŒ Ð·Ð°Ð¿Ñ€Ð¾Ñ Ð½Ð° ÑÐµÑ€Ð²ÐµÑ€ Ñ Ð¸ÑÐ¿Ð¾Ð»ÑŒÐ·Ð¾Ð²Ð°Ð½Ð¸ÐµÐ¼ Ð¼ÐµÑ‚Ð¾Ð´Ð° fetch
-		fetch(baseUrl, options)
-			.then((response) => response.json())
+		WrapperAIGeneratedService.getReportsByBinary(file, visitorId)
 			.then((response) => {
 				RequestCounter.increment()
 				changeShareUrl(response.id)
@@ -553,7 +477,7 @@ reportButton_true.addEventListener('click', () => {
 	uiReported_true()
 	reportPredict = true
 	reportComment = ''
-	updateReportResult(currentResultId, reportPredict, reportComment)
+	WrapperAIGeneratedService.sendFeedback(currentResultId, reportPredict, reportComment)
 })
 
 reportButton_false.addEventListener('click', () => {})
@@ -563,7 +487,7 @@ reportButton_close.addEventListener('click', () => {})
 reportButton_submit.addEventListener('click', () => {
 	reportPredict = false
 	reportComment = reportInput.value
-	updateReportResult(currentResultId, reportPredict, reportComment)
+	WrapperAIGeneratedService.sendFeedback(currentResultId, reportPredict, reportComment)
 	uiReported_false()
 })
 
