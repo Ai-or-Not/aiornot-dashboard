@@ -72,6 +72,75 @@ class RestClient {
 			throw error
 		}
 	}
+
+	async delete(endpoint) {
+		const url = `${this.apiUrl}/${endpoint}`
+
+		try {
+			const response = await fetch(url, {
+				method: 'DELETE',
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: `Bearer ${this.bearerToken}`,
+				},
+			})
+
+			if (response.status === 400) {
+				const errorData = await response.json()
+				throw { status: response.status, message: errorData }
+			} else if (response.status === 401) {
+				throw { status: response.status, message: 'Unauthorized' }
+			} else if (response.status === 404) {
+				throw { status: response.status, message: 'Not Found' }
+			}
+
+			if (!response.ok) {
+				const errorData = await response.json()
+				throw { status: response.status, message: errorData }
+			}
+
+			const data = await response.json()
+			return data
+		} catch (error) {
+			console.error('Ошибка при выполнении DELETE-запроса:', error)
+			throw error
+		}
+	}
+
+	async patch(endpoint, body) {
+		const url = `${this.apiUrl}/${endpoint}`
+
+		try {
+			const response = await fetch(url, {
+				method: 'PATCH',
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: `Bearer ${this.bearerToken}`,
+				},
+				body: JSON.stringify(body),
+			})
+
+			if (response.status === 400) {
+				const errorData = await response.json()
+				throw { status: response.status, message: errorData }
+			} else if (response.status === 401) {
+				throw { status: response.status, message: 'Unauthorized' }
+			} else if (response.status === 404) {
+				throw { status: response.status, message: 'Not Found' }
+			}
+
+			if (!response.ok) {
+				const errorData = await response.json()
+				throw { status: response.status, message: errorData }
+			}
+
+			const data = await response.json()
+			return data
+		} catch (error) {
+			console.error('Ошибка при выполнении PATCH-запроса:', error)
+			throw error
+		}
+	}
 }
 
 class DashboardService {
@@ -135,6 +204,33 @@ class DashboardService {
 			return await client.post('login')
 		} catch (error) {
 			console.console.error('Ошибка login:', error)
+		}
+	}
+
+	static async delete() {
+		try {
+			const client = DashboardService.getInstance().client
+			return await client.delete('')
+		} catch (error) {
+			console.console.error('Ошибка delete:', error)
+		}
+	}
+
+	static async fetchApiToken() {
+		try {
+			const client = DashboardService.getInstance().client
+			return await client.post('api_token')
+		} catch (error) {
+			console.console.error('Ошибка fetchApiToken:', error)
+		}
+	}
+
+	static async refreshApiToken() {
+		try {
+			const client = DashboardService.getInstance().client
+			return await client.patch('api_token')
+		} catch (error) {
+			console.console.error('Ошибка fetchApiToken:', error)
 		}
 	}
 }
@@ -218,14 +314,17 @@ class ElementCreator {
 
 async function main() {
 	try {
-		ElementCreator.fillGridResults('results')
-		const usageApi = await DashboardService.fetchUsageApi()
+		// ElementCreator.fillGridResults('results')
+		// const usageApi = await DashboardService.fetchUsageApi()
 
-		if (usageApi.access) {
-			ElementCreator.fillApiKeyCard(usageApi)
-		} else {
-			// show create api key
-		}
+		// if (usageApi.access) {
+		// 	ElementCreator.fillApiKeyCard(usageApi)
+		// } else {
+		// 	// show create api key
+		// }
+
+		const apiToken = await DashboardService.fetchApiToken()
+		console.log(apiToken)
 
 		// const usageApi = await DashboardService.fetchUsageApi()
 		// console.log(usageApi)
@@ -238,5 +337,3 @@ async function main() {
 }
 
 main()
-
-console.log(RequestCounter.isValid(), RequestCounter)
