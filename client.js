@@ -233,6 +233,21 @@ class DashboardService {
 	}
 }
 
+class AIGeneratedService {
+	constructor() {
+		const bearerToken = localStorage.getItem('_ms-mid') ?? ''
+		const baseUrl = 'https://atrium-stage-api.optic-dev.xyz/aion/ai-generated'
+		this.client = new RestClient(baseUrl, bearerToken)
+	}
+
+	static getInstance() {
+		if (!AIGeneratedService.instance) {
+			AIGeneratedService.instance = new AIGeneratedService()
+		}
+		return AIGeneratedService.instance
+	}
+}
+
 class RequestCounter {
 	static key = 'requestCount'
 
