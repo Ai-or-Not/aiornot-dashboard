@@ -166,4 +166,25 @@
 			}
 		}
 	}
+
+	class RequestCounter {
+		static key = 'requestCount'
+
+		constructor() {}
+
+		static isValid() {
+			const count = localStorage.getItem(RequestCounter.key)
+			if (count === null) {
+				return true
+			}
+
+			return count <= 5
+		}
+
+		static increment() {
+			const count = localStorage.getItem(RequestCounter.key)
+			const newCount = count === null ? 1 : count + 1
+			localStorage.setItem(RequestCounter.key, newCount)
+		}
+	}
 </script>

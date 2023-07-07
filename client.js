@@ -238,3 +238,5 @@ async function main() {
 }
 
 main()
+
+console.log(RequestCounter.isValid(), RequestCounter)
