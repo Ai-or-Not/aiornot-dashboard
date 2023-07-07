@@ -257,9 +257,11 @@ class RequestCounter {
 }
 
 class ElementCreator {
-	static async fillGridResults(elementId) {
-		const array = await DashboardService.fetchRequests()
+	static async fillGridResults(elementId, array) {
+		document.getElementById('dash-cards-empty').style.display = 'none'
 		const results = document.getElementById(elementId)
+		results.style.display = 'grid'
+
 		array.forEach((item) => {
 			let requestItem = document.createElement('div')
 			requestItem.classList.add('request-item')

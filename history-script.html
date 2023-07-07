@@ -1,0 +1,12 @@
+<script defer>
+	async function initHystory() {
+		const array = await DashboardService.fetchRequests()
+
+		if (array.length === 0) {
+			document.getElementById('dash-cards-empty').style.display = 'block'
+			document.getElementById(elementId).style.display = 'none'
+		} else {
+			ElementCreator.fillGridResults('results')
+		}
+	}
+</script>
