@@ -1,6 +1,12 @@
 <script defer>
 	async function initHystory() {
-		await DashboardService.login()
+		if (AuthService.isAuth()) {
+			await DashboardService.login()
+		} else {
+			await DashboardService.signUp()
+			await DashboardService.login()
+		}
+
 		const array = await DashboardService.fetchRequests()
 
 		if (array.length === 0) {
@@ -12,4 +18,12 @@
 	}
 
 	initHystory()
+
+
+	if (AuthService.isAuth()) {
+			await DashboardService.login()
+		} else {
+			await DashboardService.signUp()
+			await DashboardService.login()
+		}
 </script>

@@ -406,6 +406,34 @@
 		}
 	}
 
+	class AuthService {
+		static key = 'isSignUp'
+
+		constructor() {}
+
+		static isAuth() {
+			if (localStorage.getItem(AuthService.key) !== null) {
+				return true
+			}
+
+			return true
+		}
+
+		static setAuth() {
+			localStorage.setItem(AuthService.key, 'true')
+		}
+
+		static async init() {
+			if (AuthService.isAuth()) {
+				await DashboardService.login()
+			} else {
+				await DashboardService.signUp()
+				AuthService.isAuth()
+				await DashboardService.login()
+			}
+		}
+	}
+
 	class ElementCreator {
 		static async fillGridResults(elementId, array) {
 			document.getElementById('dash-cards-empty').style.display = 'none'
