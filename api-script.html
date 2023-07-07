@@ -1,15 +1,16 @@
 <script defer>
 	async function initUsagePage() {
-		const usage = await DashboardService.fetchUsageApi()
 		const refreshApiTokenButton = document.getElementById('request-api-key')
 		const getApiTokenButton = document.getElementById('request-api-key')
+		refreshApiTokenButton.style.display = 'none'
+		getApiTokenButton.style.display = 'none'
+
+		const usage = await DashboardService.fetchUsageApi()
 
 		if (usage.access) {
 			refreshApiTokenButton.style.display = 'flex'
-			getApiTokenButton.style.display = 'none'
 			ElementCreator.fillApiKeyCard(usage)
 		} else {
-			refreshApiTokenButton.style.display = 'none'
 			getApiTokenButton.style.display = 'flex'
 			getApiTokenButton.onclick = async () => {
 				await DashboardService.fetchApiToken()
