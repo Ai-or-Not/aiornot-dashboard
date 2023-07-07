@@ -80,7 +80,7 @@ class RestClient {
 			const response = await fetch(url, {
 				method: 'DELETE',
 				headers: {
-					'Content-Type': 'application/json',
+					accept: '*/*',
 					Authorization: `Bearer ${this.bearerToken}`,
 				},
 			})

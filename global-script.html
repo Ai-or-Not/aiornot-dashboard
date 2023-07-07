@@ -236,7 +236,7 @@
 		static async delete() {
 			try {
 				const client = DashboardService.getInstance().client
-				return await client.delete('')
+				return await client.delete()
 			} catch (error) {
 				console.console.error('Ошибка delete:', error)
 			}
