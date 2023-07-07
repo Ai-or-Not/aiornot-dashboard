@@ -337,6 +337,7 @@ async function postToApi_url() {
 	if (RequestCounter.isLimitExceeded()) {
 		const signInModalElement = document.getElementById('sign-up')
 		signInModalElement.style.display = 'flex'
+		signInModalElement.style.zIndex = 100
 		return
 	}
 
@@ -428,6 +429,8 @@ dropzone.addEventListener('drop', async function (event) {
 			if (RequestCounter.isLimitExceeded()) {
 				const signInModalElement = document.getElementById('sign-up')
 				signInModalElement.style.display = 'flex'
+				signInModalElement.style.zIndex = 100
+
 				loadingFinish()
 				return
 			}
@@ -482,6 +485,8 @@ inputEl_fileInput.addEventListener('change', (event) => {
 		if (RequestCounter.isLimitExceeded()) {
 			const signInModalElement = document.getElementById('sign-up')
 			signInModalElement.style.display = 'flex'
+			signInModalElement.style.zIndex = 100
+
 			loadingFinish()
 			return
 		}
