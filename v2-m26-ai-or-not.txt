@@ -358,8 +358,8 @@ async function postToApi_url() {
 
 	fetch(baseUrl, options)
 		.then((response) => response.json())
-
 		.then((response) => {
+			RequestCounter.increment()
 			changeShareUrl(response.id)
 			imageEl_currentImage.src = pastedUrl
 			findHighestConfidence(response.response)
@@ -456,6 +456,7 @@ dropzone.addEventListener('drop', async function (event) {
 			fetch(baseUrl, options)
 				.then((response) => response.json())
 				.then((response) => {
+					RequestCounter.increment()
 					changeShareUrl(response.id)
 					initial_dropZone()
 					findHighestConfidence(response.response)
@@ -517,6 +518,7 @@ inputEl_fileInput.addEventListener('change', (event) => {
 		fetch(baseUrl, options)
 			.then((response) => response.json())
 			.then((response) => {
+				RequestCounter.increment()
 				changeShareUrl(response.id)
 				initial_dropZone()
 				findHighestConfidence(response.response)
