@@ -1,0 +1,169 @@
+<style>
+	.request-item {
+		position: relative;
+		width: 182px;
+		height: 182px;
+	}
+	.request-item > img {
+		width: 100%;
+		height: 100%;
+	}
+
+	.request-item-verdict {
+		position: absolute;
+		bottom: 2px;
+		right: 2px;
+		color: #10151d;
+		text-align: right;
+		font-family: 'Space Grotesk';
+		font-size: 12px;
+		font-style: normal;
+		font-weight: 700;
+		line-height: 160%;
+		background: #adff00;
+		padding: 2px 8px;
+	}
+</style>
+
+<script defer>
+	class RestClient {
+		constructor(apiUrl, bearerToken) {
+			this.apiUrl = apiUrl
+			this.bearerToken = bearerToken
+		}
+
+		async get(endpoint) {
+			const url = `${this.apiUrl}/${endpoint}`
+
+			try {
+				const response = await fetch(url, {
+					method: 'GET',
+					headers: {
+						'Content-Type': 'application/json',
+						Authorization: `Bearer ${this.bearerToken}`,
+					},
+				})
+
+				if (response.status === 400) {
+					const errorData = await response.json()
+					throw { status: response.status, message: errorData }
+				} else if (response.status === 401) {
+					throw { status: response.status, message: 'Unauthorized' }
+				} else if (response.status === 404) {
+					throw { status: response.status, message: 'Not Found' }
+				}
+
+				if (!response.ok) {
+					const errorData = await response.json()
+					throw { status: response.status, message: errorData }
+				}
+
+				const data = await response.json()
+				return data
+			} catch (error) {
+				console.error('Ошибка при выполнении GET-запроса:', error)
+				throw error
+			}
+		}
+
+		async post(endpoint, body) {
+			const url = `${this.apiUrl}/${endpoint}`
+
+			try {
+				const response = await fetch(url, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						Authorization: `Bearer ${this.bearerToken}`,
+					},
+					body: JSON.stringify(body),
+				})
+
+				if (response.status === 400) {
+					const errorData = await response.json()
+					throw { status: response.status, message: errorData }
+				} else if (response.status === 401) {
+					throw { status: response.status, message: 'Unauthorized' }
+				} else if (response.status === 404) {
+					throw { status: response.status, message: 'Not Found' }
+				}
+
+				if (!response.ok) {
+					const errorData = await response.json()
+					throw { status: response.status, message: errorData }
+				}
+
+				const data = await response.json()
+				return data
+			} catch (error) {
+				console.error('Ошибка при выполнении POST-запроса:', error)
+				throw error
+			}
+		}
+	}
+
+	class DashboardService {
+		constructor() {
+			const bearerToken = localStorage.getItem('_ms-mid') ?? ''
+			const baseUrl = 'https://atrium-stage-api.optic-dev.xyz/aion/users'
+			this.client = new RestClient(baseUrl, bearerToken)
+		}
+
+		static getInstance() {
+			if (!DashboardService.instance) {
+				DashboardService.instance = new DashboardService()
+			}
+			return DashboardService.instance
+		}
+
+		static async fetchRequests(offset = 0, limit = 10) {
+			try {
+				const client = DashboardService.getInstance().client
+				const endpoint = `data?filters=requests&offset=${offset}&limit=${limit}`
+				return await client
+					.get(endpoint)
+					.then((data) => data.requests.array)
+			} catch (error) {
+				console.error('Ошибка getRequests:', error)
+				return []
+			}
+		}
+
+		static async fetchUsageApi() {
+			try {
+				const client = DashboardService.getInstance().client
+				const endpoint = `data?filters=api&offset=0&limit=10`
+				return await client.get(endpoint).then((data) => data.api)
+			} catch (error) {
+				console.error('Ошибка fetchUsageApi:', error)
+				return []
+			}
+		}
+
+		static async signUp() {
+			try {
+				const client = DashboardService.getInstance().client
+				return await client
+					.post('sign_up')
+					.then((data) => false)
+					.catch((error) => {
+						if (error.status === 400) {
+							return true
+						}
+						throw error
+					})
+			} catch (error) {
+				console.console.error('Ошибка signUp:', error)
+			}
+		}
+
+		static async login() {
+			try {
+				const client = DashboardService.getInstance().client
+				return await client.post('login')
+			} catch (error) {
+				console.console.error('Ошибка login:', error)
+			}
+		}
+	}
+</script>
