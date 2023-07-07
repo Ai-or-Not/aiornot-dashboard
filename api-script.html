@@ -1,7 +1,9 @@
 <script defer>
-	async function initHystory() {
+	async function initUsagePage() {
 		const usage = await DashboardService.fetchUsageApi()
 
 		console.log(usage)
 	}
+
+	initUsagePage()
 </script>
