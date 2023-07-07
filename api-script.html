@@ -3,7 +3,7 @@
 		const usage = await DashboardService.fetchUsageApi()
 		console.log(usage)
 
-		if (usage.access) {
+		if (usage.api.access) {
 			const refreshApiTokenButton = document.getElementById('refresh-api-key')
 			refreshApiTokenButton.style.display = 'flex !important'
 			ElementCreator.fillApiKeyCard(usage)
