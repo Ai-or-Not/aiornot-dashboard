@@ -183,7 +183,7 @@
 
 		static increment() {
 			const count = localStorage.getItem(RequestCounter.key)
-			const newCount = count === null ? 1 : count + 1
+			const newCount = count === null ? 1 : Number(count) + 1
 			localStorage.setItem(RequestCounter.key, newCount)
 		}
 	}
