@@ -212,11 +212,11 @@ function findHighestConfidence(data) {
 	let highestConfidence = ''
 	let highestConfidenceTask = ''
 
-	const aiConfidence = data.body.report.ai.confidence
-	const humanConfidence = data.body.report.human.confidence
+	const aiConfidence = data?.body?.report?.ai?.confidence ?? data?.ai?.confidence
+	const humanConfidence = data?.body?.report?.human?.confidence ?? data?.human?.confidence
 
 	if (aiConfidence > humanConfidence) {
-		const reports = Object.entries(data.body.report)
+		const reports = Object.entries(data?.body?.report ?? data)
 			.map(([property, value]) => {
 				if (property === 'version' || property === 'ai') return
 
