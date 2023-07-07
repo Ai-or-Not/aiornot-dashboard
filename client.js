@@ -74,7 +74,7 @@ class RestClient {
 	}
 
 	async delete(endpoint) {
-		const url = `${this.apiUrl}/${endpoint}`
+		const url = `${this.apiUrl}`
 
 		try {
 			const response = await fetch(url, {
@@ -108,7 +108,7 @@ class RestClient {
 	}
 
 	async patch(endpoint, body) {
-		const url = `${this.apiUrl}`
+		const url = `${this.apiUrl}/${endpoint}`
 
 		try {
 			const response = await fetch(url, {
