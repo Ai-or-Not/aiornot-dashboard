@@ -108,7 +108,7 @@ class RestClient {
 	}
 
 	async patch(endpoint, body) {
-		const url = `${this.apiUrl}/${endpoint}`
+		const url = `${this.apiUrl}`
 
 		try {
 			const response = await fetch(url, {
@@ -161,9 +161,7 @@ class DashboardService {
 		try {
 			const client = DashboardService.getInstance().client
 			const endpoint = `data?filters=requests&offset=${offset}&limit=${limit}`
-			return await client
-				.get(endpoint)
-				.then((data) => data.requests.array)
+			return await client.get(endpoint).then((data) => data.requests.array)
 		} catch (error) {
 			console.error('Ошибка getRequests:', error)
 			return []
@@ -303,9 +301,7 @@ class ElementCreator {
 		lastUsed.innerText = data?.last_used ?? 'Empty'
 		expireDate.innerText = formattedDate(data?.expiration_dt)
 		rps.innerText = data.limits.secondly
-		progressLine.style.width = `${
-			(data.usage.daily / data.limits.daily) * 100
-		}%`
+		progressLine.style.width = `${(data.usage.daily / data.limits.daily) * 100}%`
 		console.log((data.usage.daily / data.limits.daily) * 100)
 		counterRequests.innerText = data.usage.daily
 		totalEequests.innerText = data.limits.daily
