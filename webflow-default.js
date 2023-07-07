@@ -474,7 +474,6 @@ inputEl_fileInput.addEventListener('change', (event) => {
 			headers: {
 				Accept: 'application/json',
 				Authorization: `Bearer ${localStorage.getItem('_ms-mid') ?? ''}`,
-
 				// 'Content-Type': 'multipart/form-data',
 			},
 			body: formData,

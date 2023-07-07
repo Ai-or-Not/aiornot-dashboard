@@ -239,6 +239,10 @@ class RequestCounter {
 	constructor() {}
 
 	static isLimitExceeded() {
+		if (localStorage.getItem('_ms-mid') !== null) {
+			return false
+		}
+
 		const count = localStorage.getItem(RequestCounter.key)
 		if (count === null) {
 			return false
