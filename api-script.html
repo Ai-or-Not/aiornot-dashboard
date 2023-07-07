@@ -3,13 +3,15 @@
 		const usage = await DashboardService.fetchUsageApi()
 		console.log(usage)
 
-		if (usage.api.access) {
+		if (usage.access) {
+			alert('Доступ к API открыт')
 			const refreshApiTokenButton = document.getElementById('refresh-api-key')
-			refreshApiTokenButton.style.display = 'flex !important'
+			refreshApiTokenButton.style.display = 'flex'
 			ElementCreator.fillApiKeyCard(usage)
 		} else {
+			alert('Доступ к API закрыт')
 			const getApiTokenButton = document.getElementById('request-api-key')
-			getApiTokenButton.style.display = 'flex !important'
+			getApiTokenButton.style.display = 'flex'
 			getApiTokenButton.onclick = async () => {
 				await DashboardService.fetchApiToken()
 				initUsagePage()
