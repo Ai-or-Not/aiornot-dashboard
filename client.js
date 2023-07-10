@@ -72,6 +72,40 @@ class RestClient {
 			throw error
 		}
 	}
+	async postBinary(endpoint, formData) {
+		const url = `${this.apiUrl}/${endpoint}`
+
+		try {
+			const response = await fetch(url, {
+				method: 'POST',
+				headers: {
+					Accept: 'application/json',
+					Authorization: `Bearer ${this.bearerToken}`,
+				},
+				body: formData,
+			})
+
+			if (response.status === 400) {
+				const errorData = await response.json()
+				throw { status: response.status, message: errorData }
+			} else if (response.status === 401) {
+				throw { status: response.status, message: 'Unauthorized' }
+			} else if (response.status === 404) {
+				throw { status: response.status, message: 'Not Found' }
+			}
+
+			if (!response.ok) {
+				const errorData = await response.json()
+				throw { status: response.status, message: errorData }
+			}
+
+			const data = await response.json()
+			return data
+		} catch (error) {
+			console.error('Ошибка при выполнении POST-запроса:', error)
+			throw error
+		}
+	}
 
 	async delete(endpoint) {
 		const url = `${this.apiUrl}`
@@ -252,7 +286,7 @@ class AIGeneratedService {
 		try {
 			const formData = new FormData()
 			formData.append('binary', file, 'uploaded-file.png')
-			return await client.post('reports/binary', formData)
+			return await client.postBinary('reports/binary', formData)
 		} catch (error) {
 			console.error('Ошибка getReportsByBinary:', error)
 		}
