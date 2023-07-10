@@ -514,6 +514,10 @@ class ElementCreator {
 		totalEequests.innerText = data.limits.daily
 
 		apiKeyCard.style.display = 'flex'
+
+		document.getElementById('api-copy').onclick = () => {
+			copyToClipboard(data.key)
+		}
 	}
 }
 
