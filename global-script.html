@@ -471,16 +471,16 @@
 			}
 
 			const apiKeyCard = document.getElementById('api-item')
-			const nameApiKey = document.getElementById('name-api-key')
-			const lastUsed = document.getElementById('last-used')
+			// const nameApiKey = document.getElementById('name-api-key')
+			// const lastUsed = document.getElementById('last-used')
 			const expireDate = document.getElementById('expire-date')
 			const rps = document.getElementById('rps')
 			const progressLine = document.getElementById('progress-line')
 			const counterRequests = document.getElementById('counter-requests')
 			const totalEequests = document.getElementById('total-requests')
 
-			nameApiKey.innerText = data?.name ?? 'Empty'
-			lastUsed.innerText = data?.last_used ?? 'Empty'
+			// nameApiKey.innerText = data?.name ?? 'Empty'
+			// lastUsed.innerText = data?.last_used ?? 'Empty'
 			expireDate.innerText = formattedDate(data?.expiration_dt)
 			rps.innerText = data.limits.secondly
 			progressLine.style.width = `${(data.usage.daily / data.limits.daily) * 100}%`
