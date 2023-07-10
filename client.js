@@ -95,12 +95,10 @@ class RestClient {
 			}
 
 			if (!response.ok) {
-				const errorData = await response.json()
 				throw { status: response.status, message: errorData }
 			}
 
-			const data = await response.json()
-			return data
+			return
 		} catch (error) {
 			console.error('Ошибка при выполнении DELETE-запроса:', error)
 			throw error
