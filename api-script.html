@@ -8,6 +8,10 @@
 			refreshApiTokenButton.style.display = 'flex'
 			getApiTokenButton.style.display = 'none'
 			ElementCreator.fillApiKeyCard(usage)
+			refreshApiTokenButton.onclick = async () => {
+				await DashboardService.refreshApiToken()
+				initUsagePage()
+			}
 		} else {
 			refreshApiTokenButton.style.display = 'none'
 			getApiTokenButton.style.display = 'flex'
