@@ -388,7 +388,7 @@ class AuthService {
 			return true
 		}
 
-		return true
+		return false
 	}
 
 	static setAuth() {
@@ -400,7 +400,7 @@ class AuthService {
 			await DashboardService.login()
 		} else {
 			await DashboardService.signUp()
-			AuthService.isAuth()
+			AuthService.setAuth()
 			await DashboardService.login()
 		}
 	}
@@ -463,14 +463,23 @@ class ElementCreator {
 }
 
 async function main() {
-	try {
-		await DashboardService.login()
-		const result = await AIGeneratedService.getReportsByUrl(
-			'https://uploads-ssl.webflow.com/6421ab9aec22a5a8d99cec8f/6426b32923073d0236dcb451_photo_9%4008-10-2022_15-12-44-1.jpg',
-		)
-		console.log(result)
-	} catch (error) {
-		console.error(error)
+	// try {
+	// 	await DashboardService.login()
+	// 	const result = await AIGeneratedService.getReportsByUrl(
+	// 		'https://uploads-ssl.webflow.com/6421ab9aec22a5a8d99cec8f/6426b32923073d0236dcb451_photo_9%4008-10-2022_15-12-44-1.jpg',
+	// 	)
+	// 	console.log(result)
+	// } catch (error) {
+	// 	console.error(error)
+	// }
+
+	const array = await DashboardService.fetchRequests()
+
+	if (array.length === 0) {
+		document.getElementById('dash-cards-empty').style.display = 'block'
+		document.getElementById('results').style.display = 'none'
+	} else {
+		ElementCreator.fillGridResults('results', array)
 	}
 }
 

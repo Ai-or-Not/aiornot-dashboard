@@ -1,11 +1,6 @@
 <script defer>
 	async function initHystory() {
-		if (AuthService.isAuth()) {
-			await DashboardService.login()
-		} else {
-			await DashboardService.signUp()
-			await DashboardService.login()
-		}
+		await AuthService.init()
 
 		const array = await DashboardService.fetchRequests()
 
@@ -13,17 +8,9 @@
 			document.getElementById('dash-cards-empty').style.display = 'block'
 			document.getElementById('results').style.display = 'none'
 		} else {
-			ElementCreator.fillGridResults('results')
+			ElementCreator.fillGridResults('results', array)
 		}
 	}
 
 	initHystory()
-
-
-	if (AuthService.isAuth()) {
-			await DashboardService.login()
-		} else {
-			await DashboardService.signUp()
-			await DashboardService.login()
-		}
 </script>
