@@ -19,4 +19,8 @@
 	}
 
 	initUsagePage()
+
+	document.getElementById('sign-out').onclick = () => {
+		AuthService.removeAuth()
+	}
 </script>

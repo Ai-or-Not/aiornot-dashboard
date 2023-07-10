@@ -4,4 +4,8 @@
 		signInModalElement.style.display = 'none'
 		signInModalElement.style.zIndex = 0
 	}
+
+	document.getElementById('sign-out').onclick = () => {
+		AuthService.removeAuth()
+	}
 </script>
