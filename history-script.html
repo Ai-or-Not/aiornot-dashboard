@@ -1,14 +1,24 @@
 <script defer>
 	async function initHystory() {
-		await AuthService.init()
+		const loadingBlock = document.getElementById('dash-cards-loading')
+		const dashCardsEmptyBlock = document.getElementById('dash-cards-empty')
+		loadingBlock.style.display = 'flex'
 
-		const array = await DashboardService.fetchRequests()
-
-		if (array.length === 0) {
-			document.getElementById('dash-cards-empty').style.display = 'block'
-			document.getElementById('results').style.display = 'none'
-		} else {
-			ElementCreator.fillGridResults('results', array)
+		try {
+			await AuthService.init()
+			const array = await DashboardService.fetchRequests()
+			if (array.length === 0) {
+				dashCardsEmptyBlock.style.display = 'flex'
+				document.getElementById('results').style.display = 'none'
+			} else {
+				dashCardsEmptyBlock.style.display = 'none'
+				ElementCreator.fillGridResults('results', array)
+			}
+		} catch (error) {
+			dashCardsEmptyBlock.style.display = 'flex'
+			console.log(error)
+		} finally {
+			loadingBlock.style.display = 'none'
 		}
 	}
 

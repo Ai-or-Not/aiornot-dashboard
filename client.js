@@ -208,6 +208,7 @@ class DashboardService {
 	static async delete() {
 		try {
 			const client = DashboardService.getInstance().client
+			AuthService.removeAuth()
 			return await client.delete('')
 		} catch (error) {
 			console.console.error('Ошибка delete:', error)
@@ -395,6 +396,10 @@ class AuthService {
 		localStorage.setItem(AuthService.key, 'true')
 	}
 
+	static removeAuth() {
+		localStorage.removeItem(AuthService.key)
+	}
+
 	static async init() {
 		if (AuthService.isAuth()) {
 			await DashboardService.login()
@@ -408,10 +413,8 @@ class AuthService {
 
 class ElementCreator {
 	static async fillGridResults(elementId, array) {
-		document.getElementById('dash-cards-empty').style.display = 'none'
 		const results = document.getElementById(elementId)
 		results.style.display = 'grid'
-
 		array.forEach((item) => {
 			let requestItem = document.createElement('div')
 			requestItem.classList.add('request-item')
