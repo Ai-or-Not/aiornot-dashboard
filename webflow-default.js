@@ -36,16 +36,14 @@ let visitorId
 const fpPromise = import('https://openfpcdn.io/fingerprintjs/v3').then((FingerprintJS) => FingerprintJS.load())
 
 function updateRequestCounter() {
-	if (localStorage.getItem('_ms_mid')) {
+	if (localStorage.getItem('_ms-mid')) {
 		// Hide element
 		counterEl_requestCounterBlock.classList.add('hide')
 	} else {
 		// Increment the count and show element
 		const value = localStorage.getItem('requestCount') || '0'
-		if (value <= 5) {
-			counterEl_requestCounterValue.textContent = value
-			counterEl_requestCounterBlock.classList.remove('hide')
-		}
+		counterEl_requestCounterValue.textContent = value <= 5 ? value : '5'
+		counterEl_requestCounterBlock.classList.remove('hide')
 	}
 }
 
