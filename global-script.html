@@ -400,21 +400,21 @@
                 comment: reportComment,
             }
 
+            let url = `https://atrium-prod-api.optic.xyz/results/api/detector/reports/result/${id}`
+            let options = {
+                method: 'PUT',
+                body: JSON.stringify(body),
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                },
+            }
+
             const isUserAuthorized = localStorage.getItem('_ms-mid') ? true : false;
             if (isUserAuthorized) {
-                const url = `https://atrium-stage-api.optic-dev.xyz/aion/ai-generated/reports/${id}`
-                const options = {
+                url = `https://atrium-stage-api.optic-dev.xyz/aion/ai-generated/reports/${id}`
+                options = {
                     method: 'PATCH',
-                    body: JSON.stringify(body),
-                    headers: {
-                        Accept: 'application/json',
-                        'Content-Type': 'application/json',
-                    },
-                }
-            } else {
-                const url = `https://atrium-prod-api.optic.xyz/results/api/detector/reports/result/${id}`
-                const options = {
-                    method: 'PUT',
                     body: JSON.stringify(body),
                     headers: {
                         Accept: 'application/json',
