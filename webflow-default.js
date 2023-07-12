@@ -18,6 +18,7 @@ const buttonEl_urlCheck = document.querySelector('#ai-or-not_submit')
 const uiEl_dropZone = document.querySelector('#ai-or-not_dropzone')
 const textEl_dropZoneError = document.querySelector('#ai-or-not_dropzone-text')
 const uiEl_resultCol = document.querySelector('#result-screen_col')
+const buttonEl_sharedButtons = document.querySelector('#share-items-hide')
 //element's arrays
 const arrayEl_testImages = document.querySelectorAll('[test-image-url]')
 //variables
@@ -199,6 +200,8 @@ function loadingFinish(nsfw_detected = false) {
 		imageEl_nsfwImage.classList.remove('hide')
 		imageEl_currentImage.classList.add('hide')
 		imageEl_currentImageEmpty.classList.add('hide')
+		// Hide buttons for share the report.
+		buttonEl_sharedButtons.classList.add('hide')
 	} else {
 		imageEl_nsfwImage.classList.add('hide')
 		imageEl_currentImage.classList.remove('hide')
