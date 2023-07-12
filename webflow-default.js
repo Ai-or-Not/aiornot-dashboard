@@ -11,6 +11,7 @@ const buttonEl_processClose = document.querySelector('#processing_cancel')
 const inputEl_fileInput = document.querySelector('#file-input')
 const imageEl_currentImage = document.querySelector('#ai-or-not-current-image')
 const imageEl_currentImageEmpty = document.querySelector('#empty-preview-img')
+const imageEl_nsfwImage = document.querySelector('#nsfw-preview-img')
 const textEl_inputError = document.querySelector('#input-error-text')
 const inputEl_urlWaiter = document.querySelector('#ai-or-not_image-url')
 const buttonEl_urlCheck = document.querySelector('#ai-or-not_submit')
@@ -170,6 +171,7 @@ function screen_homeShow() {
 	document.querySelector('#result-screen_image-wrapper').classList.add('hide')
 	imageEl_currentImage.classList.add('hide')
 	imageEl_currentImageEmpty.classList.remove('hide')
+	imageEl_nsfwImage.classList.remove('hide')
 }
 
 function loadingStart() {
@@ -191,10 +193,17 @@ function loadingStart() {
 	document.querySelector('#result-screen_image-wrapper').classList.remove('hide')
 }
 
-function loadingFinish() {
+function loadingFinish(nsfw_detected = false) {
 	// console.log('Ð¿Ð¾ÐºÐ°Ð·Ñ‹Ð²Ð°ÐµÐ¼ loadingFinish')
-	imageEl_currentImage.classList.remove('hide')
-	imageEl_currentImageEmpty.classList.add('hide')
+	if (nsfw_detected) {
+		imageEl_nsfwImage.classList.remove('hide')
+		imageEl_currentImage.classList.add('hide')
+		imageEl_currentImageEmpty.classList.add('hide')
+	} else {
+		imageEl_nsfwImage.classList.add('hide')
+		imageEl_currentImage.classList.remove('hide')
+		imageEl_currentImageEmpty.classList.add('hide')
+	}
 
 	document.querySelector('.processing-screen_triggers_3').click()
 	document.querySelector('#processing-screen').classList.add('hide')
@@ -429,7 +438,7 @@ inputEl_fileInput.addEventListener('change', (event) => {
 				changeShareUrl(response.id)
 				initial_dropZone()
 				findHighestConfidence(response.response)
-				loadingFinish()
+				loadingFinish(response.nsfw_detected)
 			})
 
 			.catch((error) => {
