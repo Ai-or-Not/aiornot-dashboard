@@ -226,6 +226,8 @@ function loadingFinish(nsfw_detected = false) {
 		imageEl_nsfwImage.classList.add('hide')
 		imageEl_currentImage.classList.remove('hide')
 		imageEl_currentImageEmpty.classList.add('hide')
+		// Show buttons for share the report.
+		buttonEl_sharedButtons.classList.remove('hide')
 	}
 
 	document.querySelector('.processing-screen_triggers_3').click()
