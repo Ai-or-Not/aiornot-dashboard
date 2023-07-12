@@ -76,15 +76,29 @@ function uiReported_initialState() {
 
 function changeShareUrl(responseId) {
 	currentResultId = responseId
-	document.querySelector(
-		'[fs-socialshare-element="url"]',
-	).textContent = `https://results.aiornot.com/aiornot/${responseId}`
+    const accessTokenIsExist = localStorage.getItem('_ms-mid') ? false : true;
 
-	let allShareUrl = document.querySelectorAll('.result-screen_share-item')
+    if (accessTokenIsExist) {
+        document.querySelector(
+            '[fs-socialshare-element="url"]',
+        ).textContent = `https://results.aiornot.com/aiornot/${responseId}`
 
-	allShareUrl.forEach((el) => {
-		el.setAttribute('data-url', `https://results.aiornot.com/aiornot/${responseId}`)
-	})
+        let allShareUrl = document.querySelectorAll('.result-screen_share-item')
+
+        allShareUrl.forEach((el) => {
+            el.setAttribute('data-url', `https://results.aiornot.com/aiornot/${responseId}`)
+        })
+    } else {
+        document.querySelector(
+            '[fs-socialshare-element="url"]',
+        ).textContent = `https://results.aiornot.com/aiornot/users/${responseId}`
+
+        let allShareUrl = document.querySelectorAll('.result-screen_share-item')
+
+        allShareUrl.forEach((el) => {
+            el.setAttribute('data-url', `https://results.aiornot.com/aiornot/users/${responseId}`)
+        })
+    }
 }
 
 //ui functions
