@@ -19,6 +19,9 @@ const uiEl_dropZone = document.querySelector('#ai-or-not_dropzone')
 const textEl_dropZoneError = document.querySelector('#ai-or-not_dropzone-text')
 const uiEl_resultCol = document.querySelector('#result-screen_col')
 const buttonEl_sharedButtons = document.querySelector('#share-items-hide')
+const counterEl_requestCounterValue = document.querySelector('#ai-or-not-dropzone-counter')
+const counterEl_requestCounterBlock = document.querySelector('#ai-or-not-dropzone-counter-w')
+
 //element's arrays
 const arrayEl_testImages = document.querySelectorAll('[test-image-url]')
 //variables
@@ -31,6 +34,20 @@ let visitorId
 //functions
 
 const fpPromise = import('https://openfpcdn.io/fingerprintjs/v3').then((FingerprintJS) => FingerprintJS.load())
+
+function updateRequestCounter() {
+	if (localStorage.getItem('_ms_mid')) {
+		// Increment the count and show element
+		const value = localStorage.getItem('requestCount') || '0'
+		if (value <= 5) {
+			counterEl_requestCounterValue.textContent = value
+			counterEl_requestCounterBlock.classList.remove('hide')
+		}
+	} else {
+		// Hide element
+		counterEl_requestCounterBlock.classList.add('hide')
+	}
+}
 
 async function initFingerPrint() {
 	visitorId = await fpPromise
@@ -150,6 +167,8 @@ function error_dropZone() {
 	textEl_dropZoneError.classList.add('error')
 	uiEl_dropZone.classList.add('red-border')
 	textEl_dropZoneError.textContent = 'Something went wrong. Try again.'
+	// Request counter.
+	updateRequestCounter()
 }
 
 function initial_dropZone() {
@@ -157,6 +176,8 @@ function initial_dropZone() {
 	textEl_dropZoneError.classList.remove('error')
 	uiEl_dropZone.classList.remove('red-border')
 	textEl_dropZoneError.textContent = 'We support jpeg, png, webp, gif, tiff, bmp. 10 Mb of maximum size.'
+	// Request counter.
+	updateRequestCounter()
 }
 
 function screen_homeShow() {
@@ -173,6 +194,7 @@ function screen_homeShow() {
 	imageEl_currentImage.classList.add('hide')
 	imageEl_currentImageEmpty.classList.remove('hide')
 	imageEl_nsfwImage.classList.remove('hide')
+	updateRequestCounter()
 }
 
 function loadingStart() {
