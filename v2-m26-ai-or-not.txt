@@ -78,29 +78,29 @@ function uiReported_initialState() {
 
 function changeShareUrl(responseId) {
 	currentResultId = responseId
-    const accessTokenIsExist = localStorage.getItem('_ms-mid') ? false : true;
+	const accessTokenIsExist = localStorage.getItem('_ms-mid') ? false : true
 
-    if (accessTokenIsExist) {
-        document.querySelector(
-            '[fs-socialshare-element="url"]',
-        ).textContent = `https://results.aiornot.com/aiornot/${responseId}`
+	if (accessTokenIsExist) {
+		document.querySelector(
+			'[fs-socialshare-element="url"]',
+		).textContent = `https://results.aiornot.com/aiornot/${responseId}`
 
-        let allShareUrl = document.querySelectorAll('.result-screen_share-item')
+		let allShareUrl = document.querySelectorAll('.result-screen_share-item')
 
-        allShareUrl.forEach((el) => {
-            el.setAttribute('data-url', `https://results.aiornot.com/aiornot/${responseId}`)
-        })
-    } else {
-        document.querySelector(
-            '[fs-socialshare-element="url"]',
-        ).textContent = `https://results.aiornot.com/aiornot/users/${responseId}`
+		allShareUrl.forEach((el) => {
+			el.setAttribute('data-url', `https://results.aiornot.com/aiornot/${responseId}`)
+		})
+	} else {
+		document.querySelector(
+			'[fs-socialshare-element="url"]',
+		).textContent = `https://results.aiornot.com/aiornot/users/${responseId}`
 
-        let allShareUrl = document.querySelectorAll('.result-screen_share-item')
+		let allShareUrl = document.querySelectorAll('.result-screen_share-item')
 
-        allShareUrl.forEach((el) => {
-            el.setAttribute('data-url', `https://results.aiornot.com/aiornot/users/${responseId}`)
-        })
-    }
+		allShareUrl.forEach((el) => {
+			el.setAttribute('data-url', `https://results.aiornot.com/aiornot/users/${responseId}`)
+		})
+	}
 }
 
 //ui functions
@@ -319,7 +319,7 @@ async function postToApi_url() {
 			changeShareUrl(response.id)
 			imageEl_currentImage.src = pastedUrl
 			findHighestConfidence(response.response)
-			loadingFinish()
+			loadingFinish(response.nsfw_detected)
 		})
 		.catch((error) => {
 			if (uiEl_resultCol.classList.contains('hide')) {
@@ -399,7 +399,7 @@ dropzone.addEventListener('drop', async function (event) {
 					changeShareUrl(response.id)
 					initial_dropZone()
 					findHighestConfidence(response.response)
-					loadingFinish()
+					loadingFinish(response.nsfw_detected)
 				})
 
 				.catch((error) => {
