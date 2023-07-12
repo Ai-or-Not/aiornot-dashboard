@@ -1,23 +1,21 @@
 {
-  "semi": false,
-  "trailingComma": "all",
-  "singleQuote": true,
-  "printWidth": 120,
-  "tabWidth": 4,
-  "useTabs": true,
-  "jsxSingleQuote": false,
-  "jsxBracketSameLine": false,
-  "arrowParens": "always",
-  "bracketSpacing": true,
-  "endOfLine": "auto",
-  "overrides": [
-    {
-      "files": "*.js",
-      "options": {
-        "muteWarnings": [
-          "lockdown-install.js"
-        ]
-      }
-    }
-  ]
+	"semi": false,
+	"trailingComma": "all",
+	"singleQuote": true,
+	"printWidth": 120,
+	"tabWidth": 4,
+	"useTabs": true,
+	"jsxSingleQuote": false,
+	"jsxBracketSameLine": false,
+	"arrowParens": "always",
+	"bracketSpacing": true,
+	"endOfLine": "auto",
+	"overrides": [
+		{
+			"files": "*.js",
+			"options": {
+				"muteWarnings": ["lockdown-install.js"]
+			}
+		}
+	]
 }
