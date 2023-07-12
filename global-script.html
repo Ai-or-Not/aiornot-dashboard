@@ -394,27 +394,40 @@
 			return await fetch(baseUrl, options).then((response) => response.json())
 		}
 
-		static async sendFeedback(id, reportPredict, reportComment) {
-			const url = `https://atrium-prod-api.optic.xyz/results/api/detector/reports/result/${id}`
-			const body = {
-				is_proper_predict: reportPredict,
-				comment: reportComment,
-			}
+        static async sendFeedback(id, reportPredict, reportComment) {
+            const body = {
+                is_proper_predict: reportPredict,
+                comment: reportComment,
+            }
 
-			const options = {
-				method: 'PUT',
-				body: JSON.stringify(body),
-				headers: {
-					Accept: 'application/json',
-					'Content-Type': 'application/json',
-				},
-			}
+            const isUserAuthorized = localStorage.getItem('_ms-mid') ? true : false;
+            if (isUserAuthorized) {
+                const url = `https://atrium-stage-api.optic-dev.xyz/aion/ai-generated/reports/${id}`
+                const options = {
+                    method: 'PATCH',
+                    body: JSON.stringify(body),
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                }
+            } else {
+                const url = `https://atrium-prod-api.optic.xyz/results/api/detector/reports/result/${id}`
+                const options = {
+                    method: 'PUT',
+                    body: JSON.stringify(body),
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                }
+            }
 
-			await fetch(url, options)
-				.then((response) => response.json())
-				.then((data) => console.log(data))
-				.catch((error) => console.error(error))
-		}
+            await fetch(url, options)
+                .then((response) => response.json())
+                .then((data) => console.log(data))
+                .catch((error) => console.error(error))
+        }
 	}
 
 	class WrapperAIGeneratedService {

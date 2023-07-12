@@ -363,19 +363,32 @@ class OpenAIGeneratedService {
 	}
 
 	static async sendFeedback(id, reportPredict, reportComment) {
-		const url = `https://atrium-prod-api.optic.xyz/results/api/detector/reports/result/${id}`
 		const body = {
 			is_proper_predict: reportPredict,
 			comment: reportComment,
 		}
 
-		const options = {
-			method: 'PUT',
-			body: JSON.stringify(body),
-			headers: {
-				Accept: 'application/json',
-				'Content-Type': 'application/json',
-			},
+		const isUserAuthorized = localStorage.getItem('_ms-mid') ? true : false;
+		if (isUserAuthorized) {
+			const url = `https://atrium-stage-api.optic-dev.xyz/aion/ai-generated/reports/${id}`
+			const options = {
+				method: 'PATCH',
+				body: JSON.stringify(body),
+				headers: {
+					Accept: 'application/json',
+					'Content-Type': 'application/json',
+				},
+			}
+		} else {
+			const url = `https://atrium-prod-api.optic.xyz/results/api/detector/reports/result/${id}`
+			const options = {
+				method: 'PUT',
+				body: JSON.stringify(body),
+				headers: {
+					Accept: 'application/json',
+					'Content-Type': 'application/json',
+				},
+			}
 		}
 
 		await fetch(url, options)
