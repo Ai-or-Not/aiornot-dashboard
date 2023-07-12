@@ -198,7 +198,7 @@ class RestClient {
 class DashboardService {
 	constructor() {
 		const bearerToken = localStorage.getItem('_ms-mid') ?? ''
-		const baseUrl = 'https://atrium-stage-api.optic-dev.xyz/aion/users'
+		const baseUrl = 'https://atrium-prod-api.optic.xyz/aion/users'
 		this.client = new RestClient(baseUrl, bearerToken)
 	}
 
@@ -289,7 +289,7 @@ class DashboardService {
 class AIGeneratedService {
 	constructor() {
 		const bearerToken = localStorage.getItem('_ms-mid') ?? ''
-		const baseUrl = 'https://atrium-stage-api.optic-dev.xyz/aion/ai-generated'
+		const baseUrl = 'https://atrium-prod-api.optic.xyz/aion/ai-generated'
 		this.client = new RestClient(baseUrl, bearerToken)
 	}
 
@@ -308,7 +308,7 @@ class AIGeneratedService {
 			formData.append('binary', file, 'uploaded-file.png')
 			return await client.postBinary('reports/binary', formData)
 		} catch (error) {
-			console.error('Ошибка getReportsByBinary:', error)
+			console.error('Error getReportsByBinary:', error)
 		}
 	}
 
@@ -380,7 +380,7 @@ class OpenAIGeneratedService {
 
 		const isUserAuthorized = localStorage.getItem('_ms-mid') ? true : false;
 		if (isUserAuthorized) {
-			url = `https://atrium-stage-api.optic-dev.xyz/aion/ai-generated/reports/${id}`
+			url = `https://atrium-prod-api.optic.xyz/aion/ai-generated/reports/${id}`
 			options = {
 				method: 'PATCH',
 				body: JSON.stringify(body),
