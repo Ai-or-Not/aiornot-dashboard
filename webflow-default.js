@@ -338,7 +338,7 @@ async function postToApi_url() {
 			RequestCounter.increment()
 			changeShareUrl(response.id)
 			imageEl_currentImage.src = pastedUrl
-			findHighestConfidence(response.response)
+			findHighestConfidence(response.response ?? response.report)
 			loadingFinish(response.nsfw_detected)
 		})
 		.catch((error) => {
@@ -418,7 +418,7 @@ dropzone.addEventListener('drop', async function (event) {
 					RequestCounter.increment()
 					changeShareUrl(response.id)
 					initial_dropZone()
-					findHighestConfidence(response.response)
+					findHighestConfidence(response.response ?? response.report)
 					loadingFinish(response.nsfw_detected)
 				})
 
@@ -460,7 +460,7 @@ inputEl_fileInput.addEventListener('change', (event) => {
 				RequestCounter.increment()
 				changeShareUrl(response.id)
 				initial_dropZone()
-				findHighestConfidence(response.response)
+				findHighestConfidence(response.response ?? response.report)
 				loadingFinish(response.nsfw_detected)
 			})
 
