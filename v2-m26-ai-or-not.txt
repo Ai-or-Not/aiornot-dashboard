@@ -331,29 +331,29 @@ async function postToApi_url() {
 		const signInModalElement = document.getElementById('sign-up')
 		signInModalElement.style.display = 'flex'
 		signInModalElement.style.zIndex = 100
-		return
+		screen_homeShow()
+	} else {
+		uiEl_urlError.classList.add('hide')
+		loadingStart()
+
+		await WrapperAIGeneratedService.getReportsByUrl(pastedUrl, visitorId)
+			.then((response) => {
+				RequestCounter.increment()
+				changeShareUrl(response.id)
+				imageEl_currentImage.src = pastedUrl
+				findHighestConfidence(response.response ?? response.report)
+				loadingFinish(response.nsfw_detected)
+			})
+			.catch((error) => {
+				if (uiEl_resultCol.classList.contains('hide')) {
+					someThingWentWrong_error()
+				} else {
+					someThingWentWrong_error()
+					screen_homeShow()
+				}
+				console.log(error)
+			})
 	}
-
-	uiEl_urlError.classList.add('hide')
-	loadingStart()
-
-	await WrapperAIGeneratedService.getReportsByUrl(pastedUrl, visitorId)
-		.then((response) => {
-			RequestCounter.increment()
-			changeShareUrl(response.id)
-			imageEl_currentImage.src = pastedUrl
-			findHighestConfidence(response.response ?? response.report)
-			loadingFinish(response.nsfw_detected)
-		})
-		.catch((error) => {
-			if (uiEl_resultCol.classList.contains('hide')) {
-				someThingWentWrong_error()
-			} else {
-				someThingWentWrong_error()
-				screen_homeShow()
-			}
-			console.log(error)
-		})
 }
 
 //â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“
@@ -407,8 +407,8 @@ dropzone.addEventListener('drop', async function (event) {
 				const signInModalElement = document.getElementById('sign-up')
 				signInModalElement.style.display = 'flex'
 				signInModalElement.style.zIndex = 100
-
-				loadingFinish()
+				screen_homeShow()
+				// loadingFinish()
 				return
 			}
 
@@ -445,8 +445,8 @@ inputEl_fileInput.addEventListener('change', (event) => {
 			const signInModalElement = document.getElementById('sign-up')
 			signInModalElement.style.display = 'flex'
 			signInModalElement.style.zIndex = 100
-
-			loadingFinish()
+			screen_homeShow()
+			// loadingFinish()
 			return
 		}
 
