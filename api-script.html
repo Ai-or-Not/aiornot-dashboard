@@ -3,18 +3,24 @@
 		const usage = await DashboardService.fetchUsageApi()
 		const refreshApiTokenButton = document.getElementById('refresh-api-key')
 		const getApiTokenButton = document.getElementById('request-api-key')
+		const dashAPIEmptyBlock = document.getElementById('dash-api-empty')
+		const dashAPIContentBlock = document.getElementById('dash-api-content')
 
 		if (usage.access) {
-			refreshApiTokenButton.style.display = 'flex'
-			getApiTokenButton.style.display = 'none'
+			dashAPIEmptyBlock.style.display = 'none'
+			dashAPIContentBlock.style.display = 'block'
+			//	refreshApiTokenButton.style.display = 'flex'
+			//	getApiTokenButton.style.display = 'none'
 			ElementCreator.fillApiKeyCard(usage)
 			refreshApiTokenButton.onclick = async () => {
 				await DashboardService.refreshApiToken()
 				initUsagePage()
 			}
 		} else {
-			refreshApiTokenButton.style.display = 'none'
-			getApiTokenButton.style.display = 'flex'
+			dashAPIEmptyBlock.style.display = 'flex'
+			dashAPIContentBlock.style.display = 'none'
+			//	refreshApiTokenButton.style.display = 'none'
+			//	getApiTokenButton.style.display = 'flex'
 			getApiTokenButton.onclick = async () => {
 				await DashboardService.fetchApiToken()
 				initUsagePage()
@@ -23,7 +29,6 @@
 	}
 
 	initUsagePage()
-
 	document.getElementById('sign-out').onclick = () => {
 		AuthService.removeAuth()
 	}
