@@ -44,6 +44,10 @@ function updateRequestCounter() {
 		const value = localStorage.getItem('requestCount') || '0'
 		counterEl_requestCounterValue.textContent = value <= 5 ? value : '5'
 		counterEl_requestCounterBlock.classList.remove('hide')
+
+		if (value >= 5) {
+			postToApi_url()
+		}
 	}
 }
 
