@@ -300,10 +300,9 @@ function findHighestConfidence(data) {
 	}
 
 	if (highestConfidence < 0.55) {
-		document.getElementById('title-ai').innerHTML =
-			'Sorry, but in this case we canâ€™t really say if itâ€™s AI or Not'
+		document.getElementById('title-ai').innerHTML = "Sorry, but in this case we can't really say if it's AI or Not"
 		document.getElementById('title-human').innerHTML =
-			'Sorry, but in this case we canâ€™t really say if itâ€™s AI or Not'
+			"Sorry, but in this case we can't really say if it's AI or Not"
 		document.getElementById('ai-or-not_result-message-50').classList.remove('hide')
 		document.getElementById('ai-or-not_result-message').classList.add('hide')
 		document.getElementById('ai-or-not_result-message-50').innerHTML =
