@@ -378,7 +378,7 @@ class OpenAIGeneratedService {
 			},
 		}
 
-		const isUserAuthorized = localStorage.getItem('_ms-mid') ? true : false;
+		const isUserAuthorized = localStorage.getItem('_ms-mid') ? true : false
 		if (isUserAuthorized) {
 			url = `https://atrium-prod-api.optic.xyz/aion/ai-generated/reports/${id}`
 			options = {
@@ -489,6 +489,18 @@ class ElementCreator {
 			let image = document.createElement('img')
 			image.src = item.url
 			image.alt = item.verdict
+			let shareButton = document.createElement('button')
+			shareButton.onclick = () => {
+				shareButton.innerText = 'Copied!'
+				copyToClipboard(`https://results.aiornot.com/aiornot/users/${item.id}`)
+				setTimeout(() => {
+					shareButton.innerText = 'Share'
+				}, 1500)
+			}
+			shareButton.innerText = 'Share'
+			shareButton.classList.add('request-item-share')
+			shareButton.style.opacity = 0
+			requestItem.appendChild(shareButton)
 			requestItem.appendChild(image)
 			requestItem.appendChild(verdict)
 			results.appendChild(requestItem)
@@ -533,26 +545,3 @@ class ElementCreator {
 		}
 	}
 }
-
-async function main() {
-	// try {
-	// 	await DashboardService.login()
-	// 	const result = await AIGeneratedService.getReportsByUrl(
-	// 		'https://uploads-ssl.webflow.com/6421ab9aec22a5a8d99cec8f/6426b32923073d0236dcb451_photo_9%4008-10-2022_15-12-44-1.jpg',
-	// 	)
-	// 	console.log(result)
-	// } catch (error) {
-	// 	console.error(error)
-	// }
-
-	const array = await DashboardService.fetchRequests()
-
-	if (array.length === 0) {
-		document.getElementById('dash-cards-empty').style.display = 'block'
-		document.getElementById('results').style.display = 'none'
-	} else {
-		ElementCreator.fillGridResults('results', array)
-	}
-}
-
-main()

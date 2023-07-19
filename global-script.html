@@ -4,6 +4,14 @@
 		width: 100%;
 		height: 100%;
 	}
+	.request-item:hover {
+		box-sizing: border-box;
+		outline: 2px solid #adff00;
+	}
+
+	.request-item:hover > .request-item-share {
+		opacity: 1 !important;
+	}
 
 	.request-item > img {
 		width: 100%;
@@ -11,6 +19,22 @@
 		object-fit: cover;
 	}
 
+	.request-item-share {
+		position: absolute;
+		bottom: 2px;
+		left: 2px;
+		color: white;
+		font-family: 'Space Grotesk';
+		text-align: right;
+		font-size: 12px;
+		font-style: normal;
+		font-weight: 700;
+		line-height: 160%;
+		padding: 2px 8px;
+		border: 1px solid rgba(255, 255, 255, 0.2);
+		background: #18181b;
+		cursor: pointer;
+	}
 	.request-item-verdict {
 		position: absolute;
 		bottom: 2px;
@@ -394,40 +418,40 @@
 			return await fetch(baseUrl, options).then((response) => response.json())
 		}
 
-        static async sendFeedback(id, reportPredict, reportComment) {
-            const body = {
-                is_proper_predict: reportPredict,
-                comment: reportComment,
-            }
+		static async sendFeedback(id, reportPredict, reportComment) {
+			const body = {
+				is_proper_predict: reportPredict,
+				comment: reportComment,
+			}
 
-            let url = `https://atrium-prod-api.optic.xyz/results/api/detector/reports/result/${id}`
-            let options = {
-                method: 'PUT',
-                body: JSON.stringify(body),
-                headers: {
-                    Accept: 'application/json',
-                    'Content-Type': 'application/json',
-                },
-            }
+			let url = `https://atrium-prod-api.optic.xyz/results/api/detector/reports/result/${id}`
+			let options = {
+				method: 'PUT',
+				body: JSON.stringify(body),
+				headers: {
+					Accept: 'application/json',
+					'Content-Type': 'application/json',
+				},
+			}
 
-            const isUserAuthorized = localStorage.getItem('_ms-mid') ? true : false;
-            if (isUserAuthorized) {
-                url = `https://atrium-prod-api.optic.xyz/aion/ai-generated/reports/${id}`
-                options = {
-                    method: 'PATCH',
-                    body: JSON.stringify(body),
-                    headers: {
-                        Accept: 'application/json',
-                        'Content-Type': 'application/json',
-                    },
-                }
-            }
+			const isUserAuthorized = localStorage.getItem('_ms-mid') ? true : false
+			if (isUserAuthorized) {
+				url = `https://atrium-prod-api.optic.xyz/aion/ai-generated/reports/${id}`
+				options = {
+					method: 'PATCH',
+					body: JSON.stringify(body),
+					headers: {
+						Accept: 'application/json',
+						'Content-Type': 'application/json',
+					},
+				}
+			}
 
-            await fetch(url, options)
-                .then((response) => response.json())
-                .then((data) => console.log(data))
-                .catch((error) => console.error(error))
-        }
+			await fetch(url, options)
+				.then((response) => response.json())
+				.then((data) => console.log(data))
+				.catch((error) => console.error(error))
+		}
 	}
 
 	class WrapperAIGeneratedService {
@@ -521,6 +545,18 @@
 				let image = document.createElement('img')
 				image.src = item.url
 				image.alt = item.verdict
+				let shareButton = document.createElement('button')
+				shareButton.onclick = () => {
+					shareButton.innerText = 'Copied!'
+					copyToClipboard(`https://results.aiornot.com/aiornot/users/${item.id}`)
+					setTimeout(() => {
+						shareButton.innerText = 'Share'
+					}, 1500)
+				}
+				shareButton.innerText = 'Share'
+				shareButton.classList.add('request-item-share')
+				shareButton.style.opacity = 0
+				requestItem.appendChild(shareButton)
 				requestItem.appendChild(image)
 				requestItem.appendChild(verdict)
 				results.appendChild(requestItem)
