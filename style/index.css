@@ -57,3 +57,7 @@
 	background: #adff00;
 	padding: 2px 8px;
 }
+
+#refresh-api-key {
+	border: 1px solid #adff00;
+}
