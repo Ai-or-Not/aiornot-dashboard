@@ -223,7 +223,7 @@ class DashboardService {
 	static async fetchUsageApi() {
 		try {
 			const client = DashboardService.getInstance().client
-			const endpoint = `data?filters=api&offset=0&limit=10`
+			const endpoint = `data?filters=api&offset=0&limit=100`
 			return await client.get(endpoint).then((data) => data.api)
 		} catch (error) {
 			console.error('Ошибка fetchUsageApi:', error)
