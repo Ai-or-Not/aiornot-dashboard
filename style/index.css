@@ -85,6 +85,9 @@
 	background: none;
 	cursor: pointer;
 	background: #10151d;
+	display: flex;
+    align-items: center;
+    justify-content: center;
 	&:hover {
 		opacity: 0.8;
 	}
