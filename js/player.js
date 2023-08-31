@@ -106,4 +106,4 @@ class AudioPlayerContainer {
     }
 }
 
-const player1 = new AudioPlayerContainer('witcher-player', './witcher.mp3');
+const player1 = new AudioPlayerContainer('witcher-player', 'https://vgmsite.com/soundtracks/the-witcher-3-wild-hunt-extended-edition/wanswoqf/01.%20The%20Trail.mp3');

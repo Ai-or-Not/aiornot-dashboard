@@ -106,4 +106,9 @@ class AudioPlayerContainer {
     }
 }
 
-const player1 = new AudioPlayerContainer('witcher-player', './witcher.mp3');
+const audioSample1 = new AudioPlayerContainer('audio-sample-1', 'https://vgmsite.com/soundtracks/the-witcher-3-wild-hunt-extended-edition/wanswoqf/01.%20The%20Trail.mp3');
+const audioSample2 = new AudioPlayerContainer('audio-sample-2', 'https://vgmsite.com/soundtracks/the-witcher-3-wild-hunt-extended-edition/wanswoqf/01.%20The%20Trail.mp3');
+const audioSample3 = new AudioPlayerContainer('audio-sample-3', 'https://vgmsite.com/soundtracks/the-witcher-3-wild-hunt-extended-edition/wanswoqf/01.%20The%20Trail.mp3');
+const audioSample4 = new AudioPlayerContainer('audio-sample-4', 'https://vgmsite.com/soundtracks/the-witcher-3-wild-hunt-extended-edition/wanswoqf/01.%20The%20Trail.mp3');
+const audioSample5 = new AudioPlayerContainer('audio-sample-5', 'https://vgmsite.com/soundtracks/the-witcher-3-wild-hunt-extended-edition/wanswoqf/01.%20The%20Trail.mp3');
+const audioSample6 = new AudioPlayerContainer('audio-sample-6', 'https://vgmsite.com/soundtracks/the-witcher-3-wild-hunt-extended-edition/wanswoqf/01.%20The%20Trail.mp3')
