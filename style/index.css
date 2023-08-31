@@ -29,6 +29,31 @@ body {
 	transition: all 0.2s ease-in-out;
 }
 
+.aiornot-player:hover {
+	border: 1px solid #ADFF00;
+	background: #ADFF00;
+	transition: all 0.2s ease-in-out;
+}
+
+.aiornot-player:hover .aiornot-player-button {
+	background: rgba(16, 21, 29, 0.10);
+	transition: all 0.2s ease-in-out;
+}
+
+.aiornot-player:hover .aiornot-player-progress {
+	background: rgba(16, 21, 29, 0.10);
+	transition: all 0.2s ease-in-out;
+}
+/* 
+.aiornot-player:hover .aiornot-player-button svg path {
+	stroke: black;
+	transition: all 0.2s ease-in-out;
+}
+.aiornot-player:hover .aiornot-player-button:hover svg path, rect {
+	fill: black;
+	transition: all 0.2s ease-in-out;
+} */
+
 .aiornot-player-controls {
 	box-sizing: border-box;
 	height: 100%;
@@ -58,6 +83,7 @@ body {
 	background: rgba(255, 255, 255, 0.1);
 	transition: all 0.2s ease-in-out;
 }
+
 .aiornot-player-button:hover > svg {
 	fill: white;
 }
