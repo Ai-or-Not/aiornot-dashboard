@@ -388,6 +388,7 @@ reportInput.addEventListener('input', () => {
 
 
 //function to check image by selected file
+	
 inputEl_fileInput.addEventListener('change', (event) => {
 	if (fileSizeAllow == true) {
 		const fileInput = document.querySelector('#file-input')
