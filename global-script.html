@@ -455,6 +455,22 @@
         console.error("Ошибка getReportsByUrl:", error);
       }
     }
+
+    isTokenExpired(token) {
+      try {
+        const [header, payload, signature] = token.split('.');
+        const payloadDecoded = JSON.parse(atob(payload));
+        const currentTime = Math.floor(Date.now() / 1000);
+        if (payloadDecoded.exp < currentTime) {
+          return true;
+        }
+
+        return false;
+      } catch (e) {
+        console.error('Ошибка при проверке токена:', e);
+        return false;
+      }
+    }
   }
 
   class OpenAIGeneratedService {
@@ -533,7 +549,7 @@
 
   class WrapperAIGeneratedService {
     static async getReportsByBinary(file, visitorId) {
-      if (localStorage.getItem("_ms-mid") !== null) {
+      if (localStorage.getItem("_ms-mid") !== null && !AIGeneratedService.isTokenExpired(localStorage.getItem("_ms-mid"))) {
         return await AIGeneratedService.getReportsByBinary(file);
       } else {
         return await OpenAIGeneratedService.getReportsByBinary(file, visitorId);
@@ -551,7 +567,7 @@
       return await OpenAIGeneratedService.sendFeedback(
         id,
         reportPredict,
-        reportComment,
+        reportComment,q
       );
     }
   }
