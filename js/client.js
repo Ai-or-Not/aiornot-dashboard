@@ -194,3 +194,80 @@ class RestClient {
 		}
 	}
 }
+
+
+const manager = new PlayerManager(
+    [
+        // new AudioPlayerContainer('witcher-player', 'https://vgmsite.com/soundtracks/the-witcher-3-wild-hunt-extended-edition/wanswoqf/01.%20The%20Trail.mp3', true),
+        // new AudioPlayerContainer('witcher-player1', 'https://vgmsite.com/soundtracks/the-witcher-3-wild-hunt-extended-edition/wanswoqf/01.%20The%20Trail.mp3'),
+        new AudioPlayerContainer('witcher-player2', 'https://vgmsite.com/soundtracks/the-witcher-3-wild-hunt-extended-edition/wanswoqf/01.%20The%20Trail.mp3'),
+        new AudioPlayerContainer('witcher-player3', 'https://vgmsite.com/soundtracks/the-witcher-3-wild-hunt-extended-edition/wanswoqf/01.%20The%20Trail.mp3')
+    ]
+);
+
+
+//https://www.youtube.com/watch?v=HkwVxyygbdo
+
+
+// document.getElementById('fileInput').addEventListener('change', function() {
+// 	var selectedFile = this.files[0];
+// 	if(selectedFile) {
+// 		console.log(selectedFile);
+// 	}
+// });
+
+
+// var linkIsReady = false;
+// var player
+
+// function onYouTubeIframeAPIReady() {
+// 	linkIsReady = true;
+// }
+
+// function getYoutubeVideoID(url) {
+// 	try {
+// 		let urlObject = new URL(url);
+// 		let params = new URLSearchParams(urlObject.search);
+// 		return params.get('v');
+// 	} catch (e) {
+// 		console.error('Неверный URL', e);
+// 		return null;
+// 	}
+// }
+
+
+// function onOpenYoutube() { 
+// 	const url = document.getElementById('audio-url-input').value;
+// 	let videoID = getYoutubeVideoID(url);
+// 	if (videoID) {
+// 		console.log("ID видео: " + videoID);
+// 		player = new YT.Player('youtube-player', {
+// 			height: '480',
+// 			width: '480',
+// 			videoId: videoID,
+// 			playerVars: {
+// 				controls: 0,
+// 				disablekb: 1,
+// 				modestbranding: 1,
+// 				rel: 0,
+// 				showinfo: 0,
+// 				autoplay: 0,
+// 				rel : 0,
+// 				fs: 0,
+// 				disablekb: 1
+// 			},
+// 			events: {
+// 				'onReady': (event) => {
+// 					event.target.playVideo();
+// 				},
+// 				'onStateChange': (event) => {
+// 					if (event.data == YT.PlayerState.ENDED) {
+// 						alert('Видео закончилось');
+// 					}
+// 				}
+// 			}
+// 		});
+// 	} else {
+// 		console.log("Не удалось получить ID видео");
+// 	}
+// }
