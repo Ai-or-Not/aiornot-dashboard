@@ -1,0 +1,172 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+
+/* остальной CSS код */
+
+.aiornot-player {
+    position: relative;
+    width: 276px;
+    height: 56px;
+    gap: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.2s ease-in-out;
+}
+
+.aiornot-player:hover {
+    border: 1px solid #adff00;
+    background: #adff00;
+    transition: all 0.2s ease-in-out;
+}
+
+.aiornot-player:hover .aiornot-player-button {
+    background: rgba(16, 21, 29, 0.1);
+    transition: all 0.2s ease-in-out;
+}
+
+.aiornot-player:hover .aiornot-player-progress {
+    background: rgba(16, 21, 29, 0.1);
+    transition: all 0.2s ease-in-out;
+}
+
+.aiornot-player-square {
+    position: relative;
+    width: 480px;
+    height: 480px;
+    gap: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.2s ease-in-out;
+}
+
+.aiornot-player-square:hover {
+    border: 1px solid #adff00;
+    background: #adff00;
+    transition: all 0.2s ease-in-out;
+}
+
+.aiornot-player-square:hover .aiornot-player-button-sqaure {
+    background: rgba(16, 21, 29, 0.1);
+    transition: all 0.2s ease-in-out;
+}
+
+.aiornot-player-square:hover .aiornot-player-progress {
+    background: rgba(16, 21, 29, 0.1);
+    transition: all 0.2s ease-in-out;
+}
+
+/* 
+.aiornot-player:hover .aiornot-player-button svg path {
+	stroke: black;
+	transition: all 0.2s ease-in-out;
+}
+.aiornot-player:hover .aiornot-player-button:hover svg path, rect {
+	fill: black;
+	transition: all 0.2s ease-in-out;
+} */
+
+.aiornot-player-controls-square {
+    box-sizing: border-box;
+    height: 100%;
+    width: 100%;
+    padding: 12px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+.aiornot-player-controls {
+    box-sizing: border-box;
+    height: 100%;
+    width: 100%;
+    padding: 12px 16px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 12px;
+}
+
+.aiornot-player-button {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.03);
+    transition: all 0.2s ease-in-out;
+    z-index: 2;
+}
+
+.aiornot-player-button:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transition: all 0.2s ease-in-out;
+}
+
+.aiornot-player-button:hover > svg {
+    fill: white;
+}
+
+.aiornot-player-button-sqaure {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.03);
+    transition: all 0.2s ease-in-out;
+    z-index: 2;
+}
+.aiornot-player-button-sqaure:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transition: all 0.2s ease-in-out;
+}
+.aiornot-player-button-sqaure:hover > svg {
+    fill: white;
+}
+
+.aiornot-player-title {
+    text-align: right;
+    font-family: 'Inter';
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    color: white;
+    z-index: 2;
+    user-select: none;
+}
+.aiornot-player-title-sqaure {
+    text-align: right;
+    font-family: 'Inter';
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    color: white;
+    z-index: 2;
+    user-select: none;
+}
+
+.aiornot-player-slider {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    top: 0;
+    right: 0;
+    z-index: 0;
+}
+
+.aiornot-player-progress {
+    height: 100%;
+    background: rgba(255, 255, 255, 0.1);
+    width: 0;
+}
+
+.aiornot-youtube-player {
+    width: 480px;
+    height: 480px;
+}
