@@ -331,7 +331,7 @@
   class DashboardService {
     constructor() {
       const bearerToken = localStorage.getItem("_ms-mid") ?? "";
-      const baseUrl = "https://atrium-prod-api.optic.xyz/aion/users";
+      const baseUrl = "https://api.aiornot.com/aion/users";
       this.client = new RestClient(baseUrl, bearerToken);
     }
 
@@ -422,7 +422,7 @@
   class AIGeneratedService {
     constructor() {
       const bearerToken = localStorage.getItem("_ms-mid") ?? "";
-      const baseUrl = "https://atrium-prod-api.optic.xyz/aion/ai-generated";
+      const baseUrl = "https://api.aiornot.com/aion/ai-generated";
       this.client = new RestClient(baseUrl, bearerToken);
     }
 
@@ -461,7 +461,7 @@
     constructor() {}
 
     static async getReportsByBinary(file, visitorId) {
-      const baseUrl = `https://atrium-prod-api.optic.xyz/results/api/detector/reports/raw?source=web&user_id=${visitorId}`;
+      const baseUrl = `https://api.aiornot.com/results/api/detector/reports/raw?source=web&user_id=${visitorId}`;
       const formData = new FormData();
       formData.append("binary", file, "file_name.png");
 
@@ -478,7 +478,7 @@
     }
 
     static async getReportsByUrl(url, visitorId) {
-      const baseUrl = `https://atrium-prod-api.optic.xyz/results/api/detector/reports/json?source=web&user_id=${visitorId}`;
+      const baseUrl = `https://api.aiornot.com/results/api/detector/reports/json?source=web&user_id=${visitorId}`;
 
       const options = {
         method: "POST",
@@ -501,7 +501,7 @@
         comment: reportComment,
       };
 
-      let url = `https://atrium-prod-api.optic.xyz/results/api/detector/reports/result/${id}`;
+      let url = `https://api.aiornot.com/results/api/detector/reports/result/${id}`;
       let options = {
         method: "PUT",
         body: JSON.stringify(body),
@@ -513,7 +513,7 @@
 
       const isUserAuthorized = localStorage.getItem("_ms-mid") ? true : false;
       if (isUserAuthorized) {
-        url = `https://atrium-prod-api.optic.xyz/aion/ai-generated/reports/${id}`;
+        url = `https://api.aiornot.com/aion/ai-generated/reports/${id}`;
         options = {
           method: "PATCH",
           body: JSON.stringify(body),
