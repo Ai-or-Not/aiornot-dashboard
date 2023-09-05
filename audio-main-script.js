@@ -1,39 +1,29 @@
-//elements
-const reportScreen = document.getElementById('report-screen')
-const reportButton_submit = document.querySelector('#button-report-submit')
-const reportInput = document.querySelector('#input-report-comment')
-const reportButton_true = document.querySelector('#button-report_true')
-const reportButton_false = document.querySelector('#button-report_false')
-const reportButton_close = document.querySelector('#button-report_close')
-const testImages = document.querySelectorAll('.test-image')
-const uiEl_urlError = document.querySelector('#url-error-message')
-const buttonEl_processClose = document.querySelector('#processing_cancel')
-const inputEl_fileInput = document.querySelector('#file-input')
-const imageEl_currentImage = document.querySelector('#ai-or-not-current-image')
-const imageEl_currentImageEmpty = document.querySelector('#empty-preview-img')
-const imageEl_nsfwImage = document.querySelector('#nsfw-preview-img')
-const textEl_inputError = document.querySelector('#input-error-text')
-const inputEl_urlWaiter = document.querySelector('#ai-or-not_image-url')
-const buttonEl_urlCheck = document.querySelector('#ai-or-not_submit')
-const uiEl_dropZone = document.querySelector('#ai-or-not_dropzone')
-const textEl_dropZoneError = document.querySelector('#ai-or-not_dropzone-text')
-const uiEl_resultCol = document.querySelector('#result-screen_col')
-const buttonEl_sharedButtons = document.querySelector('#share-items-hide')
-const counterEl_requestCounterValue = document.querySelector('#ai-or-not-dropzone-counter')
-const counterEl_requestCounterBlock = document.querySelector('#ai-or-not-dropzone-counter-w')
 
-//element's arrays
-const arrayEl_testImages = document.querySelectorAll('[test-image-url]')
-//variables
-let pastedUrl
-let fileUpload_way
-let fileSizeAllow
-let currentResultId
+
+// start Fingerprint
 
 let visitorId
-//functions
 
 const fpPromise = import('https://openfpcdn.io/fingerprintjs/v3').then((FingerprintJS) => FingerprintJS.load())
+
+async function initFingerPrint() {
+	visitorId = await fpPromise
+		.then((fp) => fp.get())
+		.then((result) => {
+			// console.log(result)
+			return result.visitorId
+		})
+}
+
+initFingerPrint()
+
+// end Fingerprint
+
+
+// LocalStorage request counter
+
+const counterEl_requestCounterValue = document.querySelector('#ai-or-not-dropzone-counter')
+const counterEl_requestCounterBlock = document.querySelector('#ai-or-not-dropzone-counter-w')
 
 function updateRequestCounter() {
 	if (localStorage.getItem('_ms-mid')) {
@@ -47,19 +37,41 @@ function updateRequestCounter() {
 	}
 }
 
-// Call function as is.
 updateRequestCounter()
 
-async function initFingerPrint() {
-	visitorId = await fpPromise
-		.then((fp) => fp.get())
-		.then((result) => {
-			// console.log(result)
-			return result.visitorId
-		})
-}
+// end LocalStorage request counter
 
-initFingerPrint()
+//elements
+const reportScreen = document.getElementById('report-screen')
+const reportButton_submit = document.querySelector('#button-report-submit')
+const reportInput = document.querySelector('#input-report-comment')
+const reportButton_true = document.querySelector('#button-report_true')
+const reportButton_false = document.querySelector('#button-report_false')
+const reportButton_close = document.querySelector('#button-report_close')
+const uiEl_urlError = document.querySelector('#url-error-message')
+const buttonEl_processClose = document.querySelector('#processing_cancel')
+const inputEl_fileInput = document.querySelector('#file-input')
+const imageEl_currentImage = document.querySelector('#ai-or-not-current-image')
+const imageEl_currentImageEmpty = document.querySelector('#empty-preview-img')
+const imageEl_nsfwImage = document.querySelector('#nsfw-preview-img')
+const textEl_inputError = document.querySelector('#input-error-text')
+const inputEl_urlWaiter = document.querySelector('#ai-or-not_image-url')
+const buttonEl_urlCheck = document.querySelector('#ai-or-not_submit')
+const uiEl_dropZone = document.querySelector('#ai-or-not_dropzone')
+const textEl_dropZoneError = document.querySelector('#ai-or-not_dropzone-text')
+const uiEl_resultCol = document.querySelector('#result-screen_col')
+const buttonEl_sharedButtons = document.querySelector('#share-items-hide')
+
+//element's arrays
+const arrayEl_testImages = document.querySelectorAll('[test-image-url]')
+//variables
+let pastedUrl
+let fileUpload_way
+let fileSizeAllow
+let currentResultId
+
+//functions
+
 
 function uiReported_false() {
 	let buttonText = document.querySelector('#button-report_false-text')
@@ -123,7 +135,6 @@ function changeShareUrl(responseId) {
 
 //ui functions
 function fileSizeMessage_ok() {
-	// console.log('Ã‘â‚¬ÃÂ°ÃÂ·ÃÂ¼ÃÂµÃ‘â‚¬ Ã‘â€žÃÂ°ÃÂ¹ÃÂ»ÃÂ° ok')
 	textEl_dropZoneError.textContent = 'We support jpeg, png, webp, gif, tiff, bmp. 10 Mb of maximum size.'
 	textEl_dropZoneError.classList.remove('text-color-red')
 	textEl_inputError.textContent = 'Something went wrong. Try again.'
@@ -140,11 +151,9 @@ function someThingWentWrong_ok() {
 
 function fileSizeMessage_error() {
 	if (uiEl_resultCol.classList.contains('hide')) {
-		// console.log('Ã‘â‚¬ÃÂ°ÃÂ·ÃÂ¼ÃÂµÃ‘â‚¬ Ã‘â€žÃÂ°ÃÂ¹ÃÂ»ÃÂ° Ã‘ÂÃÂ»ÃÂ¸Ã‘Ë†ÃÂºÃÂ¾ÃÂ¼ ÃÂ²ÃÂµÃÂ»ÃÂ¸ÃÂº')
 		textEl_dropZoneError.textContent = 'File is too large (max 10 MB)'
 		textEl_dropZoneError.classList.add('text-color-red')
 	} else {
-		// console.log('Ã‘â‚¬ÃÂ°ÃÂ·ÃÂ¼ÃÂµÃ‘â‚¬ Ã‘â€žÃÂ°ÃÂ¹ÃÂ»ÃÂ° Ã‘ÂÃÂ»ÃÂ¸Ã‘Ë†ÃÂºÃÂ¾ÃÂ¼ ÃÂ²ÃÂµÃÂ»ÃÂ¸ÃÂº')
 		textEl_inputError.textContent = 'File is too large (max 10 MB)'
 		uiEl_urlError.classList.remove('hide')
 	}
@@ -171,14 +180,12 @@ function error_dropZone() {
 }
 
 function initial_dropZone() {
-	// console.log('Ã‘ÂÃ‘â€šÃÂ°Ã‘â‚¬Ã‘â€šÃÂ¾ÃÂ²Ã‘â€¹ÃÂ¹ dropzone')
 	textEl_dropZoneError.classList.remove('error')
 	uiEl_dropZone.classList.remove('red-border')
 	textEl_dropZoneError.textContent = 'We support jpeg, png, webp, gif, tiff, bmp. 10 Mb of maximum size.'
 }
 
 function screen_homeShow() {
-	// console.log('ÃÂ¿ÃÂ¾ÃÂºÃÂ°ÃÂ·Ã‘â€¹ÃÂ²ÃÂ°ÃÂµÃÂ¼ screen_homeShow')
 	document.querySelector('#choose-file-row').classList.add('hide')
 	document.querySelector('#legal-tip').classList.remove('hide')
 	document.querySelector('#processing-screen').classList.add('hide')
@@ -195,7 +202,6 @@ function screen_homeShow() {
 
 function loadingStart() {
 	uiReported_initialState()
-	// console.log('ÃÂ¿ÃÂ¾ÃÂºÃÂ°ÃÂ·Ã‘â€¹ÃÂ²ÃÂ°ÃÂµÃÂ¼ loadingStart')
 	imageEl_currentImage.src = ''
 	someThingWentWrong_ok()
 	textEl_inputError.textContent = 'Something went wrong. Try again.'
@@ -238,21 +244,6 @@ function loadingFinish(nsfw_detected = false) {
 }
 
 //function to check json from file sending result
-
-function getModelTitleByName(name) {
-	switch (name) {
-		case 'midjourney':
-			return 'Midjourney'
-		case 'dall_e':
-			return 'DALL-E'
-		case 'stable_diffusion':
-			return 'Stable Diffusion'
-		case 'this_person_does_not_exis':
-			return 'GAN'
-		default:
-			return 'AI'
-	}
-}
 
 function findHighestConfidence(data) {
 	if (data === 'unknown') {
@@ -317,131 +308,6 @@ async function postToApi_url() {
 	}
 }
 
-//Ã¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œÃ¢â‚¬â€œ
-//function to check image by dropped file
-const dropzone = document.body
-const tipMessage = document.querySelector('#dropzone-fullscreen_message-tip')
-const formatMessage = document.querySelector('#dropzone-fullscreen_message-format')
-
-// ÃÂ¡ÃÂ¾ÃÂ±Ã‘â€¹Ã‘â€šÃÂ¸ÃÂµ ÃÂ¿Ã‘â‚¬ÃÂ¸ ÃÂ¿ÃÂµÃ‘â‚¬ÃÂµÃ‘â€šÃÂ°Ã‘ÂÃÂºÃÂ¸ÃÂ²ÃÂ°ÃÂ½ÃÂ¸ÃÂ¸ Ã‘â€žÃÂ°ÃÂ¹ÃÂ»ÃÂ° ÃÂ½ÃÂ°ÃÂ´ body
-dropzone.addEventListener('dragover', function (event) {
-	event.preventDefault()
-	document.querySelector('.dropzone-fullscreen').classList.remove('hide')
-})
-dropzone.addEventListener('dragleave', function (event) {
-	event.preventDefault()
-	document.querySelector('.dropzone-fullscreen').classList.add('hide')
-})
-
-// ÃÂ¡ÃÂ¾ÃÂ±Ã‘â€¹Ã‘â€šÃÂ¸ÃÂµ ÃÂ¿Ã‘â‚¬ÃÂ¸ ÃÂ¾Ã‘â€šÃÂ¿Ã‘Æ’Ã‘ÂÃÂºÃÂ°ÃÂ½ÃÂ¸ÃÂ¸ Ã‘â€žÃÂ°ÃÂ¹ÃÂ»ÃÂ° ÃÂ² dropzone
-dropzone.addEventListener('drop', async function (event) {
-	event.preventDefault()
-	document.querySelector('.dropzone-fullscreen').classList.add('hide')
-
-	const file = event.dataTransfer.files[0]
-
-	//-----
-
-	const fileSize = file.size
-	const maxSize = 10 * 1024 * 1024 // 10 MB in bytes
-	if (fileSize > maxSize) {
-		fileSizeAllow = false
-		fileSizeMessage_error()
-	} else {
-		fileSizeAllow = true
-		fileSizeMessage_ok()
-	}
-	//-----
-	if (fileSizeAllow == true) {
-		if (
-			file.type !== 'image/png' &&
-			file.type !== 'image/jpeg' &&
-			file.type !== 'image/webp' &&
-			file.type !== 'image/gif' &&
-			file.type !== 'image/tiff' &&
-			file.type !== 'image/bmp'
-		) {
-			// console.log('ÃÂ¸Ã‘ÂÃÂ¿ÃÂ¾ÃÂ»Ã‘Å’ÃÂ·ÃÂ¾ÃÂ²ÃÂ°Ã‘â€šÃ‘Å’ ÃÂ¼ÃÂ¾ÃÂ¶ÃÂ½ÃÂ¾ Ã‘â€šÃÂ¾ÃÂ»Ã‘Å’ÃÂºÃÂ¾ png ÃÂ¸ÃÂ»ÃÂ¸ jpeg')
-		} else {
-			loadingStart()
-			if (RequestCounter.isLimitExceeded()) {
-				const signInModalElement = document.getElementById('sign-up')
-				signInModalElement.style.display = 'flex'
-				signInModalElement.style.zIndex = 100
-				screen_homeShow()
-				// loadingFinish()
-				return
-			}
-
-			const currentImage = document.querySelector('#ai-or-not-current-image')
-			currentImage.src = URL.createObjectURL(file)
-			imageEl_currentImage.classList.remove('hide')
-			imageEl_currentImageEmpty.classList.add('hide')
-
-			//TODO
-			await WrapperAIGeneratedService.getReportsByBinary(file, visitorId)
-				.then((response) => {
-					RequestCounter.increment()
-					changeShareUrl(response.id)
-					initial_dropZone()
-					findHighestConfidence(response.verdict)
-					loadingFinish(response.nsfw_detected)
-				})
-
-				.catch((error) => {
-					console.log(error)
-					error_dropZone()
-					screen_homeShow()
-				})
-		}
-	} else {
-		fileSizeMessage_error()
-	}
-})
-
-//function to check image by selected file
-inputEl_fileInput.addEventListener('change', (event) => {
-	if (fileSizeAllow == true) {
-		loadingStart()
-		if (RequestCounter.isLimitExceeded()) {
-			const signInModalElement = document.getElementById('sign-up')
-			signInModalElement.style.display = 'flex'
-			signInModalElement.style.zIndex = 100
-			screen_homeShow()
-			// loadingFinish()
-			return
-		}
-
-		const fileInput = document.querySelector('#file-input')
-		const file = fileInput.files[0]
-
-		const currentImage = document.querySelector('#ai-or-not-current-image')
-		let currentImageUrl = URL.createObjectURL(fileInput.files[0])
-		currentImage.setAttribute('src', currentImageUrl)
-		imageEl_currentImage.classList.remove('hide')
-		imageEl_currentImageEmpty.classList.add('hide')
-
-		//TODO
-		alert('TODO getReportsByBinary ')
-		// WrapperAIGeneratedService.getReportsByBinary(file, visitorId)
-		// 	.then((response) => {
-		// 		RequestCounter.increment()
-		// 		changeShareUrl(response.id)
-		// 		initial_dropZone()
-		// 		findHighestConfidence(response.verdict)
-		// 		loadingFinish(response.nsfw_detected)
-		// 	})
-
-		// 	.catch((error) => {
-		// 		console.log(error)
-		// 		error_dropZone()
-		// 		screen_homeShow()
-		// 	})
-	} else {
-		fileSizeMessage_error()
-	}
-})
-
 //functions reacts on events
 buttonEl_processClose.addEventListener('click', function () {
 	initial_dropZone()
@@ -474,17 +340,6 @@ element.addEventListener('keypress', function (e) {
 			postToApi_url()
 		}
 	}
-})
-
-// const testImages = document.querySelectorAll('.test-image')
-// declorated in separate file 'randomize-10.js'
-testImages.forEach((testImage) => {
-	testImage.addEventListener('click', () => {
-		const testImageUrl = testImage.getAttribute('test-image-url')
-		document.querySelector('#ai-or-not_image-url').value = testImageUrl
-		document.querySelector('#ai-or-not_submit').click()
-		document.querySelector('#ai-or-not_image-url').value = ''
-	})
 })
 
 reportButton_true.addEventListener('click', () => {
@@ -528,3 +383,98 @@ reportInput.addEventListener('input', () => {
 		reportButton_submit.classList.add('is-disabled')
 	}
 })
+
+// file input
+
+
+//function to check image by selected file
+inputEl_fileInput.addEventListener('change', (event) => {
+	if (fileSizeAllow == true) {
+		const fileInput = document.querySelector('#file-input')
+		const file = fileInput.files[0]
+		uploadFile(file)
+	} else {
+		fileSizeMessage_error()
+	}
+})
+
+// end file input
+
+// drag and drop
+
+const dropzone = document.body
+const tipMessage = document.querySelector('#dropzone-fullscreen_message-tip')
+const formatMessage = document.querySelector('#dropzone-fullscreen_message-format')
+
+dropzone.addEventListener('dragover', function (event) {
+	event.preventDefault()
+	document.querySelector('.dropzone-fullscreen').classList.remove('hide')
+})
+
+dropzone.addEventListener('dragleave', function (event) {
+	event.preventDefault()
+	document.querySelector('.dropzone-fullscreen').classList.add('hide')
+})
+
+dropzone.addEventListener('drop', async function (event) {
+	event.preventDefault()
+	document.querySelector('.dropzone-fullscreen').classList.add('hide')
+
+	const file = event.dataTransfer.files[0]
+	const fileSize = file.size
+	const maxSize = 10 * 1024 * 1024 // 10 MB in bytes
+
+	if (fileSize > maxSize) {
+		fileSizeAllow = false
+		fileSizeMessage_error()
+	} else {
+		fileSizeAllow = true
+		fileSizeMessage_ok()
+	}
+
+
+	if (fileSizeAllow == true && file.type === 'audio/mp3') {
+
+		uploadFile(file)
+		
+	} else {
+		fileSizeMessage_error()
+	}
+})
+
+
+function uploadFile(file) {
+	loadingStart()
+	if (RequestCounter.isLimitExceeded()) {
+		const signInModalElement = document.getElementById('sign-up')
+		signInModalElement.style.display = 'flex'
+		signInModalElement.style.zIndex = 100
+		screen_homeShow()
+		// loadingFinish()
+		return
+	}
+
+	const currentImage = document.querySelector('#ai-or-not-current-image')
+	currentImage.src = URL.createObjectURL(file)
+	imageEl_currentImage.classList.remove('hide')
+	imageEl_currentImageEmpty.classList.add('hide')
+
+	//TODO
+	alert('TODO upload file ')
+	// await WrapperAIGeneratedService.getReportsByBinary(file, visitorId)
+	// 	.then((response) => {
+	// 		RequestCounter.increment()
+	// 		changeShareUrl(response.id)
+	// 		initial_dropZone()
+	// 		findHighestConfidence(response.verdict)
+	// 		loadingFinish(response.nsfw_detected)
+	// 	})
+
+	// 	.catch((error) => {
+	// 		console.log(error)
+	// 		error_dropZone()
+	// 		screen_homeShow()
+	// 	})
+}
+
+// end drag and drop
