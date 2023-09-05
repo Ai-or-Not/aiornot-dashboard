@@ -326,7 +326,7 @@ function copyToClipboard(text) {
       }
     }
 
-    isTokenExpired(token) {
+    static isTokenExpired(token) {
       try {
         const [header, payload, signature] = token.split('.');
         const payloadDecoded = JSON.parse(atob(payload));
@@ -419,14 +419,16 @@ function copyToClipboard(text) {
 
   class WrapperAIGeneratedService {
     static async getReportsByBinary(file, visitorId) {
-      if (localStorage.getItem("_ms-mid") !== null && !AIGeneratedService.isTokenExpired(localStorage.getItem("_ms-mid"))) {
+      const token = localStorage.getItem("_ms-mid");
+      if (token !== null && !AIGeneratedService.isTokenExpired(token)) {
         return await AIGeneratedService.getReportsByBinary(file);
       } else {
         return await OpenAIGeneratedService.getReportsByBinary(file, visitorId);
       }
     }
     static async getReportsByUrl(url, visitorId) {
-      if (localStorage.getItem("_ms-mid") !== null) {
+      const token = localStorage.getItem("_ms-mid");
+      if (token !== null && !AIGeneratedService.isTokenExpired(token)) {
         return await AIGeneratedService.getReportsByUrl(url);
       } else {
         return await OpenAIGeneratedService.getReportsByUrl(url, visitorId);
