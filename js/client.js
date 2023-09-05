@@ -195,17 +195,6 @@ class RestClient {
 	}
 }
 
-
-const manager = new PlayerManager(
-    [
-        // new AudioPlayerContainer('witcher-player', 'https://vgmsite.com/soundtracks/the-witcher-3-wild-hunt-extended-edition/wanswoqf/01.%20The%20Trail.mp3', true),
-        // new AudioPlayerContainer('witcher-player1', 'https://vgmsite.com/soundtracks/the-witcher-3-wild-hunt-extended-edition/wanswoqf/01.%20The%20Trail.mp3'),
-        new AudioPlayerContainer('witcher-player2', 'https://vgmsite.com/soundtracks/the-witcher-3-wild-hunt-extended-edition/wanswoqf/01.%20The%20Trail.mp3'),
-        new AudioPlayerContainer('witcher-player3', 'https://vgmsite.com/soundtracks/the-witcher-3-wild-hunt-extended-edition/wanswoqf/01.%20The%20Trail.mp3')
-    ]
-);
-
-
 //https://www.youtube.com/watch?v=HkwVxyygbdo
 
 
