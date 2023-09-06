@@ -1,4 +1,18 @@
+import { parseJwt } from '$utils/string';
 import { DashboardService } from './DashboardService';
+// import * as jwt from 'jsonwebtoken';
+// import * as NodeRSA from 'node-rsa';
+// import NodeRSA from 'node-rsa';
+// import jwt from 'jsonwebtoken';
+
+interface KeyData {
+    kty: string;
+    n: string;
+    e: string;
+    alg: string;
+    use: string;
+    kid: string;
+}
 
 export class AuthService {
     static key: string = 'isSignUp';
@@ -37,18 +51,14 @@ export class AuthService {
 
     static isExpiredToken(): boolean {
         const token = AuthService.getToken();
-        try {
-            const [header, payload, signature] = token.split('.');
-            const payloadDecoded = JSON.parse(atob(payload));
-            const currentTime = Math.floor(Date.now() / 1000);
-            if (payloadDecoded.exp < currentTime) {
-                return true;
-            }
 
-            return false;
-        } catch (e) {
-            console.error('Ошибка при проверке токена:', e);
-            return false;
+        if (token?.length > 0) {
+            const jwt = parseJwt(token);
+            console.log(jwt);
+            const current_time = Date.now() / 1000;
+            return jwt.exp < current_time;
         }
+
+        return true;
     }
 }

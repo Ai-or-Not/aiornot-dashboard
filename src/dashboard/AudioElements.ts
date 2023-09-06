@@ -1,4 +1,4 @@
-import { initFingerPrint } from '$utils/fingerprint';
+import { initFingerPrint, visitorId } from '$utils/fingerprint';
 import { AuthService, BASE_URL_RESULTS, OpenAIGeneratedService, RequestCounter, WrapperAIGeneratedService } from '../api';
 
 export const initAudio = () => {
@@ -30,8 +30,6 @@ export const initAudio = () => {
     let fileUpload_way: any;
     let fileSizeAllow: any;
     let currentResultId: any;
-
-    let visitorId: any;
 
     const updateRequestCounter = () => {
         if (!AuthService.isExpiredToken()) {
@@ -246,7 +244,7 @@ export const initAudio = () => {
             uiEl_urlError.classList.add('hide');
             loadingStart();
 
-            await WrapperAIGeneratedService.getReportsByUrl(pastedUrl, visitorId)
+            await WrapperAIGeneratedService.getReportsByUrl(pastedUrl, visitorId as string)
                 .then((response) => {
                     RequestCounter.increment();
                     changeShareUrl(response.id);

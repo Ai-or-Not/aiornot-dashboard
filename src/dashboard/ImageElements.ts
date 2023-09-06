@@ -1,4 +1,4 @@
-import { initFingerPrint } from '$utils/fingerprint';
+import { initFingerPrint, visitorId } from '$utils/fingerprint';
 import { AuthService, BASE_URL_RESULTS, RequestCounter, WrapperAIGeneratedService } from '../api';
 
 export const init = () => {
@@ -31,8 +31,6 @@ export const init = () => {
     let fileUpload_way: any;
     let fileSizeAllow: any;
     let currentResultId: any;
-
-    let visitorId: any;
 
     const updateRequestCounter = () => {
         if (!AuthService.isExpiredToken()) {
@@ -247,7 +245,7 @@ export const init = () => {
             uiEl_urlError.classList.add('hide');
             loadingStart();
 
-            await WrapperAIGeneratedService.getReportsByUrl(pastedUrl, visitorId)
+            await WrapperAIGeneratedService.getReportsByUrl(pastedUrl, visitorId as string)
                 .then((response) => {
                     RequestCounter.increment();
                     changeShareUrl(response.id);
@@ -329,7 +327,7 @@ export const init = () => {
         imageEl_currentImage.classList.remove('hide');
         imageEl_currentImageEmpty.classList.add('hide');
 
-        await WrapperAIGeneratedService.getReportsByBinary(file, visitorId)
+        await WrapperAIGeneratedService.getReportsByBinary(file, visitorId as string)
             .then((response) => {
                 RequestCounter.increment();
                 changeShareUrl(response.id);

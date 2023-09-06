@@ -11,7 +11,3 @@ export const initFingerPrint = async (): Promise<void> => {
             return result.visitorId;
         });
 };
-
-export const test = () => {
-    console.log('test');
-};

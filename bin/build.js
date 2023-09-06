@@ -22,6 +22,7 @@ const SERVE_PORT = 3000;
 const SERVE_ORIGIN = `http://localhost:${SERVE_PORT}`;
 
 // Create context
+
 const context = await esbuild.context({
     bundle: true,
     entryPoints: ENTRY_POINTS,
