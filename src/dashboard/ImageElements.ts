@@ -1,5 +1,5 @@
 import { initFingerPrint } from '$utils/fingerprint';
-import { AuthService, RequestCounter, WrapperAIGeneratedService } from '../api';
+import { AuthService, BASE_URL_RESULTS, RequestCounter, WrapperAIGeneratedService } from '../api';
 
 export const init = () => {
     //elements
