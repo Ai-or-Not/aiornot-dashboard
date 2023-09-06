@@ -1,5 +1,5 @@
-export const BASE_URL = 'https://api.aiornot.com/';
-export const BASE_URL_RESULTS = 'https://results.aiornot.com/';
+export const BASE_URL = 'https://v3-atrium-stage-api.optic.xyz';
+export const BASE_URL_RESULTS = 'https://results.aiornot.com';
 
 export class RestClient {
     apiUrl: string;
