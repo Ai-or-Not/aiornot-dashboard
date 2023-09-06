@@ -422,4 +422,31 @@ export const init = () => {
             reportButton_submit.classList.add('is-disabled');
         }
     });
+
+    const imageUrlInput = document.querySelector('#ai-or-not_image-url') as any;
+    const submitButton = document.querySelector('#ai-or-not_submit') as Element;
+
+    imageUrlInput.addEventListener('input', function () {
+        const imageUrl = imageUrlInput.value.trim();
+        if (isValidUrl(imageUrl)) {
+            submitButton.classList.remove('is-disabled');
+        } else {
+            submitButton.classList.add('is-disabled');
+        }
+    });
+
+    const isValidUrl = (url: string) => {
+        try {
+            new URL(url);
+            return true;
+        } catch (e) {
+            return false;
+        }
+    };
+
+    (document.getElementById('close-sign-up') as any).onclick = () => {
+        const signInModalElement = document.getElementById('sign-up') as any;
+        signInModalElement.style.display = 'none';
+        signInModalElement.style.zIndex = 0;
+    };
 };

@@ -40,4 +40,30 @@ export class AIGeneratedService {
             console.error('Ошибка getReportsByUrl:', error);
         }
     }
+
+    static async getAudioVerdict(file: File): Promise<any> {
+        const client = AIGeneratedService.getInstance().client;
+
+        try {
+            const formData = new FormData();
+            formData.append('binary', file);
+            return await client.postBinary('reports/audio/binary', formData);
+        } catch (error) {
+            console.error('Error getAudioVerdict:', error);
+        }
+    }
+
+    static async getYoutubeVerdict(link: string): Promise<any> {
+        const client = AIGeneratedService.getInstance().client;
+
+        try {
+            const body = {
+                link: link,
+            };
+
+            return await client.post('reports/audio/link', JSON.stringify(body));
+        } catch (error) {
+            console.error('Error getYoutubeVerdict:', error);
+        }
+    }
 }

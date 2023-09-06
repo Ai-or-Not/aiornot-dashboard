@@ -322,6 +322,27 @@
         console.error("\u041E\u0448\u0438\u0431\u043A\u0430 getReportsByUrl:", error);
       }
     }
+    static async getAudioVerdict(file) {
+      const client = _AIGeneratedService.getInstance().client;
+      try {
+        const formData = new FormData();
+        formData.append("binary", file);
+        return await client.postBinary("reports/audio/binary", formData);
+      } catch (error) {
+        console.error("Error getAudioVerdict:", error);
+      }
+    }
+    static async getYoutubeVerdict(link) {
+      const client = _AIGeneratedService.getInstance().client;
+      try {
+        const body = {
+          link
+        };
+        return await client.post("reports/audio/link", JSON.stringify(body));
+      } catch (error) {
+        console.error("Error getYoutubeVerdict:", error);
+      }
+    }
   };
   var AIGeneratedService = _AIGeneratedService;
   __publicField(AIGeneratedService, "instance", null);
@@ -330,8 +351,8 @@
   var OpenAIGeneratedService = class {
     constructor() {
     }
-    static async getReportsByBinary(file, visitorId2) {
-      const baseUrl = `${BASE_URL}/results/api/detector/reports/raw?source=web&user_id=${visitorId2}`;
+    static async getReportsByBinary(file, visitorId3) {
+      const baseUrl = `${BASE_URL}/results/api/detector/reports/raw?source=web&user_id=${visitorId3}`;
       const formData = new FormData();
       formData.append("binary", file, "file_name.png");
       const options = {
@@ -344,8 +365,8 @@
       };
       return await fetch(baseUrl, options).then((response) => response.json());
     }
-    static async getReportsByUrl(url, visitorId2) {
-      const baseUrl = `${BASE_URL}/results/api/detector/reports/json?source=web&user_id=${visitorId2}`;
+    static async getReportsByUrl(url, visitorId3) {
+      const baseUrl = `${BASE_URL}/results/api/detector/reports/json?source=web&user_id=${visitorId3}`;
       const options = {
         method: "POST",
         headers: {
@@ -359,7 +380,7 @@
       };
       return await fetch(baseUrl, options).then((response) => response.json());
     }
-    static async sendFeedback(id, reportPredict, reportComment) {
+    static async sendFeedback(id, reportPredict, reportComment, isAudio = false) {
       const body = {
         is_proper_predict: reportPredict,
         comment: reportComment
@@ -373,7 +394,7 @@
           "Content-Type": "application/json"
         }
       };
-      if (!AuthService.isExpiredToken()) {
+      if (isAudio || !AuthService.isExpiredToken()) {
         url = `${BASE_URL}/aion/ai-generated/reports/${id}`;
         options = {
           method: "PATCH",
@@ -387,16 +408,30 @@
       await fetch(url, options).then((response) => response.json()).then((data) => console.log(data)).catch((error) => console.error(error));
     }
     static async getAudioVerdict(file) {
-      const baseUrl = `https://v3-atrium-stage-api.optic.xyz/aion/ai-generated/reports/audio/binary`;
+      const baseUrl = `${BASE_URL}/aion/ai-generated/reports/audio/binary`;
       const formData = new FormData();
-      formData.append("binary", file);
+      formData.append("file", file);
       const options = {
         method: "POST",
         headers: {
           Accept: "application/json",
-          Authorization: `Bearer ${AuthService.getToken()}`
+          ContentType: "multipart/form-data"
         },
         body: formData
+      };
+      return await fetch(baseUrl, options).then((response) => response.json());
+    }
+    static async getYoutubeVerdict(link) {
+      const baseUrl = `${BASE_URL}/aion/ai-generated/reports/audio/link`;
+      const options = {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          ContentType: "multipart/form-data"
+        },
+        body: JSON.stringify({
+          link
+        })
       };
       return await fetch(baseUrl, options).then((response) => response.json());
     }
@@ -427,22 +462,38 @@
 
   // src/api/WrapperAIGeneratedService.ts
   var WrapperAIGeneratedService = class {
-    static async getReportsByBinary(file, visitorId2) {
-      if (!AuthService.isExpiredToken()) {
+    static async getReportsByBinary(file, visitorId3) {
+      if (AuthService.isExpiredToken()) {
+        return await OpenAIGeneratedService.getReportsByBinary(file, visitorId3);
+      } else {
         return await AIGeneratedService.getReportsByBinary(file);
-      } else {
-        return await OpenAIGeneratedService.getReportsByBinary(file, visitorId2);
       }
     }
-    static async getReportsByUrl(url, visitorId2) {
-      if (!AuthService.isExpiredToken()) {
+    static async getReportsByUrl(url, visitorId3) {
+      if (AuthService.isExpiredToken()) {
+        return await OpenAIGeneratedService.getReportsByUrl(url, visitorId3);
+      } else {
         return await AIGeneratedService.getReportsByUrl(url);
-      } else {
-        return await OpenAIGeneratedService.getReportsByUrl(url, visitorId2);
       }
     }
-    static async sendFeedback(id, reportPredict, reportComment) {
-      return await OpenAIGeneratedService.sendFeedback(id, reportPredict, reportComment);
+    static async getAudioVerictByFile(file) {
+      if (AuthService.isExpiredToken()) {
+        return await OpenAIGeneratedService.getAudioVerdict(file);
+      } else {
+        return await AIGeneratedService.getAudioVerdict(file);
+      }
+    }
+    static async getYoutubeVerict(link) {
+      return JSON.parse(`{
+            "id": "41994fdd-0161-43a9-b873-581eccbe6d72",
+            "report": {
+                "version": "0.0.0",
+                "verdict": false
+            }
+        }`);
+    }
+    static async sendFeedback(id, reportPredict, reportComment, isAudio = false) {
+      return await OpenAIGeneratedService.sendFeedback(id, reportPredict, reportComment, isAudio);
     }
   };
 
@@ -799,6 +850,29 @@
         reportButton_submit.classList.add("is-disabled");
       }
     });
+    const imageUrlInput = document.querySelector("#ai-or-not_image-url");
+    const submitButton = document.querySelector("#ai-or-not_submit");
+    imageUrlInput.addEventListener("input", function() {
+      const imageUrl = imageUrlInput.value.trim();
+      if (isValidUrl(imageUrl)) {
+        submitButton.classList.remove("is-disabled");
+      } else {
+        submitButton.classList.add("is-disabled");
+      }
+    });
+    const isValidUrl = (url) => {
+      try {
+        new URL(url);
+        return true;
+      } catch (e) {
+        return false;
+      }
+    };
+    document.getElementById("close-sign-up").onclick = () => {
+      const signInModalElement = document.getElementById("sign-up");
+      signInModalElement.style.display = "none";
+      signInModalElement.style.zIndex = 0;
+    };
   };
 
   // src/index.ts

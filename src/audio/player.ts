@@ -34,6 +34,10 @@ export class AudioPlayer {
                 if (!this.dragging) {
                     const progress = (this.audio.currentTime / this.audio.duration) * 100;
                     this.track.style.width = progress + '%';
+
+                    if (progress >= 100) {
+                        this.finishAudio();
+                    }
                 }
             }, 1000);
         } else {
@@ -73,6 +77,9 @@ export class AudioPlayer {
             if (!this.dragging) {
                 const progress = (this.audio.currentTime / this.audio.duration) * 100;
                 this.track.style.width = progress + '%';
+                if (progress >= 100) {
+                    this.finishAudio();
+                }
             }
         }, 1000);
     }
@@ -84,17 +91,31 @@ export class AudioPlayer {
         const progress = Math.min(Math.max(x / width, 0), 1) * 100;
         this.track.style.width = progress + '%';
         this.audio.currentTime = this.audio.duration * (progress / 100);
+        if (progress >= 100) {
+            this.finishAudio();
+        }
+    }
+
+    finishAudio(): void {
+        this.playPauseBtn.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
+            <path d="M13.3375 10.8944L21.7598 15.1056C22.4968 15.4741 22.4968 16.5259 21.7598 16.8944L13.3375 21.1056C12.3402 21.6042 11.1667 20.879 11.1667 19.7639V12.2361C11.1667 11.121 12.3402 10.3958 13.3375 10.8944Z" stroke="white"/>
+        </svg>`;
     }
 }
 
 export class AudioPlayerContainer {
+    containerId: string = '';
     container: HTMLElement | null;
     audioSrc: string;
     audioPlayer: AudioPlayer | null = null;
+    name: string = '';
 
-    constructor(containerId: string, audioSrc: string, isSquare: boolean = false) {
+    constructor(containerId: string, audioSrc: string, name: string, isSquare: boolean = false) {
+        this.containerId = containerId;
         this.container = document.getElementById(containerId);
         this.audioSrc = audioSrc;
+        this.name = name;
         if (isSquare) {
             this.initializeSquarePlayer();
         } else {
@@ -115,7 +136,7 @@ export class AudioPlayerContainer {
                     </svg>
                 </div>
                 <div class="aiornot-player-hover-bg"></div>
-                <div class="aiornot-player-title">Sample 1</div>
+                <div class="aiornot-player-title">${this.name}</div>
             </div>
             <div id="${this.container.id}-slider" class="aiornot-player-slider">
                 <div id="${this.container.id}-progress" class="aiornot-player-progress"></div>
@@ -143,7 +164,7 @@ export class AudioPlayerContainer {
                     </svg>
                 </div>
                 <div class="aiornot-player-hover-bg"></div>
-                <div class="aiornot-player-title-sqaure">Sample 1</div>
+                <div class="aiornot-player-title-sqaure">${this.name}</div>
             </div>
             <div id="${this.container.id}-slider" class="aiornot-player-slider">
                 <div id="${this.container.id}-progress" class="aiornot-player-progress"></div>

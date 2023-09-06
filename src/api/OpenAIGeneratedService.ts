@@ -39,7 +39,7 @@ export class OpenAIGeneratedService {
         return await fetch(baseUrl, options).then((response) => response.json());
     }
 
-    static async sendFeedback(id: string, reportPredict: boolean, reportComment: string): Promise<void> {
+    static async sendFeedback(id: string, reportPredict: boolean, reportComment: string, isAudio = false): Promise<void> {
         const body = {
             is_proper_predict: reportPredict,
             comment: reportComment,
@@ -55,7 +55,7 @@ export class OpenAIGeneratedService {
             },
         };
 
-        if (!AuthService.isExpiredToken()) {
+        if (isAudio || !AuthService.isExpiredToken()) {
             url = `${BASE_URL}/aion/ai-generated/reports/${id}`;
             options = {
                 method: 'PATCH',
@@ -74,17 +74,34 @@ export class OpenAIGeneratedService {
     }
 
     static async getAudioVerdict(file: File): Promise<any> {
-        const baseUrl = `https://v3-atrium-stage-api.optic.xyz/aion/ai-generated/reports/audio/binary`;
+        const baseUrl = `${BASE_URL}/aion/ai-generated/reports/audio/binary`;
         const formData = new FormData();
-        formData.append('binary', file);
+        formData.append('file', file);
 
         const options = {
             method: 'POST',
             headers: {
                 Accept: 'application/json',
-                Authorization: `Bearer ${AuthService.getToken()}`,
+                ContentType: 'multipart/form-data',
             },
             body: formData,
+        };
+
+        return await fetch(baseUrl, options).then((response) => response.json());
+    }
+
+    static async getYoutubeVerdict(link: string): Promise<any> {
+        const baseUrl = `${BASE_URL}/aion/ai-generated/reports/audio/link`;
+
+        const options = {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                ContentType: 'multipart/form-data',
+            },
+            body: JSON.stringify({
+                link: link,
+            }),
         };
 
         return await fetch(baseUrl, options).then((response) => response.json());

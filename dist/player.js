@@ -38,172 +38,6 @@
   // bin/live-reload.js
   new EventSource(`${"http://localhost:3000"}/esbuild`).addEventListener("change", () => location.reload());
 
-  // src/audio/player.ts
-  var AudioPlayer = class {
-    audio;
-    playPauseBtn;
-    progressSlider;
-    track;
-    dragging;
-    progressInterval = 0;
-    constructor(audio, playPauseBtn, progressSlider, track) {
-      this.audio = audio;
-      this.playPauseBtn = playPauseBtn;
-      this.progressSlider = progressSlider;
-      this.track = track;
-      this.dragging = false;
-      this.progressInterval = 0;
-      this.audio.volume = 0.3;
-      this.playPauseBtn.addEventListener("click", () => this.playPauseAudio());
-      this.progressSlider.addEventListener("mousedown", (e) => this.mouseDown(e));
-      document.addEventListener("mousemove", (e) => this.mouseMove(e));
-      document.addEventListener("mouseup", () => this.mouseUp());
-    }
-    playPauseAudio() {
-      if (this.audio.paused) {
-        this.audio.play();
-        this.playPauseBtn.innerHTML = `
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <rect x="2.5" y="1.5" width="4" height="13" rx="1.5" stroke="white"/>
-                <rect x="9.5" y="1.5" width="4" height="13" rx="1.5" stroke="white"/>
-            </svg>
-            `;
-        this.progressInterval = setInterval(() => {
-          if (!this.dragging) {
-            const progress = this.audio.currentTime / this.audio.duration * 100;
-            this.track.style.width = progress + "%";
-          }
-        }, 1e3);
-      } else {
-        this.audio.pause();
-        this.playPauseBtn.innerHTML = `
-            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
-                <path d="M13.3375 10.8944L21.7598 15.1056C22.4968 15.4741 22.4968 16.5259 21.7598 16.8944L13.3375 21.1056C12.3402 21.6042 11.1667 20.879 11.1667 19.7639V12.2361C11.1667 11.121 12.3402 10.3958 13.3375 10.8944Z" stroke="white"/>
-            </svg>`;
-        clearInterval(this.progressInterval);
-      }
-    }
-    pauseAudio() {
-      this.audio.pause();
-      this.playPauseBtn.innerHTML = `
-        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
-            <path d="M13.3375 10.8944L21.7598 15.1056C22.4968 15.4741 22.4968 16.5259 21.7598 16.8944L13.3375 21.1056C12.3402 21.6042 11.1667 20.879 11.1667 19.7639V12.2361C11.1667 11.121 12.3402 10.3958 13.3375 10.8944Z" stroke="white"/>
-        </svg>`;
-      clearInterval(this.progressInterval);
-    }
-    mouseDown(e) {
-      this.dragging = true;
-      clearInterval(this.progressInterval);
-      this.updateProgress(e);
-    }
-    mouseMove(e) {
-      if (this.dragging) {
-        this.updateProgress(e);
-      }
-    }
-    mouseUp() {
-      this.dragging = false;
-      this.progressInterval = setInterval(() => {
-        if (!this.dragging) {
-          const progress = this.audio.currentTime / this.audio.duration * 100;
-          this.track.style.width = progress + "%";
-        }
-      }, 1e3);
-    }
-    updateProgress(e) {
-      const rect = this.progressSlider.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const width = rect.right - rect.left;
-      const progress = Math.min(Math.max(x / width, 0), 1) * 100;
-      this.track.style.width = progress + "%";
-      this.audio.currentTime = this.audio.duration * (progress / 100);
-    }
-  };
-  var AudioPlayerContainer = class {
-    container;
-    audioSrc;
-    audioPlayer = null;
-    constructor(containerId, audioSrc, isSquare = false) {
-      this.container = document.getElementById(containerId);
-      this.audioSrc = audioSrc;
-      if (isSquare) {
-        this.initializeSquarePlayer();
-      } else {
-        this.initializePlayer();
-      }
-    }
-    initializePlayer() {
-      if (!this.container)
-        return;
-      this.container.classList.add("aiornot-player");
-      this.container.innerHTML = `
-            <audio id="${this.container.id}-audio" src="${this.audioSrc}"></audio>
-            <div class="aiornot-player-controls">
-                <div class="aiornot-player-button" id="${this.container.id}-playPauseBtn">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
-                        <path d="M13.3375 10.8944L21.7598 15.1056C22.4968 15.4741 22.4968 16.5259 21.7598 16.8944L13.3375 21.1056C12.3402 21.6042 11.1667 20.879 11.1667 19.7639V12.2361C11.1667 11.121 12.3402 10.3958 13.3375 10.8944Z" stroke="white"/>
-                    </svg>
-                </div>
-                <div class="aiornot-player-hover-bg"></div>
-                <div class="aiornot-player-title">Sample 1</div>
-            </div>
-            <div id="${this.container.id}-slider" class="aiornot-player-slider">
-                <div id="${this.container.id}-progress" class="aiornot-player-progress"></div>
-            </div>
-        `;
-      const audio = document.getElementById(`${this.container.id}-audio`);
-      const playPauseBtn = document.getElementById(`${this.container.id}-playPauseBtn`);
-      const progressSlider = document.getElementById(`${this.container.id}-slider`);
-      const track = document.getElementById(`${this.container.id}-progress`);
-      this.audioPlayer = new AudioPlayer(audio, playPauseBtn, progressSlider, track);
-    }
-    initializeSquarePlayer() {
-      if (!this.container)
-        return;
-      this.container.classList.add("aiornot-player-square");
-      this.container.innerHTML = `
-            <audio id="${this.container.id}-audio" src="${this.audioSrc}"></audio>
-            <div class="aiornot-player-controls-square">
-                <div class="aiornot-player-button-sqaure" id="${this.container.id}-playPauseBtn">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
-                        <path d="M13.3375 10.8944L21.7598 15.1056C22.4968 15.4741 22.4968 16.5259 21.7598 16.8944L13.3375 21.1056C12.3402 21.6042 11.1667 20.879 11.1667 19.7639V12.2361C11.1667 11.121 12.3402 10.3958 13.3375 10.8944Z" stroke="white"/>
-                    </svg>
-                </div>
-                <div class="aiornot-player-hover-bg"></div>
-                <div class="aiornot-player-title-sqaure">Sample 1</div>
-            </div>
-            <div id="${this.container.id}-slider" class="aiornot-player-slider">
-                <div id="${this.container.id}-progress" class="aiornot-player-progress"></div>
-            </div>
-        `;
-      const audio = document.getElementById(`${this.container.id}-audio`);
-      const playPauseBtn = document.getElementById(`${this.container.id}-playPauseBtn`);
-      const progressSlider = document.getElementById(`${this.container.id}-slider`);
-      const track = document.getElementById(`${this.container.id}-progress`);
-      this.audioPlayer = new AudioPlayer(audio, playPauseBtn, progressSlider, track);
-    }
-  };
-  var PlayerManager = class {
-    players;
-    constructor(players = []) {
-      this.players = [];
-      players.forEach((player) => {
-        this.addPlayer(player);
-      });
-    }
-    addPlayer(player) {
-      this.players.push(player);
-      player.audioPlayer?.audio.addEventListener("play", () => this.pauseOtherPlayers(player));
-    }
-    pauseOtherPlayers(currentPlayer) {
-      for (let player of this.players) {
-        if (player !== currentPlayer) {
-          player.audioPlayer?.pauseAudio();
-        }
-      }
-    }
-  };
-
   // src/utils/string.ts
   function parseJwt(token) {
     var base64Url = token.split(".")[1];
@@ -488,6 +322,27 @@
         console.error("\u041E\u0448\u0438\u0431\u043A\u0430 getReportsByUrl:", error);
       }
     }
+    static async getAudioVerdict(file) {
+      const client = _AIGeneratedService.getInstance().client;
+      try {
+        const formData = new FormData();
+        formData.append("binary", file);
+        return await client.postBinary("reports/audio/binary", formData);
+      } catch (error) {
+        console.error("Error getAudioVerdict:", error);
+      }
+    }
+    static async getYoutubeVerdict(link) {
+      const client = _AIGeneratedService.getInstance().client;
+      try {
+        const body = {
+          link
+        };
+        return await client.post("reports/audio/link", JSON.stringify(body));
+      } catch (error) {
+        console.error("Error getYoutubeVerdict:", error);
+      }
+    }
   };
   var AIGeneratedService = _AIGeneratedService;
   __publicField(AIGeneratedService, "instance", null);
@@ -496,8 +351,8 @@
   var OpenAIGeneratedService = class {
     constructor() {
     }
-    static async getReportsByBinary(file, visitorId2) {
-      const baseUrl = `${BASE_URL}/results/api/detector/reports/raw?source=web&user_id=${visitorId2}`;
+    static async getReportsByBinary(file, visitorId3) {
+      const baseUrl = `${BASE_URL}/results/api/detector/reports/raw?source=web&user_id=${visitorId3}`;
       const formData = new FormData();
       formData.append("binary", file, "file_name.png");
       const options = {
@@ -510,8 +365,8 @@
       };
       return await fetch(baseUrl, options).then((response) => response.json());
     }
-    static async getReportsByUrl(url, visitorId2) {
-      const baseUrl = `${BASE_URL}/results/api/detector/reports/json?source=web&user_id=${visitorId2}`;
+    static async getReportsByUrl(url, visitorId3) {
+      const baseUrl = `${BASE_URL}/results/api/detector/reports/json?source=web&user_id=${visitorId3}`;
       const options = {
         method: "POST",
         headers: {
@@ -525,7 +380,7 @@
       };
       return await fetch(baseUrl, options).then((response) => response.json());
     }
-    static async sendFeedback(id, reportPredict, reportComment) {
+    static async sendFeedback(id, reportPredict, reportComment, isAudio = false) {
       const body = {
         is_proper_predict: reportPredict,
         comment: reportComment
@@ -539,7 +394,7 @@
           "Content-Type": "application/json"
         }
       };
-      if (!AuthService.isExpiredToken()) {
+      if (isAudio || !AuthService.isExpiredToken()) {
         url = `${BASE_URL}/aion/ai-generated/reports/${id}`;
         options = {
           method: "PATCH",
@@ -553,16 +408,30 @@
       await fetch(url, options).then((response) => response.json()).then((data) => console.log(data)).catch((error) => console.error(error));
     }
     static async getAudioVerdict(file) {
-      const baseUrl = `https://v3-atrium-stage-api.optic.xyz/aion/ai-generated/reports/audio/binary`;
+      const baseUrl = `${BASE_URL}/aion/ai-generated/reports/audio/binary`;
       const formData = new FormData();
-      formData.append("binary", file);
+      formData.append("file", file);
       const options = {
         method: "POST",
         headers: {
           Accept: "application/json",
-          Authorization: `Bearer ${AuthService.getToken()}`
+          ContentType: "multipart/form-data"
         },
         body: formData
+      };
+      return await fetch(baseUrl, options).then((response) => response.json());
+    }
+    static async getYoutubeVerdict(link) {
+      const baseUrl = `${BASE_URL}/aion/ai-generated/reports/audio/link`;
+      const options = {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          ContentType: "multipart/form-data"
+        },
+        body: JSON.stringify({
+          link
+        })
       };
       return await fetch(baseUrl, options).then((response) => response.json());
     }
@@ -593,22 +462,293 @@
 
   // src/api/WrapperAIGeneratedService.ts
   var WrapperAIGeneratedService = class {
-    static async getReportsByBinary(file, visitorId2) {
-      if (!AuthService.isExpiredToken()) {
+    static async getReportsByBinary(file, visitorId3) {
+      if (AuthService.isExpiredToken()) {
+        return await OpenAIGeneratedService.getReportsByBinary(file, visitorId3);
+      } else {
         return await AIGeneratedService.getReportsByBinary(file);
-      } else {
-        return await OpenAIGeneratedService.getReportsByBinary(file, visitorId2);
       }
     }
-    static async getReportsByUrl(url, visitorId2) {
-      if (!AuthService.isExpiredToken()) {
+    static async getReportsByUrl(url, visitorId3) {
+      if (AuthService.isExpiredToken()) {
+        return await OpenAIGeneratedService.getReportsByUrl(url, visitorId3);
+      } else {
         return await AIGeneratedService.getReportsByUrl(url);
-      } else {
-        return await OpenAIGeneratedService.getReportsByUrl(url, visitorId2);
       }
     }
-    static async sendFeedback(id, reportPredict, reportComment) {
-      return await OpenAIGeneratedService.sendFeedback(id, reportPredict, reportComment);
+    static async getAudioVerictByFile(file) {
+      if (AuthService.isExpiredToken()) {
+        return await OpenAIGeneratedService.getAudioVerdict(file);
+      } else {
+        return await AIGeneratedService.getAudioVerdict(file);
+      }
+    }
+    static async getYoutubeVerict(link) {
+      return JSON.parse(`{
+            "id": "41994fdd-0161-43a9-b873-581eccbe6d72",
+            "report": {
+                "version": "0.0.0",
+                "verdict": false
+            }
+        }`);
+    }
+    static async sendFeedback(id, reportPredict, reportComment, isAudio = false) {
+      return await OpenAIGeneratedService.sendFeedback(id, reportPredict, reportComment, isAudio);
+    }
+  };
+
+  // src/audio/player.ts
+  var AudioPlayer = class {
+    audio;
+    playPauseBtn;
+    progressSlider;
+    track;
+    dragging;
+    progressInterval = 0;
+    constructor(audio, playPauseBtn, progressSlider, track) {
+      this.audio = audio;
+      this.playPauseBtn = playPauseBtn;
+      this.progressSlider = progressSlider;
+      this.track = track;
+      this.dragging = false;
+      this.progressInterval = 0;
+      this.audio.volume = 0.3;
+      this.playPauseBtn.addEventListener("click", () => this.playPauseAudio());
+      this.progressSlider.addEventListener("mousedown", (e) => this.mouseDown(e));
+      document.addEventListener("mousemove", (e) => this.mouseMove(e));
+      document.addEventListener("mouseup", () => this.mouseUp());
+    }
+    playPauseAudio() {
+      if (this.audio.paused) {
+        this.audio.play();
+        this.playPauseBtn.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <rect x="2.5" y="1.5" width="4" height="13" rx="1.5" stroke="white"/>
+                <rect x="9.5" y="1.5" width="4" height="13" rx="1.5" stroke="white"/>
+            </svg>
+            `;
+        this.progressInterval = setInterval(() => {
+          if (!this.dragging) {
+            const progress = this.audio.currentTime / this.audio.duration * 100;
+            this.track.style.width = progress + "%";
+            if (progress >= 100) {
+              this.finishAudio();
+            }
+          }
+        }, 1e3);
+      } else {
+        this.audio.pause();
+        this.playPauseBtn.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
+                <path d="M13.3375 10.8944L21.7598 15.1056C22.4968 15.4741 22.4968 16.5259 21.7598 16.8944L13.3375 21.1056C12.3402 21.6042 11.1667 20.879 11.1667 19.7639V12.2361C11.1667 11.121 12.3402 10.3958 13.3375 10.8944Z" stroke="white"/>
+            </svg>`;
+        clearInterval(this.progressInterval);
+      }
+    }
+    pauseAudio() {
+      this.audio.pause();
+      this.playPauseBtn.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
+            <path d="M13.3375 10.8944L21.7598 15.1056C22.4968 15.4741 22.4968 16.5259 21.7598 16.8944L13.3375 21.1056C12.3402 21.6042 11.1667 20.879 11.1667 19.7639V12.2361C11.1667 11.121 12.3402 10.3958 13.3375 10.8944Z" stroke="white"/>
+        </svg>`;
+      clearInterval(this.progressInterval);
+    }
+    mouseDown(e) {
+      this.dragging = true;
+      clearInterval(this.progressInterval);
+      this.updateProgress(e);
+    }
+    mouseMove(e) {
+      if (this.dragging) {
+        this.updateProgress(e);
+      }
+    }
+    mouseUp() {
+      this.dragging = false;
+      this.progressInterval = setInterval(() => {
+        if (!this.dragging) {
+          const progress = this.audio.currentTime / this.audio.duration * 100;
+          this.track.style.width = progress + "%";
+          if (progress >= 100) {
+            this.finishAudio();
+          }
+        }
+      }, 1e3);
+    }
+    updateProgress(e) {
+      const rect = this.progressSlider.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const width = rect.right - rect.left;
+      const progress = Math.min(Math.max(x / width, 0), 1) * 100;
+      this.track.style.width = progress + "%";
+      this.audio.currentTime = this.audio.duration * (progress / 100);
+      if (progress >= 100) {
+        this.finishAudio();
+      }
+    }
+    finishAudio() {
+      this.playPauseBtn.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
+            <path d="M13.3375 10.8944L21.7598 15.1056C22.4968 15.4741 22.4968 16.5259 21.7598 16.8944L13.3375 21.1056C12.3402 21.6042 11.1667 20.879 11.1667 19.7639V12.2361C11.1667 11.121 12.3402 10.3958 13.3375 10.8944Z" stroke="white"/>
+        </svg>`;
+    }
+  };
+  var AudioPlayerContainer = class {
+    containerId = "";
+    container;
+    audioSrc;
+    audioPlayer = null;
+    name = "";
+    constructor(containerId, audioSrc, name, isSquare = false) {
+      this.containerId = containerId;
+      this.container = document.getElementById(containerId);
+      this.audioSrc = audioSrc;
+      this.name = name;
+      if (isSquare) {
+        this.initializeSquarePlayer();
+      } else {
+        this.initializePlayer();
+      }
+    }
+    initializePlayer() {
+      if (!this.container)
+        return;
+      this.container.classList.add("aiornot-player");
+      this.container.innerHTML = `
+            <audio id="${this.container.id}-audio" src="${this.audioSrc}"></audio>
+            <div class="aiornot-player-controls">
+                <div class="aiornot-player-button" id="${this.container.id}-playPauseBtn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
+                        <path d="M13.3375 10.8944L21.7598 15.1056C22.4968 15.4741 22.4968 16.5259 21.7598 16.8944L13.3375 21.1056C12.3402 21.6042 11.1667 20.879 11.1667 19.7639V12.2361C11.1667 11.121 12.3402 10.3958 13.3375 10.8944Z" stroke="white"/>
+                    </svg>
+                </div>
+                <div class="aiornot-player-hover-bg"></div>
+                <div class="aiornot-player-title">${this.name}</div>
+            </div>
+            <div id="${this.container.id}-slider" class="aiornot-player-slider">
+                <div id="${this.container.id}-progress" class="aiornot-player-progress"></div>
+            </div>
+        `;
+      const audio = document.getElementById(`${this.container.id}-audio`);
+      const playPauseBtn = document.getElementById(`${this.container.id}-playPauseBtn`);
+      const progressSlider = document.getElementById(`${this.container.id}-slider`);
+      const track = document.getElementById(`${this.container.id}-progress`);
+      this.audioPlayer = new AudioPlayer(audio, playPauseBtn, progressSlider, track);
+    }
+    initializeSquarePlayer() {
+      if (!this.container)
+        return;
+      this.container.classList.add("aiornot-player-square");
+      this.container.innerHTML = `
+            <audio id="${this.container.id}-audio" src="${this.audioSrc}"></audio>
+            <div class="aiornot-player-controls-square">
+                <div class="aiornot-player-button-sqaure" id="${this.container.id}-playPauseBtn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
+                        <path d="M13.3375 10.8944L21.7598 15.1056C22.4968 15.4741 22.4968 16.5259 21.7598 16.8944L13.3375 21.1056C12.3402 21.6042 11.1667 20.879 11.1667 19.7639V12.2361C11.1667 11.121 12.3402 10.3958 13.3375 10.8944Z" stroke="white"/>
+                    </svg>
+                </div>
+                <div class="aiornot-player-hover-bg"></div>
+                <div class="aiornot-player-title-sqaure">${this.name}</div>
+            </div>
+            <div id="${this.container.id}-slider" class="aiornot-player-slider">
+                <div id="${this.container.id}-progress" class="aiornot-player-progress"></div>
+            </div>
+        `;
+      const audio = document.getElementById(`${this.container.id}-audio`);
+      const playPauseBtn = document.getElementById(`${this.container.id}-playPauseBtn`);
+      const progressSlider = document.getElementById(`${this.container.id}-slider`);
+      const track = document.getElementById(`${this.container.id}-progress`);
+      this.audioPlayer = new AudioPlayer(audio, playPauseBtn, progressSlider, track);
+    }
+  };
+  var PlayerManager = class {
+    players;
+    constructor(players = []) {
+      this.players = [];
+      players.forEach((player) => {
+        this.addPlayer(player);
+      });
+    }
+    addPlayer(player) {
+      this.players.push(player);
+      player.audioPlayer?.audio.addEventListener("play", () => this.pauseOtherPlayers(player));
+    }
+    pauseOtherPlayers(currentPlayer) {
+      for (let player of this.players) {
+        if (player !== currentPlayer) {
+          player.audioPlayer?.pauseAudio();
+        }
+      }
+    }
+  };
+
+  // src/audio/youtube.ts
+  var YouTubeAPI = class {
+    linkIsReady;
+    player;
+    constructor() {
+      this.linkIsReady = false;
+      this.player = null;
+      this.onYouTubeIframeAPIReady = this.onYouTubeIframeAPIReady.bind(this);
+    }
+    onYouTubeIframeAPIReady() {
+      this.linkIsReady = true;
+    }
+    static getYoutubeVideoID(url) {
+      try {
+        let urlObject = new URL(url);
+        let params = new URLSearchParams(urlObject.search);
+        return params.get("v");
+      } catch (e) {
+        console.error("\u041D\u0435\u0432\u0435\u0440\u043D\u044B\u0439 URL", e);
+        return null;
+      }
+    }
+  };
+  var YouTubePlayer = class {
+    elementId;
+    player;
+    constructor(elementId) {
+      this.elementId = elementId;
+      this.player = null;
+    }
+    init(videoId) {
+      this.player = new YT.Player(this.elementId, {
+        height: "480",
+        width: "480",
+        videoId,
+        playerVars: {
+          controls: 0,
+          disablekb: 1,
+          modestbranding: 1,
+          rel: 0,
+          showinfo: 0,
+          autoplay: 0,
+          fs: 0
+        },
+        events: {
+          onReady: (event) => {
+            event.target.playVideo();
+          },
+          onStateChange: (event) => {
+            console.log("\u0421\u043E\u0441\u0442\u043E\u044F\u043D\u0438\u0435 \u043F\u043B\u0435\u0435\u0440\u0430: " + event.data);
+            if (event.data == YT.PlayerState.ENDED) {
+              alert("\u0412\u0438\u0434\u0435\u043E \u0437\u0430\u043A\u043E\u043D\u0447\u0438\u043B\u043E\u0441\u044C");
+            }
+          }
+        }
+      });
+    }
+  };
+  var createYoutubePlayer = (elementId, url) => {
+    const youTubeAPI = new YouTubeAPI();
+    const youTubePlayer = new YouTubePlayer(elementId);
+    let videoID = YouTubeAPI.getYoutubeVideoID(url);
+    if (videoID) {
+      console.log("ID \u0432\u0438\u0434\u0435\u043E: " + videoID);
+      youTubePlayer.init(videoID);
+    } else {
+      console.log("\u041D\u0435 \u0443\u0434\u0430\u043B\u043E\u0441\u044C \u043F\u043E\u043B\u0443\u0447\u0438\u0442\u044C ID \u0432\u0438\u0434\u0435\u043E");
     }
   };
 
@@ -627,16 +767,14 @@
     const imageEl_currentImageEmpty = document.querySelector("#empty-preview-img");
     const imageEl_nsfwImage = document.querySelector("#nsfw-preview-img");
     const textEl_inputError = document.querySelector("#input-error-text");
-    const inputEl_urlWaiter = document.querySelector("#ai-or-not_image-url");
-    const buttonEl_urlCheck = document.querySelector("#ai-or-not_submit");
+    const youtubeLinkInput = document.getElementById("ai-or-not_image-url");
+    const checkYoutubeLinkButton = document.getElementById("ai-or-not_submit");
     const uiEl_dropZone = document.querySelector("#ai-or-not_dropzone");
     const textEl_dropZoneError = document.querySelector("#ai-or-not_dropzone-text");
     const uiEl_resultCol = document.querySelector("#result-screen_col");
     const buttonEl_sharedButtons = document.querySelector("#share-items-hide");
     const counterEl_requestCounterValue = document.querySelector("#ai-or-not-dropzone-counter");
     const counterEl_requestCounterBlock = document.querySelector("#ai-or-not-dropzone-counter-w");
-    let pastedUrl;
-    let fileUpload_way;
     let fileSizeAllow;
     let currentResultId;
     const updateRequestCounter = () => {
@@ -679,10 +817,10 @@
     };
     const changeShareUrl = (responseId) => {
       currentResultId = responseId;
-      const element2 = document.querySelector('[fs-socialshare-element="url"]');
+      const element = document.querySelector('[fs-socialshare-element="url"]');
       let shareUrlTemplate = AuthService.isExpiredToken() ? `${BASE_URL_RESULTS}/aiornot/` : `${BASE_URL_RESULTS}/aiornot/users/`;
       const shareUrl = `${shareUrlTemplate}${responseId}`;
-      element2.textContent = shareUrl;
+      element.textContent = shareUrl;
       let allShareUrl = document.querySelectorAll(".result-screen_share-item");
       allShareUrl.forEach((el) => {
         el.setAttribute("data-url", shareUrl);
@@ -708,6 +846,13 @@
         textEl_inputError.textContent = "File is too large (max 10 MB)";
         uiEl_urlError.classList.remove("hide");
       }
+    };
+    const fillPlayerCardByFile = (file) => {
+      const fileURL = URL.createObjectURL(file);
+      new AudioPlayerContainer("result-screen_image-wrapper", fileURL, file.name, true);
+    };
+    const fillYoutubePlayerCard = (link) => {
+      createYoutubePlayer("result-screen_image-wrapper", link);
     };
     inputEl_fileInput?.addEventListener("change", () => {
       const fileSize = inputEl_fileInput?.files[0].size;
@@ -762,36 +907,29 @@
       document.querySelector("#result-screen_col").classList.remove("hide");
       document.querySelector("#result-screen_image-wrapper").classList.remove("hide");
     };
-    function loadingFinish(nsfw_detected = false) {
-      if (nsfw_detected) {
-        imageEl_nsfwImage.classList.remove("hide");
-        imageEl_currentImage.classList.add("hide");
-        imageEl_currentImageEmpty.classList.add("hide");
-        buttonEl_sharedButtons.classList.add("hide");
-      } else {
-        imageEl_nsfwImage.classList.add("hide");
-        imageEl_currentImage.classList.remove("hide");
-        imageEl_currentImageEmpty.classList.add("hide");
-        buttonEl_sharedButtons.classList.remove("hide");
-      }
-      document.querySelector(".processing-screen_triggers_3").click();
+    function loadingFinish() {
+      imageEl_nsfwImage.classList.add("hide");
+      imageEl_currentImage.classList.remove("hide");
+      imageEl_currentImageEmpty.classList.add("hide");
+      buttonEl_sharedButtons.classList.remove("hide");
+      document.querySelector(".processing-screen_triggers_3")?.click();
       document.querySelector("#processing-screen").classList.add("hide");
-      document.querySelector(".processing-screen_triggers_5").click();
-      document.querySelector("#scroll-to-top-trigger").click();
+      document.querySelector(".processing-screen_triggers_5")?.click();
+      document.querySelector("#scroll-to-top-trigger")?.click();
       inputEl_fileInput.value = "";
-      document.querySelector("#ai-or-not_image-url").value = "";
+      youtubeLinkInput.value = "";
     }
     const findHighestConfidence = (data) => {
       if (data === "unknown") {
         document.getElementById("title-human").innerHTML = "Sorry, but in this case we can't really say if it's AI or Not";
         document.getElementById("ai-or-not_result-message-50").classList.remove("hide");
         document.getElementById("ai-or-not_result-message").classList.add("hide");
-        document.getElementById("ai-or-not_result-message-50").innerHTML = "Probly the uploaded image has most likely been modified or compressed";
+        document.getElementById("ai-or-not_result-message-50").innerHTML = "Probly the uploaded audio has most likely been modified or compressed";
         document.getElementById("title-human").classList.remove("hide");
         document.getElementById("title-ai").classList.add("hide");
       } else {
-        document.getElementById("title-ai").innerHTML = 'This image is generated by <span class="text-color-green">AI</span>';
-        document.getElementById("title-human").innerHTML = 'This image is generated by <span class="text-color-green">Human</span>';
+        document.getElementById("title-ai").innerHTML = 'This audio is generated by <span class="text-color-green">AI</span>';
+        document.getElementById("title-human").innerHTML = 'This audio is generated by <span class="text-color-green">Human</span>';
         document.getElementById("ai-or-not_result-message-50").classList.add("hide");
         document.getElementById("ai-or-not_result-message").classList.remove("hide");
         document.querySelector("#ai-or-not_model-name").textContent = data;
@@ -804,7 +942,7 @@
         }
       }
     };
-    const postToApi_url = async () => {
+    const submitYoutubeLink = async (link) => {
       if (RequestCounter.isLimitExceeded()) {
         const signInModalElement = document.getElementById("sign-up");
         signInModalElement.style.display = "flex";
@@ -813,12 +951,11 @@
       } else {
         uiEl_urlError.classList.add("hide");
         loadingStart();
-        await WrapperAIGeneratedService.getReportsByUrl(pastedUrl, visitorId).then((response) => {
-          RequestCounter.increment();
+        await WrapperAIGeneratedService.getYoutubeVerict(link).then((response) => {
           changeShareUrl(response.id);
-          imageEl_currentImage.src = pastedUrl;
-          findHighestConfidence(response.verdict);
-          loadingFinish(response.nsfw_detected);
+          findHighestConfidence(response.report.verdict === true ? "ai" : "human");
+          loadingFinish();
+          fillYoutubePlayerCard(link);
         }).catch((error) => {
           if (uiEl_resultCol.classList.contains("hide")) {
             someThingWentWrong_error();
@@ -883,8 +1020,16 @@
         currentImage.setAttribute("src", currentImageUrl);
         imageEl_currentImage.classList.remove("hide");
         imageEl_currentImageEmpty.classList.add("hide");
-        await OpenAIGeneratedService.getAudioVerdict(file).then((response) => {
-          console.log(response);
+        await WrapperAIGeneratedService.getAudioVerictByFile(file).then((response) => {
+          changeShareUrl(response.id);
+          initial_dropZone();
+          findHighestConfidence(response.report.verdict === true ? "ai" : "human");
+          loadingFinish();
+          fillPlayerCardByFile(file);
+        }).catch((error) => {
+          console.log(error);
+          error_dropZone();
+          screen_homeShow();
         });
       }
     };
@@ -893,38 +1038,51 @@
       screen_homeShow();
     });
     document.querySelector("#ai-or-not_dropzone")?.addEventListener("click", function() {
-      fileUpload_way = "screen_home";
       inputEl_fileInput.click();
     });
     document.querySelector("#choose-file-row")?.addEventListener("click", function() {
-      fileUpload_way = "screen_result";
       inputEl_fileInput.click();
     });
-    buttonEl_urlCheck?.addEventListener("click", () => {
-      if (inputEl_urlWaiter.value != "") {
-        pastedUrl = inputEl_urlWaiter.value;
-        postToApi_url();
+    checkYoutubeLinkButton?.addEventListener("click", () => {
+      if (youtubeLinkInput.value != "") {
+        submitYoutubeLink(youtubeLinkInput.value);
       }
     });
-    const element = document.querySelector("#ai-or-not_image-url");
-    element?.addEventListener("keypress", function(e) {
+    youtubeLinkInput?.addEventListener("keypress", (e) => {
+      console.log(e.target.value);
       if (e.key === "Enter") {
-        if (inputEl_urlWaiter.value != "") {
-          pastedUrl = inputEl_urlWaiter.value;
-          postToApi_url();
+        if (youtubeLinkInput.value != "") {
+          submitYoutubeLink(youtubeLinkInput.value);
         }
       }
     });
+    youtubeLinkInput.addEventListener("input", (e) => {
+      const youtubeLink = e.target.value;
+      const isYouTubeLink = (url) => {
+        const pattern = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+$/;
+        return pattern.test(url);
+      };
+      if (isYouTubeLink(youtubeLink)) {
+        checkYoutubeLinkButton.classList.remove("is-disabled");
+      } else {
+        checkYoutubeLinkButton.classList.add("is-disabled");
+      }
+    });
+    document.getElementById("close-sign-up").onclick = () => {
+      const signInModalElement = document.getElementById("sign-up");
+      signInModalElement.style.display = "none";
+      signInModalElement.style.zIndex = 0;
+    };
     reportButton_true?.addEventListener("click", () => {
       uiReported_true();
-      WrapperAIGeneratedService.sendFeedback(currentResultId, true, "");
+      WrapperAIGeneratedService.sendFeedback(currentResultId, true, "", true);
     });
     reportButton_false?.addEventListener("click", () => {
     });
     reportButton_close?.addEventListener("click", () => {
     });
     reportButton_submit?.addEventListener("click", () => {
-      WrapperAIGeneratedService.sendFeedback(currentResultId, false, reportInput.value);
+      WrapperAIGeneratedService.sendFeedback(currentResultId, false, reportInput.value, true);
       uiReported_false();
     });
     document?.addEventListener("keydown", function(event) {
@@ -948,35 +1106,45 @@
         reportButton_submit.classList.add("is-disabled");
       }
     });
+    const manager = new PlayerManager([
+      new AudioPlayerContainer(
+        "audio-sample-1",
+        "https://vgmsite.com/soundtracks/the-witcher-3-wild-hunt-extended-edition/wanswoqf/01.%20The%20Trail.mp3",
+        "Sample 1"
+      ),
+      new AudioPlayerContainer(
+        "audio-sample-2",
+        "https://vgmsite.com/soundtracks/the-witcher-3-wild-hunt-extended-edition/wanswoqf/01.%20The%20Trail.mp3",
+        "Sample 2"
+      ),
+      new AudioPlayerContainer(
+        "audio-sample-3",
+        "https://vgmsite.com/soundtracks/the-witcher-3-wild-hunt-extended-edition/wanswoqf/01.%20The%20Trail.mp3",
+        "Sample 3"
+      ),
+      new AudioPlayerContainer(
+        "audio-sample-4",
+        "https://vgmsite.com/soundtracks/the-witcher-3-wild-hunt-extended-edition/wanswoqf/01.%20The%20Trail.mp3",
+        "Sample 4"
+      ),
+      new AudioPlayerContainer(
+        "audio-sample-5",
+        "https://vgmsite.com/soundtracks/the-witcher-3-wild-hunt-extended-edition/wanswoqf/01.%20The%20Trail.mp3",
+        "Sample 5"
+      ),
+      new AudioPlayerContainer(
+        "audio-sample-6",
+        "https://vgmsite.com/soundtracks/the-witcher-3-wild-hunt-extended-edition/wanswoqf/01.%20The%20Trail.mp3",
+        "Sample 6"
+      )
+    ]);
+    manager.players.forEach((player) => {
+      player.container?.addEventListener("click", () => {
+      });
+    });
   };
 
   // src/player.ts
   initAudio();
-  var manager = new PlayerManager([
-    new AudioPlayerContainer(
-      "audio-sample-1",
-      "https://vgmsite.com/soundtracks/the-witcher-3-wild-hunt-extended-edition/wanswoqf/01.%20The%20Trail.mp3"
-    ),
-    new AudioPlayerContainer(
-      "audio-sample-2",
-      "https://vgmsite.com/soundtracks/the-witcher-3-wild-hunt-extended-edition/wanswoqf/01.%20The%20Trail.mp3"
-    ),
-    new AudioPlayerContainer(
-      "audio-sample-3",
-      "https://vgmsite.com/soundtracks/the-witcher-3-wild-hunt-extended-edition/wanswoqf/01.%20The%20Trail.mp3"
-    ),
-    new AudioPlayerContainer(
-      "audio-sample-4",
-      "https://vgmsite.com/soundtracks/the-witcher-3-wild-hunt-extended-edition/wanswoqf/01.%20The%20Trail.mp3"
-    ),
-    new AudioPlayerContainer(
-      "audio-sample-5",
-      "https://vgmsite.com/soundtracks/the-witcher-3-wild-hunt-extended-edition/wanswoqf/01.%20The%20Trail.mp3"
-    ),
-    new AudioPlayerContainer(
-      "audio-sample-6",
-      "https://vgmsite.com/soundtracks/the-witcher-3-wild-hunt-extended-edition/wanswoqf/01.%20The%20Trail.mp3"
-    )
-  ]);
 })();
 //# sourceMappingURL=player.js.map

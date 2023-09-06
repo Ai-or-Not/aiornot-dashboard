@@ -4,22 +4,46 @@ import { OpenAIGeneratedService } from './OpenAIGeneratedService';
 
 export class WrapperAIGeneratedService {
     static async getReportsByBinary(file: File, visitorId: string): Promise<any> {
-        if (!AuthService.isExpiredToken()) {
-            return await AIGeneratedService.getReportsByBinary(file);
-        } else {
+        if (AuthService.isExpiredToken()) {
             return await OpenAIGeneratedService.getReportsByBinary(file, visitorId);
+        } else {
+            return await AIGeneratedService.getReportsByBinary(file);
         }
     }
 
     static async getReportsByUrl(url: string, visitorId: string): Promise<any> {
-        if (!AuthService.isExpiredToken()) {
-            return await AIGeneratedService.getReportsByUrl(url);
-        } else {
+        if (AuthService.isExpiredToken()) {
             return await OpenAIGeneratedService.getReportsByUrl(url, visitorId);
+        } else {
+            return await AIGeneratedService.getReportsByUrl(url);
         }
     }
 
-    static async sendFeedback(id: string, reportPredict: boolean, reportComment: string): Promise<void> {
-        return await OpenAIGeneratedService.sendFeedback(id, reportPredict, reportComment);
+    static async getAudioVerictByFile(file: File): Promise<any> {
+        if (AuthService.isExpiredToken()) {
+            return await OpenAIGeneratedService.getAudioVerdict(file);
+        } else {
+            return await AIGeneratedService.getAudioVerdict(file);
+        }
+    }
+
+    static async getYoutubeVerict(link: string): Promise<any> {
+        // if (AuthService.isExpiredToken()) {
+        //     return await OpenAIGeneratedService.getYoutubeVerdict(link);
+        // } else {
+        //     return await AIGeneratedService.getYoutubeVerdict(link);
+        // }
+
+        return JSON.parse(`{
+            "id": "41994fdd-0161-43a9-b873-581eccbe6d72",
+            "report": {
+                "version": "0.0.0",
+                "verdict": false
+            }
+        }`);
+    }
+
+    static async sendFeedback(id: string, reportPredict: boolean, reportComment: string, isAudio = false): Promise<void> {
+        return await OpenAIGeneratedService.sendFeedback(id, reportPredict, reportComment, isAudio);
     }
 }
