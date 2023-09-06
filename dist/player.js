@@ -1,15 +1,142 @@
-"use strict";(()=>{var ye=Object.create;var se=Object.defineProperty;var ge=Object.getOwnPropertyDescriptor;var ve=Object.getOwnPropertyNames;var fe=Object.getPrototypeOf,Ee=Object.prototype.hasOwnProperty;var Le=(o=>typeof require!="undefined"?require:typeof Proxy!="undefined"?new Proxy(o,{get:(e,t)=>(typeof require!="undefined"?require:e)[t]}):o)(function(o){if(typeof require!="undefined")return require.apply(this,arguments);throw new Error('Dynamic require of "'+o+'" is not supported')});var Se=(o,e,t,s)=>{if(e&&typeof e=="object"||typeof e=="function")for(let r of ve(e))!Ee.call(o,r)&&r!==t&&se(o,r,{get:()=>e[r],enumerable:!(s=ge(e,r))||s.enumerable});return o};var we=(o,e,t)=>(t=o!=null?ye(fe(o)):{},Se(e||!o||!o.__esModule?se(t,"default",{value:o,enumerable:!0}):t,o));var U=class{constructor(e,t,s,r){this.progressInterval=0;this.audio=e,this.playPauseBtn=t,this.progressSlider=s,this.track=r,this.dragging=!1,this.progressInterval=0,this.audio.volume=.3,this.playPauseBtn.addEventListener("click",()=>this.playPauseAudio()),this.progressSlider.addEventListener("mousedown",i=>this.mouseDown(i)),document.addEventListener("mousemove",i=>this.mouseMove(i)),document.addEventListener("mouseup",()=>this.mouseUp())}playPauseAudio(){this.audio.paused?(this.audio.play(),this.playPauseBtn.innerHTML=`
+"use strict";
+(() => {
+  var __create = Object.create;
+  var __defProp = Object.defineProperty;
+  var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+  var __getOwnPropNames = Object.getOwnPropertyNames;
+  var __getProtoOf = Object.getPrototypeOf;
+  var __hasOwnProp = Object.prototype.hasOwnProperty;
+  var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+  var __require = /* @__PURE__ */ ((x) => typeof require !== "undefined" ? require : typeof Proxy !== "undefined" ? new Proxy(x, {
+    get: (a, b) => (typeof require !== "undefined" ? require : a)[b]
+  }) : x)(function(x) {
+    if (typeof require !== "undefined")
+      return require.apply(this, arguments);
+    throw new Error('Dynamic require of "' + x + '" is not supported');
+  });
+  var __copyProps = (to, from, except, desc) => {
+    if (from && typeof from === "object" || typeof from === "function") {
+      for (let key of __getOwnPropNames(from))
+        if (!__hasOwnProp.call(to, key) && key !== except)
+          __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+    }
+    return to;
+  };
+  var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
+    // If the importer is in node compatibility mode or this is not an ESM
+    // file that has been converted to a CommonJS file using a Babel-
+    // compatible transform (i.e. "__esModule" has not been set), then set
+    // "default" to the CommonJS "module.exports" for node compatibility.
+    isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
+    mod
+  ));
+  var __publicField = (obj, key, value) => {
+    __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+    return value;
+  };
+
+  // bin/live-reload.js
+  new EventSource(`${"http://localhost:3000"}/esbuild`).addEventListener("change", () => location.reload());
+
+  // src/audio/player.ts
+  var AudioPlayer = class {
+    audio;
+    playPauseBtn;
+    progressSlider;
+    track;
+    dragging;
+    progressInterval = 0;
+    constructor(audio, playPauseBtn, progressSlider, track) {
+      this.audio = audio;
+      this.playPauseBtn = playPauseBtn;
+      this.progressSlider = progressSlider;
+      this.track = track;
+      this.dragging = false;
+      this.progressInterval = 0;
+      this.audio.volume = 0.3;
+      this.playPauseBtn.addEventListener("click", () => this.playPauseAudio());
+      this.progressSlider.addEventListener("mousedown", (e) => this.mouseDown(e));
+      document.addEventListener("mousemove", (e) => this.mouseMove(e));
+      document.addEventListener("mouseup", () => this.mouseUp());
+    }
+    playPauseAudio() {
+      if (this.audio.paused) {
+        this.audio.play();
+        this.playPauseBtn.innerHTML = `
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
                 <rect x="2.5" y="1.5" width="4" height="13" rx="1.5" stroke="white"/>
                 <rect x="9.5" y="1.5" width="4" height="13" rx="1.5" stroke="white"/>
             </svg>
-            `,this.progressInterval=setInterval(()=>{if(!this.dragging){let e=this.audio.currentTime/this.audio.duration*100;this.track.style.width=e+"%"}},1e3)):(this.audio.pause(),this.playPauseBtn.innerHTML=`
+            `;
+        this.progressInterval = setInterval(() => {
+          if (!this.dragging) {
+            const progress = this.audio.currentTime / this.audio.duration * 100;
+            this.track.style.width = progress + "%";
+          }
+        }, 1e3);
+      } else {
+        this.audio.pause();
+        this.playPauseBtn.innerHTML = `
             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
                 <path d="M13.3375 10.8944L21.7598 15.1056C22.4968 15.4741 22.4968 16.5259 21.7598 16.8944L13.3375 21.1056C12.3402 21.6042 11.1667 20.879 11.1667 19.7639V12.2361C11.1667 11.121 12.3402 10.3958 13.3375 10.8944Z" stroke="white"/>
-            </svg>`,clearInterval(this.progressInterval))}pauseAudio(){this.audio.pause(),this.playPauseBtn.innerHTML=`
+            </svg>`;
+        clearInterval(this.progressInterval);
+      }
+    }
+    pauseAudio() {
+      this.audio.pause();
+      this.playPauseBtn.innerHTML = `
         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
             <path d="M13.3375 10.8944L21.7598 15.1056C22.4968 15.4741 22.4968 16.5259 21.7598 16.8944L13.3375 21.1056C12.3402 21.6042 11.1667 20.879 11.1667 19.7639V12.2361C11.1667 11.121 12.3402 10.3958 13.3375 10.8944Z" stroke="white"/>
-        </svg>`,clearInterval(this.progressInterval)}mouseDown(e){this.dragging=!0,clearInterval(this.progressInterval),this.updateProgress(e)}mouseMove(e){this.dragging&&this.updateProgress(e)}mouseUp(){this.dragging=!1,this.progressInterval=setInterval(()=>{if(!this.dragging){let e=this.audio.currentTime/this.audio.duration*100;this.track.style.width=e+"%"}},1e3)}updateProgress(e){let t=this.progressSlider.getBoundingClientRect(),s=e.clientX-t.left,r=t.right-t.left,i=Math.min(Math.max(s/r,0),1)*100;this.track.style.width=i+"%",this.audio.currentTime=this.audio.duration*(i/100)}},p=class{constructor(e,t,s=!1){this.audioPlayer=null;this.container=document.getElementById(e),this.audioSrc=t,s?this.initializeSquarePlayer():this.initializePlayer()}initializePlayer(){if(!this.container)return;this.container.classList.add("aiornot-player"),this.container.innerHTML=`
+        </svg>`;
+      clearInterval(this.progressInterval);
+    }
+    mouseDown(e) {
+      this.dragging = true;
+      clearInterval(this.progressInterval);
+      this.updateProgress(e);
+    }
+    mouseMove(e) {
+      if (this.dragging) {
+        this.updateProgress(e);
+      }
+    }
+    mouseUp() {
+      this.dragging = false;
+      this.progressInterval = setInterval(() => {
+        if (!this.dragging) {
+          const progress = this.audio.currentTime / this.audio.duration * 100;
+          this.track.style.width = progress + "%";
+        }
+      }, 1e3);
+    }
+    updateProgress(e) {
+      const rect = this.progressSlider.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const width = rect.right - rect.left;
+      const progress = Math.min(Math.max(x / width, 0), 1) * 100;
+      this.track.style.width = progress + "%";
+      this.audio.currentTime = this.audio.duration * (progress / 100);
+    }
+  };
+  var AudioPlayerContainer = class {
+    container;
+    audioSrc;
+    audioPlayer = null;
+    constructor(containerId, audioSrc, isSquare = false) {
+      this.container = document.getElementById(containerId);
+      this.audioSrc = audioSrc;
+      if (isSquare) {
+        this.initializeSquarePlayer();
+      } else {
+        this.initializePlayer();
+      }
+    }
+    initializePlayer() {
+      if (!this.container)
+        return;
+      this.container.classList.add("aiornot-player");
+      this.container.innerHTML = `
             <audio id="${this.container.id}-audio" src="${this.audioSrc}"></audio>
             <div class="aiornot-player-controls">
                 <div class="aiornot-player-button" id="${this.container.id}-playPauseBtn">
@@ -23,7 +150,18 @@
             <div id="${this.container.id}-slider" class="aiornot-player-slider">
                 <div id="${this.container.id}-progress" class="aiornot-player-progress"></div>
             </div>
-        `;let e=document.getElementById(`${this.container.id}-audio`),t=document.getElementById(`${this.container.id}-playPauseBtn`),s=document.getElementById(`${this.container.id}-slider`),r=document.getElementById(`${this.container.id}-progress`);this.audioPlayer=new U(e,t,s,r)}initializeSquarePlayer(){if(!this.container)return;this.container.classList.add("aiornot-player-square"),this.container.innerHTML=`
+        `;
+      const audio = document.getElementById(`${this.container.id}-audio`);
+      const playPauseBtn = document.getElementById(`${this.container.id}-playPauseBtn`);
+      const progressSlider = document.getElementById(`${this.container.id}-slider`);
+      const track = document.getElementById(`${this.container.id}-progress`);
+      this.audioPlayer = new AudioPlayer(audio, playPauseBtn, progressSlider, track);
+    }
+    initializeSquarePlayer() {
+      if (!this.container)
+        return;
+      this.container.classList.add("aiornot-player-square");
+      this.container.innerHTML = `
             <audio id="${this.container.id}-audio" src="${this.audioSrc}"></audio>
             <div class="aiornot-player-controls-square">
                 <div class="aiornot-player-button-sqaure" id="${this.container.id}-playPauseBtn">
@@ -37,4 +175,802 @@
             <div id="${this.container.id}-slider" class="aiornot-player-slider">
                 <div id="${this.container.id}-progress" class="aiornot-player-progress"></div>
             </div>
-        `;let e=document.getElementById(`${this.container.id}-audio`),t=document.getElementById(`${this.container.id}-playPauseBtn`),s=document.getElementById(`${this.container.id}-slider`),r=document.getElementById(`${this.container.id}-progress`);this.audioPlayer=new U(e,t,s,r)}},z=class{constructor(e=[]){this.players=[],e.forEach(t=>{this.addPlayer(t)})}addPlayer(e){var t;this.players.push(e),(t=e.audioPlayer)==null||t.audio.addEventListener("play",()=>this.pauseOtherPlayers(e))}pauseOtherPlayers(e){var t;for(let s of this.players)s!==e&&((t=s.audioPlayer)==null||t.pauseAudio())}};var xe,be=import("https://openfpcdn.io/fingerprintjs/v3").then(o=>o.load()),O=async()=>{xe=await be.then(o=>o.get()).then(o=>o.visitorId)};var y="https://api.aiornot.com/",T=class{constructor(e,t){this.apiUrl=e,this.bearerToken=t}async get(e){let t=`${this.apiUrl}/${e}`;try{let s=await fetch(t,{method:"GET",headers:{"Content-Type":"application/json",Authorization:`Bearer ${this.bearerToken}`}});return await this.handleResponse(s)}catch(s){throw console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u0440\u0438 \u0432\u044B\u043F\u043E\u043B\u043D\u0435\u043D\u0438\u0438 GET-\u0437\u0430\u043F\u0440\u043E\u0441\u0430:",s),s}}async post(e,t){let s=`${this.apiUrl}/${e}`;try{let r=await fetch(s,{method:"POST",headers:{"Content-Type":"application/json",Authorization:`Bearer ${this.bearerToken}`},body:JSON.stringify(t)});return await this.handleResponse(r)}catch(r){throw console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u0440\u0438 \u0432\u044B\u043F\u043E\u043B\u043D\u0435\u043D\u0438\u0438 POST-\u0437\u0430\u043F\u0440\u043E\u0441\u0430:",r),r}}async postBinary(e,t){let s=`${this.apiUrl}/${e}`;try{let r=await fetch(s,{method:"POST",headers:{Accept:"application/json",Authorization:`Bearer ${this.bearerToken}`},body:t});return await this.handleResponse(r)}catch(r){throw console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u0440\u0438 \u0432\u044B\u043F\u043E\u043B\u043D\u0435\u043D\u0438\u0438 POST-\u0437\u0430\u043F\u0440\u043E\u0441\u0430:",r),r}}async delete(e){let t=`${this.apiUrl}/${e}`;try{let s=await fetch(t,{method:"DELETE",headers:{accept:"*/*",Authorization:`Bearer ${this.bearerToken}`}});await this.handleResponse(s)}catch(s){throw console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u0440\u0438 \u0432\u044B\u043F\u043E\u043B\u043D\u0435\u043D\u0438\u0438 DELETE-\u0437\u0430\u043F\u0440\u043E\u0441\u0430:",s),s}}async patch(e,t){let s=`${this.apiUrl}/${e}`;try{let r=await fetch(s,{method:"PATCH",headers:{"Content-Type":"application/json",Authorization:`Bearer ${this.bearerToken}`},body:JSON.stringify(t)});return await this.handleResponse(r)}catch(r){throw console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u0440\u0438 \u0432\u044B\u043F\u043E\u043B\u043D\u0435\u043D\u0438\u0438 PATCH-\u0437\u0430\u043F\u0440\u043E\u0441\u0430:",r),r}}async handleResponse(e){if(!e.ok){let t=await e.json();throw{status:e.status,message:t}}if(e.status!==204)return await e.json()}};var d=class{constructor(){let e=a.getToken(),t=`${y}/aion/users`;this.client=new T(t,e)}static getInstance(){return d.instance||(d.instance=new d),d.instance}static async fetchRequests(e=0,t=10){try{let s=d.getInstance().client,r=`data?filters=requests&offset=${e}&limit=${t}`;return await s.get(r).then(i=>i.requests.array)}catch(s){return console.error("\u041E\u0448\u0438\u0431\u043A\u0430 getRequests:",s),[]}}static async fetchUsageApi(){try{let e=d.getInstance().client,t="data?filters=api&offset=0&limit=10";return await e.get(t).then(s=>s.api)}catch(e){return console.error("\u041E\u0448\u0438\u0431\u043A\u0430 fetchUsageApi:",e),[]}}static async signUp(){try{return await d.getInstance().client.post("sign_up",{}).then(()=>!1).catch(t=>{if(t.status===400)return!0;throw t})}catch(e){return console.error("\u041E\u0448\u0438\u0431\u043A\u0430 signUp:",e),!1}}static async login(){try{return await d.getInstance().client.get("login")}catch(e){console.error("\u041E\u0448\u0438\u0431\u043A\u0430 login:",e)}}static async delete(){try{return await d.getInstance().client.delete("")}catch(e){console.error("\u041E\u0448\u0438\u0431\u043A\u0430 delete:",e)}}static async fetchApiToken(){try{return await d.getInstance().client.post("api_token",{})}catch(e){console.error("\u041E\u0448\u0438\u0431\u043A\u0430 fetchApiToken:",e)}}static async refreshApiToken(){try{return await d.getInstance().client.patch("api_token",{})}catch(e){console.error("\u041E\u0448\u0438\u0431\u043A\u0430 refreshApiToken:",e)}}},w=d;w.instance=null;var v=class{constructor(){}static isAuth(){return localStorage.getItem(v.key)!==null}static setAuth(){localStorage.setItem(v.key,"true")}static removeAuth(){localStorage.removeItem(v.key)}static async init(){v.isAuth()?await w.login():(await w.signUp(),v.setAuth(),await w.login())}static getToken(){var e;return(e=localStorage.getItem("_ms-mid"))!=null?e:""}static isExpiredToken(){let e=v.getToken();try{let[t,s,r]=e.split("."),i=JSON.parse(atob(s)),u=Math.floor(Date.now()/1e3);return i.exp<u}catch(t){return console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u0440\u0438 \u043F\u0440\u043E\u0432\u0435\u0440\u043A\u0435 \u0442\u043E\u043A\u0435\u043D\u0430:",t),!1}}},a=v;a.key="isSignUp";var f=class{constructor(){let e=a.getToken(),t=`${y}/aion/ai-generated`;this.client=new T(t,e)}static getInstance(){return f.instance||(f.instance=new f),f.instance}static async getReportsByBinary(e){let t=f.getInstance().client;try{let s=new FormData;return s.append("binary",e,"uploaded-file.png"),await t.postBinary("reports/binary",s)}catch(s){console.error("Error getReportsByBinary:",s)}}static async getReportsByUrl(e){let t=f.getInstance().client;try{let s=`reports/url?url=${e}`;return await t.post(s,{})}catch(s){console.error("\u041E\u0448\u0438\u0431\u043A\u0430 getReportsByUrl:",s)}}},k=f;k.instance=null;var E=class{constructor(){}static async getReportsByBinary(e,t){let s=`${y}/results/api/detector/reports/raw?source=web&user_id=${t}`,r=new FormData;r.append("binary",e,"file_name.png");let i={method:"POST",headers:{Accept:"application/json",Authorization:`Bearer ${a.getToken()}`},body:r};return await fetch(s,i).then(u=>u.json())}static async getReportsByUrl(e,t){let s=`${y}/results/api/detector/reports/json?source=web&user_id=${t}`,r={method:"POST",headers:{Accept:"application/json","Content-Type":"application/json",Authorization:`Bearer ${a.getToken()}`},body:JSON.stringify({object:e})};return await fetch(s,r).then(i=>i.json())}static async sendFeedback(e,t,s){let r={is_proper_predict:t,comment:s},i=`${y}/results/api/detector/reports/result/${e}`,u={method:"PUT",body:JSON.stringify(r),headers:{Accept:"application/json","Content-Type":"application/json"}};a.isExpiredToken()||(i=`${y}/aion/ai-generated/reports/${e}`,u={method:"PATCH",body:JSON.stringify(r),headers:{Accept:"application/json","Content-Type":"application/json"}}),await fetch(i,u).then(m=>m.json()).then(m=>console.log(m)).catch(m=>console.error(m))}static async getAudioVerdict(e){let t="https://v3-atrium-stage-api.optic.xyz/aion/ai-generated/reports/audio/binary",s=new FormData;s.append("binary",e);let r={method:"POST",headers:{Accept:"application/json",Authorization:`Bearer ${a.getToken()}`},body:s};return await fetch(t,r).then(i=>i.json())}};var C=class{constructor(){}static isLimitExceeded(){if(!a.isExpiredToken())return!1;let e=localStorage.getItem(C.key);return e===null?!1:parseInt(e)>5}static increment(){let e=localStorage.getItem(C.key),t=e===null?1:Number(e)+1;localStorage.setItem(C.key,t.toString())}},L=C;L.key="requestCount";var x=class{static async getReportsByBinary(e,t){return a.isExpiredToken()?await E.getReportsByBinary(e,t):await k.getReportsByBinary(e)}static async getReportsByUrl(e,t){return a.isExpiredToken()?await E.getReportsByUrl(e,t):await k.getReportsByUrl(e)}static async sendFeedback(e,t,s){return await E.sendFeedback(e,t,s)}};var ne=()=>{var Q,ee;let o=document.getElementById("report-screen"),e=document.querySelector("#button-report-submit"),t=document.querySelector("#input-report-comment"),s=document.querySelector("#button-report_true"),r=document.querySelector("#button-report_false"),i=document.querySelector("#button-report_close"),u=document.querySelector("#url-error-message"),m=document.querySelector("#processing_cancel"),c=document.querySelector("#file-input"),b=document.querySelector("#ai-or-not-current-image"),I=document.querySelector("#empty-preview-img"),$=document.querySelector("#nsfw-preview-img"),H=document.querySelector("#input-error-text"),B=document.querySelector("#ai-or-not_image-url"),D=document.querySelector("#ai-or-not_submit"),W=document.querySelector("#ai-or-not_dropzone"),g=document.querySelector("#ai-or-not_dropzone-text"),Z=document.querySelector("#result-screen_col"),N=document.querySelector("#share-items-hide"),re=document.querySelector("#ai-or-not-dropzone-counter"),A=document.querySelector("#ai-or-not-dropzone-counter-w"),P,V,q,j,oe;(()=>{if(!a.isExpiredToken())A==null||A.classList.add("hide");else{let n=localStorage.getItem("requestCount")||"0";re.textContent=Number(n)<=5?n:"5",A.classList.remove("hide")}})(),O();let ie=()=>{let n=document.querySelector("#button-report_false-text");n.classList.remove("hide"),n.textContent=n.getAttribute("report-button-text-default_reported"),r.classList.add("is-reported"),s.classList.add("hide")},ae=()=>{let n=document.querySelector("#button-report_true-text");n.classList.remove("hide"),n.textContent=n.getAttribute("report-button-text-default_reported"),s.classList.add("is-reported"),r.classList.add("hide")},ce=()=>{t.value="";let n=document.querySelector("#button-report_true-text"),l=document.querySelector("#button-report_false-text");l.classList.add("hide"),n.classList.remove("hide"),n.textContent=n.getAttribute("report-button-text-default"),l.textContent=l.getAttribute("report-button-text-default"),s.classList.remove("is-reported"),r.classList.remove("is-reported"),s.classList.remove("hide"),r.classList.remove("hide")},le=n=>{j=n;let l=!localStorage.getItem("_ms-mid"),_=document.querySelector('[fs-socialshare-element="url"]'),te=`${a.isExpiredToken()?"https://results.aiornot.com/aiornot/":"https://results.aiornot.com/aiornot/users/"}${n}`;_.textContent=te,document.querySelectorAll(".result-screen_share-item").forEach(pe=>{pe.setAttribute("data-url",te)})},G=()=>{g.textContent="We support jpeg, png, webp, gif, tiff, bmp. 10 Mb of maximum size.",g.classList.remove("text-color-red"),H.textContent="Something went wrong. Try again.",u.classList.add("hide")},J=()=>{u.classList.remove("hide")},de=()=>{u.classList.add("hide")},M=()=>{Z.classList.contains("hide")?(g.textContent="File is too large (max 10 MB)",g.classList.add("text-color-red")):(H.textContent="File is too large (max 10 MB)",u.classList.remove("hide"))};c==null||c.addEventListener("change",()=>{let n=c==null?void 0:c.files[0].size,l=10*1024*1024;n>l?(q=!1,M()):(q=!0,G())});let Te=()=>{document.querySelector("#processing-screen").classList.add("hide"),g.classList.add("error"),W.classList.add("red-border"),g.textContent="Something went wrong. Try again."},ue=()=>{g.classList.remove("error"),W.classList.remove("red-border"),g.textContent="We support jpeg, png, webp, gif, tiff, bmp. 10 Mb of maximum size."},R=()=>{document.querySelector("#choose-file-row").classList.add("hide"),document.querySelector("#legal-tip").classList.remove("hide"),document.querySelector("#processing-screen").classList.add("hide"),document.querySelector("#hero-home_title-description").classList.remove("hide"),document.querySelector("#hero-home_gallery").classList.remove("hide"),document.querySelector("#ai-or-not_dropzone").classList.remove("hide"),document.querySelector("#hero-home_drop-zone-divider").classList.remove("hide"),document.querySelector("#result-screen_col").classList.add("hide"),document.querySelector("#result-screen_image-wrapper").classList.add("hide"),b.classList.add("hide"),I.classList.remove("hide"),$.classList.remove("hide")},Y=()=>{ce(),b.src="",de(),H.textContent="Something went wrong. Try again.",document.querySelector("#choose-file-row").classList.remove("hide"),document.querySelector("#legal-tip").classList.add("hide"),document.querySelector(".processing-screen_triggers_5").click(),document.querySelector("#processing-screen").classList.remove("hide"),document.querySelector(".processing-screen_triggers_1").click(),document.querySelector("#hero-home_title-description").classList.add("hide"),document.querySelector("#hero-home_gallery").classList.add("hide"),document.querySelector("#ai-or-not_dropzone").classList.add("hide"),document.querySelector("#hero-home_drop-zone-divider").classList.add("hide"),document.querySelector("#result-screen_col").classList.remove("hide"),document.querySelector("#result-screen_image-wrapper").classList.remove("hide")};function me(n=!1){n?($.classList.remove("hide"),b.classList.add("hide"),I.classList.add("hide"),N.classList.add("hide")):($.classList.add("hide"),b.classList.remove("hide"),I.classList.add("hide"),N.classList.remove("hide")),document.querySelector(".processing-screen_triggers_3").click(),document.querySelector("#processing-screen").classList.add("hide"),document.querySelector(".processing-screen_triggers_5").click(),document.querySelector("#scroll-to-top-trigger").click(),c.value="",document.querySelector("#ai-or-not_image-url").value=""}let he=n=>{n==="unknown"?(document.getElementById("title-human").innerHTML="Sorry, but in this case we can't really say if it's AI or Not",document.getElementById("ai-or-not_result-message-50").classList.remove("hide"),document.getElementById("ai-or-not_result-message").classList.add("hide"),document.getElementById("ai-or-not_result-message-50").innerHTML="Probly the uploaded image has most likely been modified or compressed",document.getElementById("title-human").classList.remove("hide"),document.getElementById("title-ai").classList.add("hide")):(document.getElementById("title-ai").innerHTML='This image is generated by <span class="text-color-green">AI</span>',document.getElementById("title-human").innerHTML='This image is generated by <span class="text-color-green">Human</span>',document.getElementById("ai-or-not_result-message-50").classList.add("hide"),document.getElementById("ai-or-not_result-message").classList.remove("hide"),document.querySelector("#ai-or-not_model-name").textContent=n,n==="ai"?(document.getElementById("title-human").classList.add("hide"),document.getElementById("title-ai").classList.remove("hide")):(document.getElementById("title-human").classList.remove("hide"),document.getElementById("title-ai").classList.add("hide")))},K=async()=>{if(L.isLimitExceeded()){let n=document.getElementById("sign-up");n.style.display="flex",n.style.zIndex=100,R()}else u.classList.add("hide"),Y(),await x.getReportsByUrl(P,oe).then(n=>{L.increment(),le(n.id),b.src=P,he(n.verdict),me(n.nsfw_detected)}).catch(n=>{Z.classList.contains("hide")?J():(J(),R()),console.log(n)})},h=document.body,ke=document.querySelector("#dropzone-fullscreen_message-tip"),_e=document.querySelector("#dropzone-fullscreen_message-format");h==null||h.addEventListener("dragover",function(n){n.preventDefault(),document.querySelector(".dropzone-fullscreen").classList.remove("hide")}),h==null||h.addEventListener("dragleave",function(n){n.preventDefault(),document.querySelector(".dropzone-fullscreen").classList.add("hide")}),h==null||h.addEventListener("drop",async function(n){n.preventDefault(),document.querySelector(".dropzone-fullscreen").classList.add("hide");let l=n.dataTransfer.files[0],_=l.size,S=10*1024*1024;_>S?(q=!1,M()):(q=!0,G()),q==!0?await X(l):M()}),c==null||c.addEventListener("change",async n=>{if(q==!0){let l=c.files[0];await X(l)}else M()});let X=async n=>{if(n.type==="audio/mpeg"||n.type==="audio/mp3"){if(Y(),L.isLimitExceeded()){let S=document.getElementById("sign-up");S.style.display="flex",S.style.zIndex=100,R();return}let l=document.querySelector("#ai-or-not-current-image"),_=URL.createObjectURL(n);l.setAttribute("src",_),b.classList.remove("hide"),I.classList.add("hide"),await E.getAudioVerdict(n).then(S=>{console.log(S)})}};m==null||m.addEventListener("click",function(){ue(),R()}),(Q=document.querySelector("#ai-or-not_dropzone"))==null||Q.addEventListener("click",function(){V="screen_home",c.click()}),(ee=document.querySelector("#choose-file-row"))==null||ee.addEventListener("click",function(){V="screen_result",c.click()}),D==null||D.addEventListener("click",()=>{B.value!=""&&(P=B.value,K())});let F=document.querySelector("#ai-or-not_image-url");F==null||F.addEventListener("keypress",function(n){n.key==="Enter"&&B.value!=""&&(P=B.value,K())}),s==null||s.addEventListener("click",()=>{ae(),x.sendFeedback(j,!0,"")}),r==null||r.addEventListener("click",()=>{}),i==null||i.addEventListener("click",()=>{}),e==null||e.addEventListener("click",()=>{x.sendFeedback(j,!1,t.value),ie()}),document==null||document.addEventListener("keydown",function(n){n.code==="Escape"&&o.style.display!=="none"&&i.click()}),t==null||t.addEventListener("change",()=>{t.value!=""?e.classList.remove("is-disabled"):e.classList.add("is-disabled")}),t==null||t.addEventListener("input",()=>{t.value!=""?e.classList.remove("is-disabled"):e.classList.add("is-disabled")})};ne();var qt=new z([new p("audio-sample-1","https://vgmsite.com/soundtracks/the-witcher-3-wild-hunt-extended-edition/wanswoqf/01.%20The%20Trail.mp3"),new p("audio-sample-2","https://vgmsite.com/soundtracks/the-witcher-3-wild-hunt-extended-edition/wanswoqf/01.%20The%20Trail.mp3"),new p("audio-sample-3","https://vgmsite.com/soundtracks/the-witcher-3-wild-hunt-extended-edition/wanswoqf/01.%20The%20Trail.mp3"),new p("audio-sample-4","https://vgmsite.com/soundtracks/the-witcher-3-wild-hunt-extended-edition/wanswoqf/01.%20The%20Trail.mp3"),new p("audio-sample-5","https://vgmsite.com/soundtracks/the-witcher-3-wild-hunt-extended-edition/wanswoqf/01.%20The%20Trail.mp3"),new p("audio-sample-6","https://vgmsite.com/soundtracks/the-witcher-3-wild-hunt-extended-edition/wanswoqf/01.%20The%20Trail.mp3")]);})();
+        `;
+      const audio = document.getElementById(`${this.container.id}-audio`);
+      const playPauseBtn = document.getElementById(`${this.container.id}-playPauseBtn`);
+      const progressSlider = document.getElementById(`${this.container.id}-slider`);
+      const track = document.getElementById(`${this.container.id}-progress`);
+      this.audioPlayer = new AudioPlayer(audio, playPauseBtn, progressSlider, track);
+    }
+  };
+  var PlayerManager = class {
+    players;
+    constructor(players = []) {
+      this.players = [];
+      players.forEach((player) => {
+        this.addPlayer(player);
+      });
+    }
+    addPlayer(player) {
+      this.players.push(player);
+      player.audioPlayer?.audio.addEventListener("play", () => this.pauseOtherPlayers(player));
+    }
+    pauseOtherPlayers(currentPlayer) {
+      for (let player of this.players) {
+        if (player !== currentPlayer) {
+          player.audioPlayer?.pauseAudio();
+        }
+      }
+    }
+  };
+
+  // src/utils/fingerprint.ts
+  var visitorId;
+  var fpPromise = import("https://openfpcdn.io/fingerprintjs/v3").then((FingerprintJS) => FingerprintJS.load());
+  var initFingerPrint = async () => {
+    visitorId = await fpPromise.then((fp) => fp.get()).then((result) => {
+      return result.visitorId;
+    });
+  };
+
+  // src/api/RestClient.ts
+  var BASE_URL = "https://api.aiornot.com/";
+  var RestClient = class {
+    apiUrl;
+    bearerToken;
+    constructor(apiUrl, bearerToken) {
+      this.apiUrl = apiUrl;
+      this.bearerToken = bearerToken;
+    }
+    async get(endpoint) {
+      const url = `${this.apiUrl}/${endpoint}`;
+      try {
+        const response = await fetch(url, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${this.bearerToken}`
+          }
+        });
+        return await this.handleResponse(response);
+      } catch (error) {
+        console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u0440\u0438 \u0432\u044B\u043F\u043E\u043B\u043D\u0435\u043D\u0438\u0438 GET-\u0437\u0430\u043F\u0440\u043E\u0441\u0430:", error);
+        throw error;
+      }
+    }
+    async post(endpoint, body) {
+      const url = `${this.apiUrl}/${endpoint}`;
+      try {
+        const response = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${this.bearerToken}`
+          },
+          body: JSON.stringify(body)
+        });
+        return await this.handleResponse(response);
+      } catch (error) {
+        console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u0440\u0438 \u0432\u044B\u043F\u043E\u043B\u043D\u0435\u043D\u0438\u0438 POST-\u0437\u0430\u043F\u0440\u043E\u0441\u0430:", error);
+        throw error;
+      }
+    }
+    async postBinary(endpoint, formData) {
+      const url = `${this.apiUrl}/${endpoint}`;
+      try {
+        const response = await fetch(url, {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${this.bearerToken}`
+          },
+          body: formData
+        });
+        return await this.handleResponse(response);
+      } catch (error) {
+        console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u0440\u0438 \u0432\u044B\u043F\u043E\u043B\u043D\u0435\u043D\u0438\u0438 POST-\u0437\u0430\u043F\u0440\u043E\u0441\u0430:", error);
+        throw error;
+      }
+    }
+    async delete(endpoint) {
+      const url = `${this.apiUrl}/${endpoint}`;
+      try {
+        const response = await fetch(url, {
+          method: "DELETE",
+          headers: {
+            accept: "*/*",
+            Authorization: `Bearer ${this.bearerToken}`
+          }
+        });
+        await this.handleResponse(response);
+      } catch (error) {
+        console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u0440\u0438 \u0432\u044B\u043F\u043E\u043B\u043D\u0435\u043D\u0438\u0438 DELETE-\u0437\u0430\u043F\u0440\u043E\u0441\u0430:", error);
+        throw error;
+      }
+    }
+    async patch(endpoint, body) {
+      const url = `${this.apiUrl}/${endpoint}`;
+      try {
+        const response = await fetch(url, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${this.bearerToken}`
+          },
+          body: JSON.stringify(body)
+        });
+        return await this.handleResponse(response);
+      } catch (error) {
+        console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u0440\u0438 \u0432\u044B\u043F\u043E\u043B\u043D\u0435\u043D\u0438\u0438 PATCH-\u0437\u0430\u043F\u0440\u043E\u0441\u0430:", error);
+        throw error;
+      }
+    }
+    async handleResponse(response) {
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw { status: response.status, message: errorData };
+      }
+      if (response.status !== 204) {
+        return await response.json();
+      }
+    }
+  };
+
+  // src/api/DashboardService.ts
+  var _DashboardService = class {
+    client;
+    constructor() {
+      const bearerToken = AuthService.getToken();
+      const baseUrl = `${BASE_URL}/aion/users`;
+      this.client = new RestClient(baseUrl, bearerToken);
+    }
+    static getInstance() {
+      if (!_DashboardService.instance) {
+        _DashboardService.instance = new _DashboardService();
+      }
+      return _DashboardService.instance;
+    }
+    static async fetchRequests(offset = 0, limit = 10) {
+      try {
+        const client = _DashboardService.getInstance().client;
+        const endpoint = `data?filters=requests&offset=${offset}&limit=${limit}`;
+        return await client.get(endpoint).then((data) => data.requests.array);
+      } catch (error) {
+        console.error("\u041E\u0448\u0438\u0431\u043A\u0430 getRequests:", error);
+        return [];
+      }
+    }
+    static async fetchUsageApi() {
+      try {
+        const client = _DashboardService.getInstance().client;
+        const endpoint = `data?filters=api&offset=0&limit=10`;
+        return await client.get(endpoint).then((data) => data.api);
+      } catch (error) {
+        console.error("\u041E\u0448\u0438\u0431\u043A\u0430 fetchUsageApi:", error);
+        return [];
+      }
+    }
+    static async signUp() {
+      try {
+        const client = _DashboardService.getInstance().client;
+        return await client.post("sign_up", {}).then(() => false).catch((error) => {
+          if (error.status === 400) {
+            return true;
+          }
+          throw error;
+        });
+      } catch (error) {
+        console.error("\u041E\u0448\u0438\u0431\u043A\u0430 signUp:", error);
+        return false;
+      }
+    }
+    static async login() {
+      try {
+        const client = _DashboardService.getInstance().client;
+        return await client.get("login");
+      } catch (error) {
+        console.error("\u041E\u0448\u0438\u0431\u043A\u0430 login:", error);
+      }
+    }
+    static async delete() {
+      try {
+        const client = _DashboardService.getInstance().client;
+        return await client.delete("");
+      } catch (error) {
+        console.error("\u041E\u0448\u0438\u0431\u043A\u0430 delete:", error);
+      }
+    }
+    static async fetchApiToken() {
+      try {
+        const client = _DashboardService.getInstance().client;
+        return await client.post("api_token", {});
+      } catch (error) {
+        console.error("\u041E\u0448\u0438\u0431\u043A\u0430 fetchApiToken:", error);
+      }
+    }
+    static async refreshApiToken() {
+      try {
+        const client = _DashboardService.getInstance().client;
+        return await client.patch("api_token", {});
+      } catch (error) {
+        console.error("\u041E\u0448\u0438\u0431\u043A\u0430 refreshApiToken:", error);
+      }
+    }
+  };
+  var DashboardService = _DashboardService;
+  __publicField(DashboardService, "instance", null);
+
+  // src/api/AuthService.ts
+  var _AuthService = class {
+    constructor() {
+    }
+    static isAuth() {
+      if (localStorage.getItem(_AuthService.key) !== null) {
+        return true;
+      }
+      return false;
+    }
+    static setAuth() {
+      localStorage.setItem(_AuthService.key, "true");
+    }
+    static removeAuth() {
+      localStorage.removeItem(_AuthService.key);
+    }
+    static async init() {
+      if (_AuthService.isAuth()) {
+        await DashboardService.login();
+      } else {
+        await DashboardService.signUp();
+        _AuthService.setAuth();
+        await DashboardService.login();
+      }
+    }
+    static getToken() {
+      return localStorage.getItem("_ms-mid") ?? "";
+    }
+    static isExpiredToken() {
+      const token = _AuthService.getToken();
+      try {
+        const [header, payload, signature] = token.split(".");
+        const payloadDecoded = JSON.parse(atob(payload));
+        const currentTime = Math.floor(Date.now() / 1e3);
+        if (payloadDecoded.exp < currentTime) {
+          return true;
+        }
+        return false;
+      } catch (e) {
+        console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u0440\u0438 \u043F\u0440\u043E\u0432\u0435\u0440\u043A\u0435 \u0442\u043E\u043A\u0435\u043D\u0430:", e);
+        return false;
+      }
+    }
+  };
+  var AuthService = _AuthService;
+  __publicField(AuthService, "key", "isSignUp");
+
+  // src/api/AIGeneratedService.ts
+  var _AIGeneratedService = class {
+    client;
+    constructor() {
+      const bearerToken = AuthService.getToken();
+      const baseUrl = `${BASE_URL}/aion/ai-generated`;
+      this.client = new RestClient(baseUrl, bearerToken);
+    }
+    static getInstance() {
+      if (!_AIGeneratedService.instance) {
+        _AIGeneratedService.instance = new _AIGeneratedService();
+      }
+      return _AIGeneratedService.instance;
+    }
+    static async getReportsByBinary(file) {
+      const client = _AIGeneratedService.getInstance().client;
+      try {
+        const formData = new FormData();
+        formData.append("binary", file, "uploaded-file.png");
+        return await client.postBinary("reports/binary", formData);
+      } catch (error) {
+        console.error("Error getReportsByBinary:", error);
+      }
+    }
+    static async getReportsByUrl(url) {
+      const client = _AIGeneratedService.getInstance().client;
+      try {
+        const endpoint = `reports/url?url=${url}`;
+        return await client.post(endpoint, {});
+      } catch (error) {
+        console.error("\u041E\u0448\u0438\u0431\u043A\u0430 getReportsByUrl:", error);
+      }
+    }
+  };
+  var AIGeneratedService = _AIGeneratedService;
+  __publicField(AIGeneratedService, "instance", null);
+
+  // src/api/OpenAIGeneratedService.ts
+  var OpenAIGeneratedService = class {
+    constructor() {
+    }
+    static async getReportsByBinary(file, visitorId2) {
+      const baseUrl = `${BASE_URL}/results/api/detector/reports/raw?source=web&user_id=${visitorId2}`;
+      const formData = new FormData();
+      formData.append("binary", file, "file_name.png");
+      const options = {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${AuthService.getToken()}`
+        },
+        body: formData
+      };
+      return await fetch(baseUrl, options).then((response) => response.json());
+    }
+    static async getReportsByUrl(url, visitorId2) {
+      const baseUrl = `${BASE_URL}/results/api/detector/reports/json?source=web&user_id=${visitorId2}`;
+      const options = {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${AuthService.getToken()}`
+        },
+        body: JSON.stringify({
+          object: url
+        })
+      };
+      return await fetch(baseUrl, options).then((response) => response.json());
+    }
+    static async sendFeedback(id, reportPredict, reportComment) {
+      const body = {
+        is_proper_predict: reportPredict,
+        comment: reportComment
+      };
+      let url = `${BASE_URL}/results/api/detector/reports/result/${id}`;
+      let options = {
+        method: "PUT",
+        body: JSON.stringify(body),
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        }
+      };
+      if (!AuthService.isExpiredToken()) {
+        url = `${BASE_URL}/aion/ai-generated/reports/${id}`;
+        options = {
+          method: "PATCH",
+          body: JSON.stringify(body),
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json"
+          }
+        };
+      }
+      await fetch(url, options).then((response) => response.json()).then((data) => console.log(data)).catch((error) => console.error(error));
+    }
+    static async getAudioVerdict(file) {
+      const baseUrl = `https://v3-atrium-stage-api.optic.xyz/aion/ai-generated/reports/audio/binary`;
+      const formData = new FormData();
+      formData.append("binary", file);
+      const options = {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${AuthService.getToken()}`
+        },
+        body: formData
+      };
+      return await fetch(baseUrl, options).then((response) => response.json());
+    }
+  };
+
+  // src/api/RequestCounter.ts
+  var _RequestCounter = class {
+    constructor() {
+    }
+    static isLimitExceeded() {
+      if (!AuthService.isExpiredToken()) {
+        return false;
+      }
+      const count = localStorage.getItem(_RequestCounter.key);
+      if (count === null) {
+        return false;
+      }
+      return parseInt(count) > 5;
+    }
+    static increment() {
+      const count = localStorage.getItem(_RequestCounter.key);
+      const newCount = count === null ? 1 : Number(count) + 1;
+      localStorage.setItem(_RequestCounter.key, newCount.toString());
+    }
+  };
+  var RequestCounter = _RequestCounter;
+  __publicField(RequestCounter, "key", "requestCount");
+
+  // src/api/WrapperAIGeneratedService.ts
+  var WrapperAIGeneratedService = class {
+    static async getReportsByBinary(file, visitorId2) {
+      if (!AuthService.isExpiredToken()) {
+        return await AIGeneratedService.getReportsByBinary(file);
+      } else {
+        return await OpenAIGeneratedService.getReportsByBinary(file, visitorId2);
+      }
+    }
+    static async getReportsByUrl(url, visitorId2) {
+      if (!AuthService.isExpiredToken()) {
+        return await AIGeneratedService.getReportsByUrl(url);
+      } else {
+        return await OpenAIGeneratedService.getReportsByUrl(url, visitorId2);
+      }
+    }
+    static async sendFeedback(id, reportPredict, reportComment) {
+      return await OpenAIGeneratedService.sendFeedback(id, reportPredict, reportComment);
+    }
+  };
+
+  // src/dashboard/AudioElements.ts
+  var initAudio = () => {
+    const reportScreen = document.getElementById("report-screen");
+    const reportButton_submit = document.querySelector("#button-report-submit");
+    const reportInput = document.querySelector("#input-report-comment");
+    const reportButton_true = document.querySelector("#button-report_true");
+    const reportButton_false = document.querySelector("#button-report_false");
+    const reportButton_close = document.querySelector("#button-report_close");
+    const uiEl_urlError = document.querySelector("#url-error-message");
+    const buttonEl_processClose = document.querySelector("#processing_cancel");
+    const inputEl_fileInput = document.querySelector("#file-input");
+    const imageEl_currentImage = document.querySelector("#ai-or-not-current-image");
+    const imageEl_currentImageEmpty = document.querySelector("#empty-preview-img");
+    const imageEl_nsfwImage = document.querySelector("#nsfw-preview-img");
+    const textEl_inputError = document.querySelector("#input-error-text");
+    const inputEl_urlWaiter = document.querySelector("#ai-or-not_image-url");
+    const buttonEl_urlCheck = document.querySelector("#ai-or-not_submit");
+    const uiEl_dropZone = document.querySelector("#ai-or-not_dropzone");
+    const textEl_dropZoneError = document.querySelector("#ai-or-not_dropzone-text");
+    const uiEl_resultCol = document.querySelector("#result-screen_col");
+    const buttonEl_sharedButtons = document.querySelector("#share-items-hide");
+    const counterEl_requestCounterValue = document.querySelector("#ai-or-not-dropzone-counter");
+    const counterEl_requestCounterBlock = document.querySelector("#ai-or-not-dropzone-counter-w");
+    let pastedUrl;
+    let fileUpload_way;
+    let fileSizeAllow;
+    let currentResultId;
+    let visitorId2;
+    const updateRequestCounter = () => {
+      if (!AuthService.isExpiredToken()) {
+        counterEl_requestCounterBlock?.classList.add("hide");
+      } else {
+        const value = localStorage.getItem("requestCount") || "0";
+        counterEl_requestCounterValue.textContent = Number(value) <= 5 ? value : "5";
+        counterEl_requestCounterBlock.classList.remove("hide");
+      }
+    };
+    updateRequestCounter();
+    initFingerPrint();
+    const uiReported_false = () => {
+      let buttonText = document.querySelector("#button-report_false-text");
+      buttonText.classList.remove("hide");
+      buttonText.textContent = buttonText.getAttribute("report-button-text-default_reported");
+      reportButton_false.classList.add("is-reported");
+      reportButton_true.classList.add("hide");
+    };
+    const uiReported_true = () => {
+      let buttonText = document.querySelector("#button-report_true-text");
+      buttonText.classList.remove("hide");
+      buttonText.textContent = buttonText.getAttribute("report-button-text-default_reported");
+      reportButton_true.classList.add("is-reported");
+      reportButton_false.classList.add("hide");
+    };
+    const uiReported_initialState = () => {
+      reportInput.value = "";
+      let buttonText_true = document.querySelector("#button-report_true-text");
+      let buttonText_false = document.querySelector("#button-report_false-text");
+      buttonText_false.classList.add("hide");
+      buttonText_true.classList.remove("hide");
+      buttonText_true.textContent = buttonText_true.getAttribute("report-button-text-default");
+      buttonText_false.textContent = buttonText_false.getAttribute("report-button-text-default");
+      reportButton_true.classList.remove("is-reported");
+      reportButton_false.classList.remove("is-reported");
+      reportButton_true.classList.remove("hide");
+      reportButton_false.classList.remove("hide");
+    };
+    const changeShareUrl = (responseId) => {
+      currentResultId = responseId;
+      const accessTokenIsExist = localStorage.getItem("_ms-mid") ? false : true;
+      const element2 = document.querySelector('[fs-socialshare-element="url"]');
+      let shareUrlTemplate = AuthService.isExpiredToken() ? `https://results.aiornot.com/aiornot/` : `https://results.aiornot.com/aiornot/users/`;
+      const shareUrl = `${shareUrlTemplate}${responseId}`;
+      element2.textContent = shareUrl;
+      let allShareUrl = document.querySelectorAll(".result-screen_share-item");
+      allShareUrl.forEach((el) => {
+        el.setAttribute("data-url", shareUrl);
+      });
+    };
+    const fileSizeMessage_ok = () => {
+      textEl_dropZoneError.textContent = "We support jpeg, png, webp, gif, tiff, bmp. 10 Mb of maximum size.";
+      textEl_dropZoneError.classList.remove("text-color-red");
+      textEl_inputError.textContent = "Something went wrong. Try again.";
+      uiEl_urlError.classList.add("hide");
+    };
+    const someThingWentWrong_error = () => {
+      uiEl_urlError.classList.remove("hide");
+    };
+    const someThingWentWrong_ok = () => {
+      uiEl_urlError.classList.add("hide");
+    };
+    const fileSizeMessage_error = () => {
+      if (uiEl_resultCol.classList.contains("hide")) {
+        textEl_dropZoneError.textContent = "File is too large (max 10 MB)";
+        textEl_dropZoneError.classList.add("text-color-red");
+      } else {
+        textEl_inputError.textContent = "File is too large (max 10 MB)";
+        uiEl_urlError.classList.remove("hide");
+      }
+    };
+    inputEl_fileInput?.addEventListener("change", () => {
+      const fileSize = inputEl_fileInput?.files[0].size;
+      const maxSize = 10 * 1024 * 1024;
+      if (fileSize > maxSize) {
+        fileSizeAllow = false;
+        fileSizeMessage_error();
+      } else {
+        fileSizeAllow = true;
+        fileSizeMessage_ok();
+      }
+    });
+    const error_dropZone = () => {
+      document.querySelector("#processing-screen").classList.add("hide");
+      textEl_dropZoneError.classList.add("error");
+      uiEl_dropZone.classList.add("red-border");
+      textEl_dropZoneError.textContent = "Something went wrong. Try again.";
+    };
+    const initial_dropZone = () => {
+      textEl_dropZoneError.classList.remove("error");
+      uiEl_dropZone.classList.remove("red-border");
+      textEl_dropZoneError.textContent = "We support jpeg, png, webp, gif, tiff, bmp. 10 Mb of maximum size.";
+    };
+    const screen_homeShow = () => {
+      document.querySelector("#choose-file-row").classList.add("hide");
+      document.querySelector("#legal-tip").classList.remove("hide");
+      document.querySelector("#processing-screen").classList.add("hide");
+      document.querySelector("#hero-home_title-description").classList.remove("hide");
+      document.querySelector("#hero-home_gallery").classList.remove("hide");
+      document.querySelector("#ai-or-not_dropzone").classList.remove("hide");
+      document.querySelector("#hero-home_drop-zone-divider").classList.remove("hide");
+      document.querySelector("#result-screen_col").classList.add("hide");
+      document.querySelector("#result-screen_image-wrapper").classList.add("hide");
+      imageEl_currentImage.classList.add("hide");
+      imageEl_currentImageEmpty.classList.remove("hide");
+      imageEl_nsfwImage.classList.remove("hide");
+    };
+    const loadingStart = () => {
+      uiReported_initialState();
+      imageEl_currentImage.src = "";
+      someThingWentWrong_ok();
+      textEl_inputError.textContent = "Something went wrong. Try again.";
+      document.querySelector("#choose-file-row").classList.remove("hide");
+      document.querySelector("#legal-tip").classList.add("hide");
+      document.querySelector(".processing-screen_triggers_5").click();
+      document.querySelector("#processing-screen").classList.remove("hide");
+      document.querySelector(".processing-screen_triggers_1").click();
+      document.querySelector("#hero-home_title-description").classList.add("hide");
+      document.querySelector("#hero-home_gallery").classList.add("hide");
+      document.querySelector("#ai-or-not_dropzone").classList.add("hide");
+      document.querySelector("#hero-home_drop-zone-divider").classList.add("hide");
+      document.querySelector("#result-screen_col").classList.remove("hide");
+      document.querySelector("#result-screen_image-wrapper").classList.remove("hide");
+    };
+    function loadingFinish(nsfw_detected = false) {
+      if (nsfw_detected) {
+        imageEl_nsfwImage.classList.remove("hide");
+        imageEl_currentImage.classList.add("hide");
+        imageEl_currentImageEmpty.classList.add("hide");
+        buttonEl_sharedButtons.classList.add("hide");
+      } else {
+        imageEl_nsfwImage.classList.add("hide");
+        imageEl_currentImage.classList.remove("hide");
+        imageEl_currentImageEmpty.classList.add("hide");
+        buttonEl_sharedButtons.classList.remove("hide");
+      }
+      document.querySelector(".processing-screen_triggers_3").click();
+      document.querySelector("#processing-screen").classList.add("hide");
+      document.querySelector(".processing-screen_triggers_5").click();
+      document.querySelector("#scroll-to-top-trigger").click();
+      inputEl_fileInput.value = "";
+      document.querySelector("#ai-or-not_image-url").value = "";
+    }
+    const findHighestConfidence = (data) => {
+      if (data === "unknown") {
+        document.getElementById("title-human").innerHTML = "Sorry, but in this case we can't really say if it's AI or Not";
+        document.getElementById("ai-or-not_result-message-50").classList.remove("hide");
+        document.getElementById("ai-or-not_result-message").classList.add("hide");
+        document.getElementById("ai-or-not_result-message-50").innerHTML = "Probly the uploaded image has most likely been modified or compressed";
+        document.getElementById("title-human").classList.remove("hide");
+        document.getElementById("title-ai").classList.add("hide");
+      } else {
+        document.getElementById("title-ai").innerHTML = 'This image is generated by <span class="text-color-green">AI</span>';
+        document.getElementById("title-human").innerHTML = 'This image is generated by <span class="text-color-green">Human</span>';
+        document.getElementById("ai-or-not_result-message-50").classList.add("hide");
+        document.getElementById("ai-or-not_result-message").classList.remove("hide");
+        document.querySelector("#ai-or-not_model-name").textContent = data;
+        if (data === "ai") {
+          document.getElementById("title-human").classList.add("hide");
+          document.getElementById("title-ai").classList.remove("hide");
+        } else {
+          document.getElementById("title-human").classList.remove("hide");
+          document.getElementById("title-ai").classList.add("hide");
+        }
+      }
+    };
+    const postToApi_url = async () => {
+      if (RequestCounter.isLimitExceeded()) {
+        const signInModalElement = document.getElementById("sign-up");
+        signInModalElement.style.display = "flex";
+        signInModalElement.style.zIndex = 100;
+        screen_homeShow();
+      } else {
+        uiEl_urlError.classList.add("hide");
+        loadingStart();
+        await WrapperAIGeneratedService.getReportsByUrl(pastedUrl, visitorId2).then((response) => {
+          RequestCounter.increment();
+          changeShareUrl(response.id);
+          imageEl_currentImage.src = pastedUrl;
+          findHighestConfidence(response.verdict);
+          loadingFinish(response.nsfw_detected);
+        }).catch((error) => {
+          if (uiEl_resultCol.classList.contains("hide")) {
+            someThingWentWrong_error();
+          } else {
+            someThingWentWrong_error();
+            screen_homeShow();
+          }
+          console.log(error);
+        });
+      }
+    };
+    const dropzone = document.body;
+    const tipMessage = document.querySelector("#dropzone-fullscreen_message-tip");
+    const formatMessage = document.querySelector("#dropzone-fullscreen_message-format");
+    dropzone?.addEventListener("dragover", function(event) {
+      event.preventDefault();
+      document.querySelector(".dropzone-fullscreen").classList.remove("hide");
+    });
+    dropzone?.addEventListener("dragleave", function(event) {
+      event.preventDefault();
+      document.querySelector(".dropzone-fullscreen").classList.add("hide");
+    });
+    dropzone?.addEventListener("drop", async function(event) {
+      event.preventDefault();
+      document.querySelector(".dropzone-fullscreen").classList.add("hide");
+      const file = event.dataTransfer.files[0];
+      const fileSize = file.size;
+      const maxSize = 10 * 1024 * 1024;
+      if (fileSize > maxSize) {
+        fileSizeAllow = false;
+        fileSizeMessage_error();
+      } else {
+        fileSizeAllow = true;
+        fileSizeMessage_ok();
+      }
+      if (fileSizeAllow == true) {
+        await uploadBinaryFile(file);
+      } else {
+        fileSizeMessage_error();
+      }
+    });
+    inputEl_fileInput?.addEventListener("change", async (event) => {
+      if (fileSizeAllow == true) {
+        const file = inputEl_fileInput.files[0];
+        await uploadBinaryFile(file);
+      } else {
+        fileSizeMessage_error();
+      }
+    });
+    const uploadBinaryFile = async (file) => {
+      if (file.type === "audio/mpeg" || file.type === "audio/mp3") {
+        loadingStart();
+        if (RequestCounter.isLimitExceeded()) {
+          const signInModalElement = document.getElementById("sign-up");
+          signInModalElement.style.display = "flex";
+          signInModalElement.style.zIndex = 100;
+          screen_homeShow();
+          return;
+        }
+        const currentImage = document.querySelector("#ai-or-not-current-image");
+        let currentImageUrl = URL.createObjectURL(file);
+        currentImage.setAttribute("src", currentImageUrl);
+        imageEl_currentImage.classList.remove("hide");
+        imageEl_currentImageEmpty.classList.add("hide");
+        await OpenAIGeneratedService.getAudioVerdict(file).then((response) => {
+          console.log(response);
+        });
+      }
+    };
+    buttonEl_processClose?.addEventListener("click", function() {
+      initial_dropZone();
+      screen_homeShow();
+    });
+    document.querySelector("#ai-or-not_dropzone")?.addEventListener("click", function() {
+      fileUpload_way = "screen_home";
+      inputEl_fileInput.click();
+    });
+    document.querySelector("#choose-file-row")?.addEventListener("click", function() {
+      fileUpload_way = "screen_result";
+      inputEl_fileInput.click();
+    });
+    buttonEl_urlCheck?.addEventListener("click", () => {
+      if (inputEl_urlWaiter.value != "") {
+        pastedUrl = inputEl_urlWaiter.value;
+        postToApi_url();
+      }
+    });
+    const element = document.querySelector("#ai-or-not_image-url");
+    element?.addEventListener("keypress", function(e) {
+      if (e.key === "Enter") {
+        if (inputEl_urlWaiter.value != "") {
+          pastedUrl = inputEl_urlWaiter.value;
+          postToApi_url();
+        }
+      }
+    });
+    reportButton_true?.addEventListener("click", () => {
+      uiReported_true();
+      WrapperAIGeneratedService.sendFeedback(currentResultId, true, "");
+    });
+    reportButton_false?.addEventListener("click", () => {
+    });
+    reportButton_close?.addEventListener("click", () => {
+    });
+    reportButton_submit?.addEventListener("click", () => {
+      WrapperAIGeneratedService.sendFeedback(currentResultId, false, reportInput.value);
+      uiReported_false();
+    });
+    document?.addEventListener("keydown", function(event) {
+      if (event.code === "Escape") {
+        if (reportScreen.style.display !== "none") {
+          reportButton_close.click();
+        }
+      }
+    });
+    reportInput?.addEventListener("change", () => {
+      if (reportInput.value != "") {
+        reportButton_submit.classList.remove("is-disabled");
+      } else {
+        reportButton_submit.classList.add("is-disabled");
+      }
+    });
+    reportInput?.addEventListener("input", () => {
+      if (reportInput.value != "") {
+        reportButton_submit.classList.remove("is-disabled");
+      } else {
+        reportButton_submit.classList.add("is-disabled");
+      }
+    });
+  };
+
+  // src/player.ts
+  initAudio();
+  var manager = new PlayerManager([
+    new AudioPlayerContainer(
+      "audio-sample-1",
+      "https://vgmsite.com/soundtracks/the-witcher-3-wild-hunt-extended-edition/wanswoqf/01.%20The%20Trail.mp3"
+    ),
+    new AudioPlayerContainer(
+      "audio-sample-2",
+      "https://vgmsite.com/soundtracks/the-witcher-3-wild-hunt-extended-edition/wanswoqf/01.%20The%20Trail.mp3"
+    ),
+    new AudioPlayerContainer(
+      "audio-sample-3",
+      "https://vgmsite.com/soundtracks/the-witcher-3-wild-hunt-extended-edition/wanswoqf/01.%20The%20Trail.mp3"
+    ),
+    new AudioPlayerContainer(
+      "audio-sample-4",
+      "https://vgmsite.com/soundtracks/the-witcher-3-wild-hunt-extended-edition/wanswoqf/01.%20The%20Trail.mp3"
+    ),
+    new AudioPlayerContainer(
+      "audio-sample-5",
+      "https://vgmsite.com/soundtracks/the-witcher-3-wild-hunt-extended-edition/wanswoqf/01.%20The%20Trail.mp3"
+    ),
+    new AudioPlayerContainer(
+      "audio-sample-6",
+      "https://vgmsite.com/soundtracks/the-witcher-3-wild-hunt-extended-edition/wanswoqf/01.%20The%20Trail.mp3"
+    )
+  ]);
+})();
+//# sourceMappingURL=player.js.map

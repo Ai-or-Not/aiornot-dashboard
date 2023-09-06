@@ -1,1 +1,257 @@
-"use strict";(()=>{var p="https://api.aiornot.com/",l=class{constructor(t,e){this.apiUrl=t,this.bearerToken=e}async get(t){let e=`${this.apiUrl}/${t}`;try{let r=await fetch(e,{method:"GET",headers:{"Content-Type":"application/json",Authorization:`Bearer ${this.bearerToken}`}});return await this.handleResponse(r)}catch(r){throw console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u0440\u0438 \u0432\u044B\u043F\u043E\u043B\u043D\u0435\u043D\u0438\u0438 GET-\u0437\u0430\u043F\u0440\u043E\u0441\u0430:",r),r}}async post(t,e){let r=`${this.apiUrl}/${t}`;try{let n=await fetch(r,{method:"POST",headers:{"Content-Type":"application/json",Authorization:`Bearer ${this.bearerToken}`},body:JSON.stringify(e)});return await this.handleResponse(n)}catch(n){throw console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u0440\u0438 \u0432\u044B\u043F\u043E\u043B\u043D\u0435\u043D\u0438\u0438 POST-\u0437\u0430\u043F\u0440\u043E\u0441\u0430:",n),n}}async postBinary(t,e){let r=`${this.apiUrl}/${t}`;try{let n=await fetch(r,{method:"POST",headers:{Accept:"application/json",Authorization:`Bearer ${this.bearerToken}`},body:e});return await this.handleResponse(n)}catch(n){throw console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u0440\u0438 \u0432\u044B\u043F\u043E\u043B\u043D\u0435\u043D\u0438\u0438 POST-\u0437\u0430\u043F\u0440\u043E\u0441\u0430:",n),n}}async delete(t){let e=`${this.apiUrl}/${t}`;try{let r=await fetch(e,{method:"DELETE",headers:{accept:"*/*",Authorization:`Bearer ${this.bearerToken}`}});await this.handleResponse(r)}catch(r){throw console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u0440\u0438 \u0432\u044B\u043F\u043E\u043B\u043D\u0435\u043D\u0438\u0438 DELETE-\u0437\u0430\u043F\u0440\u043E\u0441\u0430:",r),r}}async patch(t,e){let r=`${this.apiUrl}/${t}`;try{let n=await fetch(r,{method:"PATCH",headers:{"Content-Type":"application/json",Authorization:`Bearer ${this.bearerToken}`},body:JSON.stringify(e)});return await this.handleResponse(n)}catch(n){throw console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u0440\u0438 \u0432\u044B\u043F\u043E\u043B\u043D\u0435\u043D\u0438\u0438 PATCH-\u0437\u0430\u043F\u0440\u043E\u0441\u0430:",n),n}}async handleResponse(t){if(!t.ok){let e=await t.json();throw{status:t.status,message:e}}if(t.status!==204)return await t.json()}};var a=class{constructor(){let t=o.getToken(),e=`${p}/aion/users`;this.client=new l(e,t)}static getInstance(){return a.instance||(a.instance=new a),a.instance}static async fetchRequests(t=0,e=10){try{let r=a.getInstance().client,n=`data?filters=requests&offset=${t}&limit=${e}`;return await r.get(n).then(y=>y.requests.array)}catch(r){return console.error("\u041E\u0448\u0438\u0431\u043A\u0430 getRequests:",r),[]}}static async fetchUsageApi(){try{let t=a.getInstance().client,e="data?filters=api&offset=0&limit=10";return await t.get(e).then(r=>r.api)}catch(t){return console.error("\u041E\u0448\u0438\u0431\u043A\u0430 fetchUsageApi:",t),[]}}static async signUp(){try{return await a.getInstance().client.post("sign_up",{}).then(()=>!1).catch(e=>{if(e.status===400)return!0;throw e})}catch(t){return console.error("\u041E\u0448\u0438\u0431\u043A\u0430 signUp:",t),!1}}static async login(){try{return await a.getInstance().client.get("login")}catch(t){console.error("\u041E\u0448\u0438\u0431\u043A\u0430 login:",t)}}static async delete(){try{return await a.getInstance().client.delete("")}catch(t){console.error("\u041E\u0448\u0438\u0431\u043A\u0430 delete:",t)}}static async fetchApiToken(){try{return await a.getInstance().client.post("api_token",{})}catch(t){console.error("\u041E\u0448\u0438\u0431\u043A\u0430 fetchApiToken:",t)}}static async refreshApiToken(){try{return await a.getInstance().client.patch("api_token",{})}catch(t){console.error("\u041E\u0448\u0438\u0431\u043A\u0430 refreshApiToken:",t)}}},s=a;s.instance=null;var i=class{constructor(){}static isAuth(){return localStorage.getItem(i.key)!==null}static setAuth(){localStorage.setItem(i.key,"true")}static removeAuth(){localStorage.removeItem(i.key)}static async init(){i.isAuth()?await s.login():(await s.signUp(),i.setAuth(),await s.login())}static getToken(){var t;return(t=localStorage.getItem("_ms-mid"))!=null?t:""}static isExpiredToken(){let t=i.getToken();try{let[e,r,n]=t.split("."),y=JSON.parse(atob(r)),g=Math.floor(Date.now()/1e3);return y.exp<g}catch(e){return console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u0440\u0438 \u043F\u0440\u043E\u0432\u0435\u0440\u043A\u0435 \u0442\u043E\u043A\u0435\u043D\u0430:",e),!1}}},o=i;o.key="isSignUp";var c=class{constructor(){let t=o.getToken(),e=`${p}/aion/ai-generated`;this.client=new l(e,t)}static getInstance(){return c.instance||(c.instance=new c),c.instance}static async getReportsByBinary(t){let e=c.getInstance().client;try{let r=new FormData;return r.append("binary",t,"uploaded-file.png"),await e.postBinary("reports/binary",r)}catch(r){console.error("Error getReportsByBinary:",r)}}static async getReportsByUrl(t){let e=c.getInstance().client;try{let r=`reports/url?url=${t}`;return await e.post(r,{})}catch(r){console.error("\u041E\u0448\u0438\u0431\u043A\u0430 getReportsByUrl:",r)}}},h=c;h.instance=null;var u=class{constructor(){}static isLimitExceeded(){if(!o.isExpiredToken())return!1;let t=localStorage.getItem(u.key);return t===null?!1:parseInt(t)>5}static increment(){let t=localStorage.getItem(u.key),e=t===null?1:Number(t)+1;localStorage.setItem(u.key,e.toString())}},m=u;m.key="requestCount";document.getElementById("delete-account").onclick=async()=>{await o.init(),await s.delete(),window.location.href="https://aiornot.com"};document.getElementById("sign-out").onclick=()=>{o.removeAuth()};})();
+"use strict";
+(() => {
+  var __defProp = Object.defineProperty;
+  var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+  var __publicField = (obj, key, value) => {
+    __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+    return value;
+  };
+
+  // bin/live-reload.js
+  new EventSource(`${"http://localhost:3000"}/esbuild`).addEventListener("change", () => location.reload());
+
+  // src/api/RestClient.ts
+  var BASE_URL = "https://api.aiornot.com/";
+  var RestClient = class {
+    apiUrl;
+    bearerToken;
+    constructor(apiUrl, bearerToken) {
+      this.apiUrl = apiUrl;
+      this.bearerToken = bearerToken;
+    }
+    async get(endpoint) {
+      const url = `${this.apiUrl}/${endpoint}`;
+      try {
+        const response = await fetch(url, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${this.bearerToken}`
+          }
+        });
+        return await this.handleResponse(response);
+      } catch (error) {
+        console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u0440\u0438 \u0432\u044B\u043F\u043E\u043B\u043D\u0435\u043D\u0438\u0438 GET-\u0437\u0430\u043F\u0440\u043E\u0441\u0430:", error);
+        throw error;
+      }
+    }
+    async post(endpoint, body) {
+      const url = `${this.apiUrl}/${endpoint}`;
+      try {
+        const response = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${this.bearerToken}`
+          },
+          body: JSON.stringify(body)
+        });
+        return await this.handleResponse(response);
+      } catch (error) {
+        console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u0440\u0438 \u0432\u044B\u043F\u043E\u043B\u043D\u0435\u043D\u0438\u0438 POST-\u0437\u0430\u043F\u0440\u043E\u0441\u0430:", error);
+        throw error;
+      }
+    }
+    async postBinary(endpoint, formData) {
+      const url = `${this.apiUrl}/${endpoint}`;
+      try {
+        const response = await fetch(url, {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${this.bearerToken}`
+          },
+          body: formData
+        });
+        return await this.handleResponse(response);
+      } catch (error) {
+        console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u0440\u0438 \u0432\u044B\u043F\u043E\u043B\u043D\u0435\u043D\u0438\u0438 POST-\u0437\u0430\u043F\u0440\u043E\u0441\u0430:", error);
+        throw error;
+      }
+    }
+    async delete(endpoint) {
+      const url = `${this.apiUrl}/${endpoint}`;
+      try {
+        const response = await fetch(url, {
+          method: "DELETE",
+          headers: {
+            accept: "*/*",
+            Authorization: `Bearer ${this.bearerToken}`
+          }
+        });
+        await this.handleResponse(response);
+      } catch (error) {
+        console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u0440\u0438 \u0432\u044B\u043F\u043E\u043B\u043D\u0435\u043D\u0438\u0438 DELETE-\u0437\u0430\u043F\u0440\u043E\u0441\u0430:", error);
+        throw error;
+      }
+    }
+    async patch(endpoint, body) {
+      const url = `${this.apiUrl}/${endpoint}`;
+      try {
+        const response = await fetch(url, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${this.bearerToken}`
+          },
+          body: JSON.stringify(body)
+        });
+        return await this.handleResponse(response);
+      } catch (error) {
+        console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u0440\u0438 \u0432\u044B\u043F\u043E\u043B\u043D\u0435\u043D\u0438\u0438 PATCH-\u0437\u0430\u043F\u0440\u043E\u0441\u0430:", error);
+        throw error;
+      }
+    }
+    async handleResponse(response) {
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw { status: response.status, message: errorData };
+      }
+      if (response.status !== 204) {
+        return await response.json();
+      }
+    }
+  };
+
+  // src/api/DashboardService.ts
+  var _DashboardService = class {
+    client;
+    constructor() {
+      const bearerToken = AuthService.getToken();
+      const baseUrl = `${BASE_URL}/aion/users`;
+      this.client = new RestClient(baseUrl, bearerToken);
+    }
+    static getInstance() {
+      if (!_DashboardService.instance) {
+        _DashboardService.instance = new _DashboardService();
+      }
+      return _DashboardService.instance;
+    }
+    static async fetchRequests(offset = 0, limit = 10) {
+      try {
+        const client = _DashboardService.getInstance().client;
+        const endpoint = `data?filters=requests&offset=${offset}&limit=${limit}`;
+        return await client.get(endpoint).then((data) => data.requests.array);
+      } catch (error) {
+        console.error("\u041E\u0448\u0438\u0431\u043A\u0430 getRequests:", error);
+        return [];
+      }
+    }
+    static async fetchUsageApi() {
+      try {
+        const client = _DashboardService.getInstance().client;
+        const endpoint = `data?filters=api&offset=0&limit=10`;
+        return await client.get(endpoint).then((data) => data.api);
+      } catch (error) {
+        console.error("\u041E\u0448\u0438\u0431\u043A\u0430 fetchUsageApi:", error);
+        return [];
+      }
+    }
+    static async signUp() {
+      try {
+        const client = _DashboardService.getInstance().client;
+        return await client.post("sign_up", {}).then(() => false).catch((error) => {
+          if (error.status === 400) {
+            return true;
+          }
+          throw error;
+        });
+      } catch (error) {
+        console.error("\u041E\u0448\u0438\u0431\u043A\u0430 signUp:", error);
+        return false;
+      }
+    }
+    static async login() {
+      try {
+        const client = _DashboardService.getInstance().client;
+        return await client.get("login");
+      } catch (error) {
+        console.error("\u041E\u0448\u0438\u0431\u043A\u0430 login:", error);
+      }
+    }
+    static async delete() {
+      try {
+        const client = _DashboardService.getInstance().client;
+        return await client.delete("");
+      } catch (error) {
+        console.error("\u041E\u0448\u0438\u0431\u043A\u0430 delete:", error);
+      }
+    }
+    static async fetchApiToken() {
+      try {
+        const client = _DashboardService.getInstance().client;
+        return await client.post("api_token", {});
+      } catch (error) {
+        console.error("\u041E\u0448\u0438\u0431\u043A\u0430 fetchApiToken:", error);
+      }
+    }
+    static async refreshApiToken() {
+      try {
+        const client = _DashboardService.getInstance().client;
+        return await client.patch("api_token", {});
+      } catch (error) {
+        console.error("\u041E\u0448\u0438\u0431\u043A\u0430 refreshApiToken:", error);
+      }
+    }
+  };
+  var DashboardService = _DashboardService;
+  __publicField(DashboardService, "instance", null);
+
+  // src/api/AuthService.ts
+  var _AuthService = class {
+    constructor() {
+    }
+    static isAuth() {
+      if (localStorage.getItem(_AuthService.key) !== null) {
+        return true;
+      }
+      return false;
+    }
+    static setAuth() {
+      localStorage.setItem(_AuthService.key, "true");
+    }
+    static removeAuth() {
+      localStorage.removeItem(_AuthService.key);
+    }
+    static async init() {
+      if (_AuthService.isAuth()) {
+        await DashboardService.login();
+      } else {
+        await DashboardService.signUp();
+        _AuthService.setAuth();
+        await DashboardService.login();
+      }
+    }
+    static getToken() {
+      return localStorage.getItem("_ms-mid") ?? "";
+    }
+    static isExpiredToken() {
+      const token = _AuthService.getToken();
+      try {
+        const [header, payload, signature] = token.split(".");
+        const payloadDecoded = JSON.parse(atob(payload));
+        const currentTime = Math.floor(Date.now() / 1e3);
+        if (payloadDecoded.exp < currentTime) {
+          return true;
+        }
+        return false;
+      } catch (e) {
+        console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u0440\u0438 \u043F\u0440\u043E\u0432\u0435\u0440\u043A\u0435 \u0442\u043E\u043A\u0435\u043D\u0430:", e);
+        return false;
+      }
+    }
+  };
+  var AuthService = _AuthService;
+  __publicField(AuthService, "key", "isSignUp");
+
+  // src/pages/dashboard/settings.ts
+  document.getElementById("delete-account").onclick = async () => {
+    await AuthService.init();
+    await DashboardService.delete();
+    window.location.href = "https://aiornot.com";
+  };
+  document.getElementById("sign-out").onclick = () => {
+    AuthService.removeAuth();
+  };
+})();
+//# sourceMappingURL=settings.js.map

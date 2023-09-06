@@ -85,12 +85,11 @@ export const init = () => {
 
     const changeShareUrl = (responseId: string) => {
         currentResultId = responseId;
-        const accessTokenIsExist = localStorage.getItem('_ms-mid') ? false : true;
         const element = document.querySelector('[fs-socialshare-element="url"]') as Element;
 
         let shareUrlTemplate = AuthService.isExpiredToken()
-            ? `https://results.aiornot.com/aiornot/`
-            : `https://results.aiornot.com/aiornot/users/`;
+            ? `${BASE_URL_RESULTS}/aiornot/`
+            : `${BASE_URL_RESULTS}/aiornot/users/`;
         const shareUrl = `${shareUrlTemplate}${responseId}`;
 
         element.textContent = shareUrl;

@@ -1,5 +1,5 @@
 import { initFingerPrint } from '$utils/fingerprint';
-import { AuthService, OpenAIGeneratedService, RequestCounter, WrapperAIGeneratedService } from '../api';
+import { AuthService, BASE_URL_RESULTS, OpenAIGeneratedService, RequestCounter, WrapperAIGeneratedService } from '../api';
 
 export const initAudio = () => {
     //elements
@@ -84,12 +84,11 @@ export const initAudio = () => {
 
     const changeShareUrl = (responseId: string) => {
         currentResultId = responseId;
-        const accessTokenIsExist = localStorage.getItem('_ms-mid') ? false : true;
         const element = document.querySelector('[fs-socialshare-element="url"]') as Element;
 
         let shareUrlTemplate = AuthService.isExpiredToken()
-            ? `https://results.aiornot.com/aiornot/`
-            : `https://results.aiornot.com/aiornot/users/`;
+            ? `${BASE_URL_RESULTS}/aiornot/`
+            : `${BASE_URL_RESULTS}/aiornot/users/`;
         const shareUrl = `${shareUrlTemplate}${responseId}`;
 
         element.textContent = shareUrl;
