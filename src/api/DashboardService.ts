@@ -1,5 +1,5 @@
 import { AuthService } from './AuthService';
-import { RestClient } from './RestClient';
+import { BASE_URL, RestClient } from './RestClient';
 
 export class DashboardService {
     private static instance: DashboardService | null = null;
@@ -7,7 +7,7 @@ export class DashboardService {
 
     private constructor() {
         const bearerToken = AuthService.getToken();
-        const baseUrl = 'https://atrium-prod-api.optic.xyz/aion/users';
+        const baseUrl = `${BASE_URL}/aion/users`;
         this.client = new RestClient(baseUrl, bearerToken);
     }
 

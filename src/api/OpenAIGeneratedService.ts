@@ -1,10 +1,11 @@
 import { AuthService } from './AuthService';
+import { BASE_URL } from './RestClient';
 
 export class OpenAIGeneratedService {
     constructor() {}
 
     static async getReportsByBinary(file: File, visitorId: string): Promise<any> {
-        const baseUrl = `https://atrium-prod-api.optic.xyz/results/api/detector/reports/raw?source=web&user_id=${visitorId}`;
+        const baseUrl = `${BASE_URL}/results/api/detector/reports/raw?source=web&user_id=${visitorId}`;
         const formData = new FormData();
         formData.append('binary', file, 'file_name.png');
 
@@ -21,7 +22,7 @@ export class OpenAIGeneratedService {
     }
 
     static async getReportsByUrl(url: string, visitorId: string): Promise<any> {
-        const baseUrl = `https://atrium-prod-api.optic.xyz/results/api/detector/reports/json?source=web&user_id=${visitorId}`;
+        const baseUrl = `${BASE_URL}/results/api/detector/reports/json?source=web&user_id=${visitorId}`;
 
         const options = {
             method: 'POST',
@@ -44,7 +45,7 @@ export class OpenAIGeneratedService {
             comment: reportComment,
         };
 
-        let url = `https://atrium-prod-api.optic.xyz/results/api/detector/reports/result/${id}`;
+        let url = `${BASE_URL}/results/api/detector/reports/result/${id}`;
         let options = {
             method: 'PUT',
             body: JSON.stringify(body),
@@ -55,7 +56,7 @@ export class OpenAIGeneratedService {
         };
 
         if (!AuthService.isExpiredToken()) {
-            url = `https://atrium-prod-api.optic.xyz/aion/ai-generated/reports/${id}`;
+            url = `${BASE_URL}/aion/ai-generated/reports/${id}`;
             options = {
                 method: 'PATCH',
                 body: JSON.stringify(body),

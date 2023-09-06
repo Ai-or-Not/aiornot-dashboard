@@ -1,3 +1,5 @@
+export const BASE_URL = 'https://api.aiornot.com/';
+
 export class RestClient {
     apiUrl: string;
     bearerToken: string;

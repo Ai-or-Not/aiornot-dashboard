@@ -1,5 +1,5 @@
 import { AuthService } from './AuthService';
-import { RestClient } from './RestClient';
+import { BASE_URL, RestClient } from './RestClient';
 
 export class AIGeneratedService {
     private static instance: AIGeneratedService | null = null;
@@ -7,7 +7,7 @@ export class AIGeneratedService {
 
     private constructor() {
         const bearerToken = AuthService.getToken();
-        const baseUrl = 'https://atrium-prod-api.optic.xyz/aion/ai-generated';
+        const baseUrl = `${BASE_URL}/aion/ai-generated`;
         this.client = new RestClient(baseUrl, bearerToken);
     }
 
