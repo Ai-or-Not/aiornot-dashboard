@@ -151,6 +151,7 @@
     top: 0;
     right: 0;
     z-index: 0;
+    background: #10151d;
 }
 
 .aiornot-player-progress {
