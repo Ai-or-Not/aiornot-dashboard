@@ -43,10 +43,9 @@ export class AIGeneratedService {
 
     static async getAudioVerdict(file: File): Promise<any> {
         const client = AIGeneratedService.getInstance().client;
-
         try {
             const formData = new FormData();
-            formData.append('binary', file);
+            formData.append('file', file);
             return await client.postBinary('reports/audio/binary', formData);
         } catch (error) {
             console.error('Error getAudioVerdict:', error);

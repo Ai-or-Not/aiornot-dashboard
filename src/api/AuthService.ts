@@ -54,7 +54,6 @@ export class AuthService {
 
         if (token?.length > 0) {
             const jwt = parseJwt(token);
-            console.log(jwt);
             const current_time = Date.now() / 1000;
             return jwt.exp < current_time;
         }
