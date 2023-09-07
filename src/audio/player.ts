@@ -15,13 +15,14 @@ export class AudioPlayer {
         this.progressInterval = 0;
         this.audio.volume = 0.3;
 
-        this.playPauseBtn.addEventListener('click', () => this.playPauseAudio());
+        this.playPauseBtn.addEventListener('click', (e: any) => this.playPauseAudio(e));
         this.progressSlider.addEventListener('mousedown', (e: MouseEvent) => this.mouseDown(e));
         document.addEventListener('mousemove', (e: MouseEvent) => this.mouseMove(e));
         document.addEventListener('mouseup', () => this.mouseUp());
     }
 
-    playPauseAudio(): void {
+    playPauseAudio(e: any): void {
+        e.stopPropagation();
         if (this.audio.paused) {
             this.audio.play();
             this.playPauseBtn.innerHTML = `

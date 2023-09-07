@@ -57,10 +57,10 @@ export class AIGeneratedService {
 
         try {
             const body = {
-                link: link,
+                url: link,
             };
 
-            return await client.post('reports/audio/link', JSON.stringify(body));
+            return await client.post('reports/audio/link', body);
         } catch (error) {
             console.error('Error getYoutubeVerdict:', error);
         }

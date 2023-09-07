@@ -444,9 +444,10 @@ export const init = () => {
         }
     };
 
-    (document.getElementById('close-sign-up') as any).onclick = () => {
+    const closeSignUpButton = document.getElementById('close-sign-up') as any;
+    closeSignUpButton?.addEventListener('click', () => {
         const signInModalElement = document.getElementById('sign-up') as any;
         signInModalElement.style.display = 'none';
         signInModalElement.style.zIndex = 0;
-    };
+    });
 };

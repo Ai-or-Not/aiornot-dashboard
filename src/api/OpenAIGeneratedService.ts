@@ -97,10 +97,10 @@ export class OpenAIGeneratedService {
             method: 'POST',
             headers: {
                 Accept: 'application/json',
-                ContentType: 'multipart/form-data',
+                'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                link: link,
+                url: link,
             }),
         };
 

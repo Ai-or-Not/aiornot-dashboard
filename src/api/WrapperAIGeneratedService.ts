@@ -27,20 +27,31 @@ export class WrapperAIGeneratedService {
         }
     }
 
+    static async getAudioVerictMock(verdict: boolean): Promise<any> {
+        const delay = (ms: number, value: boolean): Promise<boolean> => {
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    resolve(value);
+                }, ms);
+            });
+        };
+
+        const result = await delay(1500, verdict);
+        return JSON.parse(`{
+            "id": "41994fdd-0161-43a9-b873-581eccbe6d72",
+            "report": {
+                "version": "0.0.0",
+                "verdict": ${result}
+            }
+        }`);
+    }
+
     static async getYoutubeVerict(link: string): Promise<any> {
         if (AuthService.isExpiredToken()) {
             return await OpenAIGeneratedService.getYoutubeVerdict(link);
         } else {
             return await AIGeneratedService.getYoutubeVerdict(link);
         }
-
-        // return JSON.parse(`{
-        //     "id": "41994fdd-0161-43a9-b873-581eccbe6d72",
-        //     "report": {
-        //         "version": "0.0.0",
-        //         "verdict": false
-        //     }
-        // }`);
     }
 
     static async sendFeedback(id: string, reportPredict: boolean, reportComment: string, isAudio = false): Promise<void> {

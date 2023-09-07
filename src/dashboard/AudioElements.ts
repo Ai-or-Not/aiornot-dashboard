@@ -317,9 +317,6 @@ export const initAudio = () => {
                 return;
             }
 
-            const currentImage = document.querySelector('#ai-or-not-current-image') as any;
-            let currentImageUrl = URL.createObjectURL(file);
-            currentImage.setAttribute('src', currentImageUrl);
             imageEl_currentImage.classList.remove('hide');
             imageEl_currentImageEmpty.classList.add('hide');
 
@@ -338,6 +335,20 @@ export const initAudio = () => {
                     screen_homeShow();
                 });
         }
+    };
+
+    const tappedSampleAudio = async (url: string, name: string) => {
+        loadingStart();
+        imageEl_currentImage.classList.remove('hide');
+        imageEl_currentImageEmpty.classList.add('hide');
+
+        await WrapperAIGeneratedService.getAudioVerictMock(true).then((response) => {
+            changeShareUrl(response.id);
+            initial_dropZone();
+            findHighestConfidence(response.report.verdict === true ? 'ai' : 'human');
+            loadingFinish();
+            new AudioPlayerContainer('result-screen_image-wrapper', url, name, true);
+        });
     };
 
     buttonEl_processClose?.addEventListener('click', function () {
@@ -360,7 +371,6 @@ export const initAudio = () => {
     });
 
     youtubeLinkInput?.addEventListener('keypress', (e: any) => {
-        console.log(e.target.value);
         if (e.key === 'Enter') {
             if (youtubeLinkInput.value != '') {
                 submitYoutubeLink(youtubeLinkInput.value);
@@ -371,8 +381,8 @@ export const initAudio = () => {
     youtubeLinkInput.addEventListener('input', (e: any) => {
         const youtubeLink = e.target.value;
         const isYouTubeLink = (url: string) => {
-            const pattern = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+$/;
-            return pattern.test(url);
+            let regExp = /^(?:https?:\/\/)?(?:www\.)?(?:music\.)?youtu(?:be)?\.(?:com|be)\/(?:shorts\/)?([^\/?]+)/;
+            return regExp.test(url);
         };
 
         if (isYouTubeLink(youtubeLink)) {
@@ -381,12 +391,6 @@ export const initAudio = () => {
             checkYoutubeLinkButton.classList.add('is-disabled');
         }
     });
-
-    (document.getElementById('close-sign-up') as any).onclick = () => {
-        const signInModalElement = document.getElementById('sign-up') as any;
-        signInModalElement.style.display = 'none';
-        signInModalElement.style.zIndex = 0;
-    };
 
     reportButton_true?.addEventListener('click', () => {
         uiReported_true();
@@ -427,41 +431,45 @@ export const initAudio = () => {
     });
 
     const manager = new PlayerManager([
-        new AudioPlayerContainer(
-            'audio-sample-1',
-            'https://vgmsite.com/soundtracks/the-witcher-3-wild-hunt-extended-edition/wanswoqf/01.%20The%20Trail.mp3',
-            'Sample 1'
-        ),
+        new AudioPlayerContainer('audio-sample-1', 'https://atrium-junk.s3.amazonaws.com/ai-or-not-audio-samples/Adel', 'Adel'),
         new AudioPlayerContainer(
             'audio-sample-2',
-            'https://vgmsite.com/soundtracks/the-witcher-3-wild-hunt-extended-edition/wanswoqf/01.%20The%20Trail.mp3',
-            'Sample 2'
+            'https://atrium-junk.s3.amazonaws.com/ai-or-not-audio-samples/Bull+Greek.mp3',
+            'Bull Greek'
         ),
         new AudioPlayerContainer(
             'audio-sample-3',
-            'https://vgmsite.com/soundtracks/the-witcher-3-wild-hunt-extended-edition/wanswoqf/01.%20The%20Trail.mp3',
-            'Sample 3'
+            'https://atrium-junk.s3.amazonaws.com/ai-or-not-audio-samples/Sample+1.mp3',
+            'Sample 1'
         ),
         new AudioPlayerContainer(
             'audio-sample-4',
-            'https://vgmsite.com/soundtracks/the-witcher-3-wild-hunt-extended-edition/wanswoqf/01.%20The%20Trail.mp3',
-            'Sample 4'
+            'https://atrium-junk.s3.amazonaws.com/ai-or-not-audio-samples/Sample+2.mp3',
+            'Sample 2'
         ),
         new AudioPlayerContainer(
             'audio-sample-5',
-            'https://vgmsite.com/soundtracks/the-witcher-3-wild-hunt-extended-edition/wanswoqf/01.%20The%20Trail.mp3',
-            'Sample 5'
+            'https://atrium-junk.s3.amazonaws.com/ai-or-not-audio-samples/Sample+3.mp3',
+            'Sample 3'
         ),
         new AudioPlayerContainer(
             'audio-sample-6',
-            'https://vgmsite.com/soundtracks/the-witcher-3-wild-hunt-extended-edition/wanswoqf/01.%20The%20Trail.mp3',
-            'Sample 6'
+            'https://atrium-junk.s3.amazonaws.com/ai-or-not-audio-samples/Trump+speech.mp3',
+            'Trump speech'
         ),
     ]);
-
     manager.players.forEach((player) => {
-        player.container?.addEventListener('click', () => {
-            // loadingFinish();
+        player.container?.addEventListener('click', async () => {
+            if (player.audioPlayer?.audio.paused) {
+                tappedSampleAudio(player.audioSrc, player.name);
+            }
         });
+    });
+
+    const closeSignUpButton = document.getElementById('close-sign-up') as any;
+    closeSignUpButton?.addEventListener('click', () => {
+        const signInModalElement = document.getElementById('sign-up') as any;
+        signInModalElement.style.display = 'none';
+        signInModalElement.style.zIndex = 0;
     });
 };
