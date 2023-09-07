@@ -28,19 +28,19 @@ export class WrapperAIGeneratedService {
     }
 
     static async getYoutubeVerict(link: string): Promise<any> {
-        // if (AuthService.isExpiredToken()) {
-        //     return await OpenAIGeneratedService.getYoutubeVerdict(link);
-        // } else {
-        //     return await AIGeneratedService.getYoutubeVerdict(link);
-        // }
+        if (AuthService.isExpiredToken()) {
+            return await OpenAIGeneratedService.getYoutubeVerdict(link);
+        } else {
+            return await AIGeneratedService.getYoutubeVerdict(link);
+        }
 
-        return JSON.parse(`{
-            "id": "41994fdd-0161-43a9-b873-581eccbe6d72",
-            "report": {
-                "version": "0.0.0",
-                "verdict": false
-            }
-        }`);
+        // return JSON.parse(`{
+        //     "id": "41994fdd-0161-43a9-b873-581eccbe6d72",
+        //     "report": {
+        //         "version": "0.0.0",
+        //         "verdict": false
+        //     }
+        // }`);
     }
 
     static async sendFeedback(id: string, reportPredict: boolean, reportComment: string, isAudio = false): Promise<void> {
