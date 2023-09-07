@@ -51,7 +51,7 @@ export class YouTubePlayer {
         // @ts-ignore
         if (state === YT.PlayerState.PAUSED || state === YT.PlayerState.CUED) {
             this.player.playVideo();
-            this.playPauseBtn.innerHTML = ` <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+            this.playPauseBtn.innerHTML = ` <svg xmlns="http://www.w3.org/2000/svg" width="50%" height="50%" viewBox="0 0 16 16" fill="none">
                 <rect x="2.5" y="1.5" width="4" height="13" rx="1.5" stroke="white"/>
                 <rect x="9.5" y="1.5" width="4" height="13" rx="1.5" stroke="white"/>
             </svg>`;
@@ -190,7 +190,7 @@ export const createYoutubePlayer = (elementId: string, url: string): void => {
         try {
             let urlObject = new URL(url);
             let id = new URLSearchParams(urlObject.search).get('v');
-            let regExp = /^(?:https?:\/\/)?(?:www\.)?youtu(?:be)?\.(?:com|be)\/(?:shorts\/)?([^\/?]+)/;
+            let regExp = /^\s*(?:https?:\/\/)?(?:www\.)?youtu(?:be)?\.(?:com|be)\/(?:shorts\/)?([^\/?#]+)/;
             let result = regExp.exec(url);
             return id ?? result?.[0] ?? '';
         } catch (e) {

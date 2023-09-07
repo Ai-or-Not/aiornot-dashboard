@@ -1,4 +1,5 @@
 export class AudioPlayer {
+    container: HTMLElement | null;
     audio: HTMLAudioElement;
     playPauseBtn: HTMLElement;
     progressSlider: HTMLElement;
@@ -6,7 +7,14 @@ export class AudioPlayer {
     dragging: boolean;
     progressInterval: number = 0;
 
-    constructor(audio: HTMLAudioElement, playPauseBtn: HTMLElement, progressSlider: HTMLElement, track: HTMLElement) {
+    constructor(
+        container: HTMLElement,
+        audio: HTMLAudioElement,
+        playPauseBtn: HTMLElement,
+        progressSlider: HTMLElement,
+        track: HTMLElement
+    ) {
+        this.container = container;
         this.audio = audio;
         this.playPauseBtn = playPauseBtn;
         this.progressSlider = progressSlider;
@@ -24,9 +32,10 @@ export class AudioPlayer {
     playPauseAudio(e: any): void {
         e.stopPropagation();
         if (this.audio.paused) {
+            this.container?.classList.remove('aiornot-player-is-selectable');
             this.audio.play();
             this.playPauseBtn.innerHTML = `
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <svg xmlns="http://www.w3.org/2000/svg" width="50%" height="50%" viewBox="0 0 16 16" fill="none">
                 <rect x="2.5" y="1.5" width="4" height="13" rx="1.5" stroke="white"/>
                 <rect x="9.5" y="1.5" width="4" height="13" rx="1.5" stroke="white"/>
             </svg>
@@ -42,6 +51,7 @@ export class AudioPlayer {
                 }
             }, 1000);
         } else {
+            this.container?.classList.add('aiornot-player-is-selectable');
             this.audio.pause();
             this.playPauseBtn.innerHTML = `
             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
@@ -98,6 +108,7 @@ export class AudioPlayer {
     }
 
     finishAudio(): void {
+        this.container?.classList.add('aiornot-player-is-selectable');
         this.playPauseBtn.innerHTML = `
         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
             <path d="M13.3375 10.8944L21.7598 15.1056C22.4968 15.4741 22.4968 16.5259 21.7598 16.8944L13.3375 21.1056C12.3402 21.6042 11.1667 20.879 11.1667 19.7639V12.2361C11.1667 11.121 12.3402 10.3958 13.3375 10.8944Z" stroke="white"/>
@@ -128,17 +139,16 @@ export class AudioPlayerContainer {
         if (!this.container) return;
 
         this.container.classList.add('aiornot-player');
+        this.container.classList.add('aiornot-player-is-selectable');
         this.container.innerHTML = `
             <audio id="${this.container.id}-audio" src="${this.audioSrc}"></audio>
-            <div class="aiornot-player-controls">
-                <div class="aiornot-player-button" id="${this.container.id}-playPauseBtn">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
-                        <path d="M13.3375 10.8944L21.7598 15.1056C22.4968 15.4741 22.4968 16.5259 21.7598 16.8944L13.3375 21.1056C12.3402 21.6042 11.1667 20.879 11.1667 19.7639V12.2361C11.1667 11.121 12.3402 10.3958 13.3375 10.8944Z" stroke="white"/>
-                    </svg>
-                </div>
-                <div class="aiornot-player-hover-bg"></div>
-                <div class="aiornot-player-title">${this.name}</div>
+            <div class="aiornot-player-button" id="${this.container.id}-playPauseBtn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
+                    <path d="M13.3375 10.8944L21.7598 15.1056C22.4968 15.4741 22.4968 16.5259 21.7598 16.8944L13.3375 21.1056C12.3402 21.6042 11.1667 20.879 11.1667 19.7639V12.2361C11.1667 11.121 12.3402 10.3958 13.3375 10.8944Z" stroke="white"/>
+                </svg>
             </div>
+            
+            <div class="aiornot-player-title">${this.name}</div>
             <div id="${this.container.id}-slider" class="aiornot-player-slider">
                 <div id="${this.container.id}-progress" class="aiornot-player-progress"></div>
             </div>
@@ -149,7 +159,7 @@ export class AudioPlayerContainer {
         const progressSlider = document.getElementById(`${this.container.id}-slider`) as HTMLElement;
         const track = document.getElementById(`${this.container.id}-progress`) as HTMLElement;
 
-        this.audioPlayer = new AudioPlayer(audio, playPauseBtn, progressSlider, track);
+        this.audioPlayer = new AudioPlayer(this.container, audio, playPauseBtn, progressSlider, track);
     }
 
     initializeSquarePlayer(): void {
@@ -177,7 +187,7 @@ export class AudioPlayerContainer {
         const progressSlider = document.getElementById(`${this.container.id}-slider`) as HTMLElement;
         const track = document.getElementById(`${this.container.id}-progress`) as HTMLElement;
 
-        this.audioPlayer = new AudioPlayer(audio, playPauseBtn, progressSlider, track);
+        this.audioPlayer = new AudioPlayer(this.container, audio, playPauseBtn, progressSlider, track);
     }
 }
 

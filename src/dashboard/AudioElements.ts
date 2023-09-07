@@ -349,7 +349,7 @@ export const initAudio = () => {
     youtubeLinkInput.addEventListener('input', (e: any) => {
         const youtubeLink = e.target.value;
         const isYouTubeLink = (url: string) => {
-            let regExp = /^(?:https?:\/\/)?(?:www\.)?(?:music\.)?youtu(?:be)?\.(?:com|be)\/(?:shorts\/)?([^\/?]+)/;
+            let regExp = /^\s*(?:https?:\/\/)?(?:www\.)?(?:music\.)?youtu(?:be)?\.(?:com|be)\/(?:shorts\/)?([^\/?#]+)/;
             return regExp.test(url);
         };
 
