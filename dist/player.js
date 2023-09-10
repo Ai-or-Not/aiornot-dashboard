@@ -690,7 +690,7 @@
   };
 
   // src/audio/youtube.ts
-  var YouTubePlayer = class {
+  var _YouTubePlayer = class {
     player;
     playPauseBtn;
     progressSlider;
@@ -717,13 +717,15 @@
         width: "48",
         videoId: videoID,
         events: {
-          onReady: () => this.onPlayerReady(),
+          onReady: (e) => this.onPlayerReady(e),
           onStateChange: (event) => this.onPlayerStateChange(event)
         }
       });
     }
-    onPlayerReady() {
+    onPlayerReady(e) {
       this.player.setVolume(30);
+      const customEvent = new CustomEvent(_YouTubePlayer.eventName, { detail: e.target.getVideoData() });
+      document.dispatchEvent(customEvent);
     }
     playPauseVideo() {
       const state = this.player.getPlayerState();
@@ -801,6 +803,8 @@
       clearInterval(this.progressInterval);
     }
   };
+  var YouTubePlayer = _YouTubePlayer;
+  __publicField(YouTubePlayer, "eventName", "onVideoDataReady");
   var YoutubePlayerContainer = class {
     containerId = "";
     container;
@@ -813,6 +817,10 @@
       this.videoId = videoId;
       this.name = name;
       this.initializePlayer();
+      document.addEventListener(YouTubePlayer.eventName, (e) => {
+        const title = document.getElementById("aiornot-youtube-title");
+        title.innerText = e.detail.title;
+      });
     }
     async loadYouTubeIframeAPI() {
       if (window.YT)
@@ -841,7 +849,7 @@
                     </svg>
                 </div>
                 <div class="aiornot-player-hover-bg"></div>
-                <div class="aiornot-player-title-sqaure">${this.name}</div>
+                <div id="aiornot-youtube-title" class="aiornot-player-title-sqaure">${this.name}</div>
             </div>
             <div id="${this.container.id}-slider" class="aiornot-player-slider">
                 <div id="${this.container.id}-progress" class="aiornot-player-progress"></div>
