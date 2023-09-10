@@ -143,6 +143,8 @@ export class YoutubePlayerContainer {
     }
 
     async loadYouTubeIframeAPI() {
+        // @ts-ignore
+        if (window.YT) return;
         return new Promise((resolve: any, reject) => {
             // @ts-ignore
             window.onYouTubeIframeAPIReady = () => {
@@ -183,9 +185,15 @@ export class YoutubePlayerContainer {
         this.youtubePlayer = new YouTubePlayer(playPauseBtn, progressSlider, track);
         this.youtubePlayer.onYouTubeIframeAPIReady(this.videoId);
     }
+
+    destroy(): void {
+        if (this.container) {
+            this.container.innerHTML = '';
+        }
+    }
 }
 
-export const createYoutubePlayer = (elementId: string, url: string): void => {
+export const createYoutubePlayer = (elementId: string, url: string): YoutubePlayerContainer => {
     const getYoutubeVideoID = (url: string): string => {
         try {
             let urlObject = new URL(url);
@@ -201,5 +209,5 @@ export const createYoutubePlayer = (elementId: string, url: string): void => {
 
     const videoID: string = getYoutubeVideoID(url);
 
-    new YoutubePlayerContainer(elementId, videoID, '');
+    return new YoutubePlayerContainer(elementId, videoID, '');
 };

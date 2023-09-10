@@ -32,7 +32,9 @@ export class AudioPlayer {
     playPauseAudio(e: any): void {
         e.stopPropagation();
         if (this.audio.paused) {
-            this.container?.classList.remove('aiornot-player-is-selectable');
+            if (!this.container?.classList.contains('aiornot-player-square')) {
+                this.container?.classList.remove('aiornot-player-is-selectable');
+            }
             this.audio.play();
             this.playPauseBtn.innerHTML = `
             <svg xmlns="http://www.w3.org/2000/svg" width="50%" height="50%" viewBox="0 0 16 16" fill="none">
@@ -51,7 +53,9 @@ export class AudioPlayer {
                 }
             }, 1000);
         } else {
-            this.container?.classList.add('aiornot-player-is-selectable');
+            if (!this.container?.classList.contains('aiornot-player-square')) {
+                this.container?.classList.add('aiornot-player-is-selectable');
+            }
             this.audio.pause();
             this.playPauseBtn.innerHTML = `
             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
@@ -108,7 +112,9 @@ export class AudioPlayer {
     }
 
     finishAudio(): void {
-        this.container?.classList.add('aiornot-player-is-selectable');
+        if (!this.container?.classList.contains('aiornot-player-square')) {
+            this.container?.classList.remove('aiornot-player-square');
+        }
         this.playPauseBtn.innerHTML = `
         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
             <path d="M13.3375 10.8944L21.7598 15.1056C22.4968 15.4741 22.4968 16.5259 21.7598 16.8944L13.3375 21.1056C12.3402 21.6042 11.1667 20.879 11.1667 19.7639V12.2361C11.1667 11.121 12.3402 10.3958 13.3375 10.8944Z" stroke="white"/>
@@ -188,6 +194,12 @@ export class AudioPlayerContainer {
         const track = document.getElementById(`${this.container.id}-progress`) as HTMLElement;
 
         this.audioPlayer = new AudioPlayer(this.container, audio, playPauseBtn, progressSlider, track);
+    }
+
+    destroy(): void {
+        if (this.container) {
+            this.container.innerHTML = '';
+        }
     }
 }
 

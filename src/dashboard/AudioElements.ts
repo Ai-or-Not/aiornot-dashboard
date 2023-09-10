@@ -1,5 +1,5 @@
 import { initFingerPrint } from '$utils/fingerprint';
-import { AudioPlayerContainer, PlayerManager, createYoutubePlayer } from '@/audio';
+import { AudioPlayerContainer, PlayerManager, YoutubePlayerContainer, createYoutubePlayer } from '@/audio';
 import { AuthService, BASE_URL_RESULTS, RequestCounter, WrapperAIGeneratedService } from '../api';
 
 export const initAudio = () => {
@@ -22,6 +22,8 @@ export const initAudio = () => {
     const shareButtonsContainer = document.querySelector('#share-items-hide') as Element;
     const dropZoneRequestCounter = document.querySelector('#ai-or-not-dropzone-counter') as Element;
     const dropZoneRequestCounterContainer = document.querySelector('#ai-or-not-dropzone-counter-w') as Element;
+    var audioPlayerContainer: AudioPlayerContainer | null = null;
+    var youtubePlayerContainer: YoutubePlayerContainer | null = null;
 
     let fileSizeAllow: any;
     let currentResultId: any;
@@ -102,11 +104,11 @@ export const initAudio = () => {
 
     const fillPlayerCardByFile = (file: File) => {
         const fileURL = URL.createObjectURL(file);
-        new AudioPlayerContainer('result-screen_image-wrapper', fileURL, file.name, true);
+        audioPlayerContainer = new AudioPlayerContainer('result-screen_image-wrapper', fileURL, file.name, true);
     };
 
     const fillYoutubePlayerCard = (link: string) => {
-        createYoutubePlayer('result-screen_image-wrapper', link);
+        youtubePlayerContainer = createYoutubePlayer('result-screen_image-wrapper', link);
     };
 
     // Listeners
@@ -207,33 +209,27 @@ export const initAudio = () => {
     };
 
     const submitYoutubeLink = async (link: string) => {
-        if (RequestCounter.isLimitExceeded()) {
-            const signInModalElement = document.getElementById('sign-up') as any;
-            signInModalElement.style.display = 'flex';
-            signInModalElement.style.zIndex = 100;
-            screen_homeShow();
-        } else {
-            errorMessage.classList.add('hide');
-            loadingStart();
+        errorMessage.classList.add('hide');
+        loadingStart();
+        youtubePlayerContainer?.destroy();
 
-            await WrapperAIGeneratedService.getYoutubeVerict(link)
-                .then((response) => {
-                    // RequestCounter.increment();
-                    changeShareUrl(response.id);
-                    findHighestConfidence(response.report.verdict === true ? 'ai' : 'human');
-                    loadingFinish();
-                    fillYoutubePlayerCard(link);
-                })
-                .catch((error) => {
-                    if (resultContainer.classList.contains('hide')) {
-                        someThingWentWrong_error();
-                    } else {
-                        someThingWentWrong_error();
-                        screen_homeShow();
-                    }
-                    console.log(error);
-                });
-        }
+        await WrapperAIGeneratedService.getYoutubeVerict(link)
+            .then((response) => {
+                // RequestCounter.increment();
+                changeShareUrl(response.id);
+                findHighestConfidence(response.report.verdict === true ? 'ai' : 'human');
+                loadingFinish();
+                fillYoutubePlayerCard(link);
+            })
+            .catch((error) => {
+                if (resultContainer.classList.contains('hide')) {
+                    someThingWentWrong_error();
+                } else {
+                    someThingWentWrong_error();
+                    screen_homeShow();
+                }
+                console.log(error);
+            });
     };
 
     const dropzone = document.body;
@@ -279,32 +275,22 @@ export const initAudio = () => {
     });
 
     const uploadBinaryFile = async (file: any) => {
-        if (file.type === 'audio/mpeg' || file.type === 'audio/mp3') {
-            loadingStart();
-            if (RequestCounter.isLimitExceeded()) {
-                const signInModalElement = document.getElementById('sign-up') as any;
-                signInModalElement.style.display = 'flex';
-                signInModalElement.style.zIndex = 100;
+        audioPlayerContainer?.destroy();
+        loadingStart();
+        await WrapperAIGeneratedService.getAudioVerictByFile(file)
+            .then((response) => {
+                // RequestCounter.increment();
+                changeShareUrl(response.id);
+                initial_dropZone();
+                findHighestConfidence(response.report.verdict === true ? 'ai' : 'human');
+                loadingFinish();
+                fillPlayerCardByFile(file);
+            })
+            .catch((error) => {
+                console.log(error);
+                error_dropZone();
                 screen_homeShow();
-                // loadingFinish()
-                return;
-            }
-
-            await WrapperAIGeneratedService.getAudioVerictByFile(file)
-                .then((response) => {
-                    // RequestCounter.increment();
-                    changeShareUrl(response.id);
-                    initial_dropZone();
-                    findHighestConfidence(response.report.verdict === true ? 'ai' : 'human');
-                    loadingFinish();
-                    fillPlayerCardByFile(file);
-                })
-                .catch((error) => {
-                    console.log(error);
-                    error_dropZone();
-                    screen_homeShow();
-                });
-        }
+            });
     };
 
     const tappedSampleAudio = async (url: string, name: string) => {
