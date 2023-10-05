@@ -429,9 +429,14 @@ export const initAudio = () => {
         ),
         new AudioPlayerContainer(
             'audio-sample-6',
-            'https://atrium-junk.s3.amazonaws.com/ai-or-not-audio-samples/Trump+speech.mp3',
-            'Trump speech'
+            'https://atrium-junk.s3.amazonaws.com/ai-or-not-audio-samples/Leonardo+DiCaprio.wav',
+            'Leonardo DiCaprio speech'
         ),
+        // new AudioPlayerContainer(
+        //     'audio-sample-6',
+        //     'https://atrium-junk.s3.amazonaws.com/ai-or-not-audio-samples/Trump+speech.mp3',
+        //     'Trump speech'
+        // ),
     ]);
     manager.players.forEach((player) => {
         player.container?.addEventListener('click', async () => {
