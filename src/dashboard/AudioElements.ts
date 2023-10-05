@@ -430,7 +430,7 @@ export const initAudio = () => {
         new AudioPlayerContainer(
             'audio-sample-6',
             'https://atrium-junk.s3.amazonaws.com/ai-or-not-audio-samples/Leonardo+DiCaprio.wav',
-            'Leonardo DiCaprio speech'
+            'Sample 4'
         ),
         // new AudioPlayerContainer(
         //     'audio-sample-6',
