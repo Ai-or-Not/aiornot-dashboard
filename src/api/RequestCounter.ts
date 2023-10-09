@@ -10,12 +10,15 @@ export class RequestCounter {
             return false;
         }
 
-        const count = localStorage.getItem(RequestCounter.key);
-        if (count === null) {
-            return false;
-        }
-
-        return parseInt(count) > 5;
+        // ToDo: We gonna force to user auth immediately.
+        //  there is a dirty hack, because we don't have time and this code should be refactored.
+        return true;
+        //
+        // const count = localStorage.getItem(RequestCounter.key);
+        // if (count === null) {
+        //     return false;
+        // }
+        // return parseInt(count) > 5;
     }
 
     static increment(): void {
