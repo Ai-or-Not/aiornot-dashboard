@@ -9,6 +9,7 @@ export class WrapperAIGeneratedService {
         } else {
             return await AIGeneratedService.getReportsByBinary(file);
         }
+
     }
 
     static async getReportsByUrl(url: string, visitorId: string): Promise<any> {
@@ -17,6 +18,9 @@ export class WrapperAIGeneratedService {
         } else {
             return await AIGeneratedService.getReportsByUrl(url);
         }
+
+        alert("Message")
+
     }
 
     static async getAudioVerictByFile(file: File): Promise<any> {

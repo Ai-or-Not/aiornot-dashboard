@@ -26,6 +26,9 @@ export class AIGeneratedService {
             formData.append('binary', file, 'uploaded-file.png');
             return await client.postBinary('reports/binary', formData);
         } catch (error) {
+            if (error.status === 402) {
+                alert('Please verify your email to continue using the service');
+            }
             console.error('Error getReportsByBinary:', error);
         }
     }
@@ -37,7 +40,10 @@ export class AIGeneratedService {
             const endpoint = `reports/url?url=${url}`;
             return await client.post(endpoint, {});
         } catch (error) {
-            console.error('Ошибка getReportsByUrl:', error);
+            if (error.status === 402) {
+                alert('Please verify your email to continue using the service');
+            }
+            console.error('getReportsByUrl:', error);
         }
     }
 
@@ -48,6 +54,9 @@ export class AIGeneratedService {
             formData.append('file', file);
             return await client.postBinary('reports/audio/binary', formData);
         } catch (error) {
+            if (error.status === 402) {
+                alert('Please verify your email to continue using the service');
+            }
             console.error('Error getAudioVerdict:', error);
         }
     }
@@ -62,6 +71,9 @@ export class AIGeneratedService {
 
             return await client.post('reports/audio/link', body);
         } catch (error) {
+            if (error.status === 402) {
+                alert('Please verify your email to continue using the service');
+            }
             console.error('Error getYoutubeVerdict:', error);
         }
     }
