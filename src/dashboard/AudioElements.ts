@@ -23,6 +23,8 @@ export const initAudio = () => {
     const dropZoneRequestCounter = document.querySelector('#ai-or-not-dropzone-counter') as Element;
     const dropZoneRequestCounterContainer = document.querySelector('#ai-or-not-dropzone-counter-w') as Element;
 
+
+
     let fileSizeAllow: any;
     let currentResultId: any;
 

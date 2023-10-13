@@ -26,6 +26,11 @@ export const init = () => {
     const counterEl_requestCounterValue = document.querySelector('#ai-or-not-dropzone-counter') as Element;
     const counterEl_requestCounterBlock = document.querySelector('#ai-or-not-dropzone-counter-w') as Element;
 
+    const notionLink = document.querySelector('#w-node-_80502d56-29f7-2965-16f1-d6c6c4ebbd86-c4ebbd86') as Element;
+    notionLink.classList.add('hide');
+    buttonEl_sharedButtons.classList.add('hide');
+
+
     //variables
     let pastedUrl: any;
     let fileUpload_way: any;
@@ -194,7 +199,7 @@ export const init = () => {
             imageEl_currentImage.classList.remove('hide');
             imageEl_currentImageEmpty.classList.add('hide');
             // Show buttons for share the report.
-            buttonEl_sharedButtons.classList.remove('hide');
+            // buttonEl_sharedButtons.classList.remove('hide');
         }
 
         (document.querySelector('.processing-screen_triggers_3') as any).click();
