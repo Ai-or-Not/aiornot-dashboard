@@ -1,5 +1,5 @@
 import { initFingerPrint, visitorId } from '$utils/fingerprint';
-import { AuthService, BASE_URL_RESULTS, RequestCounter, WrapperAIGeneratedService } from '../api';
+import {AuthService, BASE_URL, BASE_URL_RESULTS, RequestCounter, WrapperAIGeneratedService} from '../api';
 
 export const init = () => {
     //elements
@@ -25,6 +25,11 @@ export const init = () => {
     const buttonEl_sharedButtons = document.querySelector('#share-items-hide') as Element;
     const counterEl_requestCounterValue = document.querySelector('#ai-or-not-dropzone-counter') as Element;
     const counterEl_requestCounterBlock = document.querySelector('#ai-or-not-dropzone-counter-w') as Element;
+
+    const buttonPayFreePlan = document.querySelector('#bt-pay-free') as Element;
+    const buttonPayBasePlan = document.querySelector('#bt-pay-basic') as Element;
+    const buttonPayProPlan = document.querySelector('#bt-pay-prod') as Element;
+    const buttonPayEnterpricePlan = document.querySelector('#bt-pay-enterprice') as Element;
 
     //variables
     let pastedUrl: any;
@@ -450,4 +455,39 @@ export const init = () => {
         signInModalElement.style.display = 'none';
         signInModalElement.style.zIndex = 0;
     });
+
+    // Payment buttons
+
+    buttonPayFreePlan?.addEventListener('click', () => {
+        // WrapperAIGeneratedService.sendFeedback(currentResultId, false, reportInput.value);
+        // uiReported_false();
+        console.log('buttonPayFreePlan')
+
+        fetch(`${BASE_URL}/aion/payments/checkout_session`)
+            .then(
+                (response) => {
+                    return response.json();
+                }
+            )
+
+    });
+
+    buttonPayBasePlan?.addEventListener('click', () => {
+        // WrapperAIGeneratedService.sendFeedback(currentResultId, false, reportInput.value);
+        // uiReported_false();
+        console.log('buttonPayBasePlan')
+    });
+
+    buttonPayProPlan?.addEventListener('click', () => {
+        // WrapperAIGeneratedService.sendFeedback(currentResultId, false, reportInput.value);
+        // uiReported_false();
+        console.log('buttonPayProPlan')
+    });
+
+    buttonPayEnterpricePlan?.addEventListener('click', () => {
+        // WrapperAIGeneratedService.sendFeedback(currentResultId, false, reportInput.value);
+        // uiReported_false();
+        console.log('buttonPayEnterpricePlan')
+    });
+
 };
