@@ -218,9 +218,16 @@ export const init = () => {
             (document.getElementById('title-ai') as Element).classList.add('hide');
         } else {
             (document.getElementById('title-ai') as Element).innerHTML =
-                'This is likely <span class="text-color-green">AI</span>';
+                'This is likely <span class="text-color-green">AI</span> ' +
+                '<div style="font-size: 1rem; color: #FFFFFFB3; font-family: Space Grotesk, sans-serif;">\n' +
+                '<span> Free Research Preview. AI or Not may produce inaccurate results </span>\n' +
+                '</div>';
+
             (document.getElementById('title-human') as Element).innerHTML =
-                'This is likely <span class="text-color-green">Human</span>';
+                'This is likely <span class="text-color-green">Human</span>' +
+                '<div style="font-size: 1rem; color: #FFFFFFB3; font-family: Space Grotesk, sans-serif;">\n' +
+                '<span> Free Research Preview. AI or Not may produce inaccurate results </span>\n' +
+                '</div>';
             (document.getElementById('ai-or-not_result-message-50') as Element).classList.add('hide');
             (document.getElementById('ai-or-not_result-message') as Element).classList.remove('hide');
             (document.querySelector('#ai-or-not_model-name') as Element).textContent = data;

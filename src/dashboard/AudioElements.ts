@@ -26,6 +26,8 @@ export const initAudio = () => {
     let fileSizeAllow: any;
     let currentResultId: any;
 
+    shareButtonsContainer.classList.add('hide');
+
     const updateRequestCounter = () => {
         if (!AuthService.isExpiredToken()) {
             // Hide element
@@ -167,7 +169,7 @@ export const initAudio = () => {
 
     function loadingFinish() {
         // Show buttons for share the report.
-        shareButtonsContainer.classList.remove('hide');
+        // shareButtonsContainer.classList.remove('hide');
 
         (document.querySelector('.processing-screen_triggers_3') as any)?.click();
         (document.querySelector('#processing-screen') as Element).classList.add('hide');
