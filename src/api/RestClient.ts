@@ -2,9 +2,9 @@
 // export const BASE_URL = 'https://api.aiornot.com';
 
 //Staging URL
-export const BASE_URL = 'https://v3-atrium-prod-api.optic.xyz';
+// export const BASE_URL = 'https://v3-atrium-prod-api.optic.xyz';
 // export const BASE_URL = 'https://v3-atrium-stage-api.optic.xyz';
-// export const BASE_URL = 'http://localhost:8000';
+export const BASE_URL = 'http://localhost:8000';
 
 export const BASE_URL_RESULTS = 'https://results.aiornot.com';
 
@@ -31,7 +31,14 @@ export class RestClient {
 
             return await this.handleResponse(response);
         } catch (error) {
-            console.error('Ошибка при выполнении GET-запроса:', error);
+            if (error.status === 429) {
+                if (error.message.msg.type === 'requests') {
+                    alert(
+                        `It looks like you have reached your plan limit of ${error.message.msg.current_limit} requests. To continue, please upgrade to a new plan.`
+                    );
+                }
+            }
+            console.error('Error', error);
             throw error;
         }
     }
@@ -51,14 +58,21 @@ export class RestClient {
 
             return await this.handleResponse(response);
         } catch (error) {
-            console.error('Ошибка при выполнении POST-запроса:', error);
+            console.error('Request error', error);
+            if (error.status === 429) {
+                if (error.message.msg.type === 'requests') {
+                    alert(
+                        `It looks like you have reached your plan limit of ${error.message.msg.current_limit} requests. To continue, please upgrade to a new plan.`
+                    );
+                }
+            }
             throw error;
         }
     }
 
     async postBinary(endpoint: string, formData: FormData): Promise<any> {
         const url = `${this.apiUrl}/${endpoint}`;
-
+        console.log('url', url);
         try {
             const response = await fetch(url, {
                 method: 'POST',
@@ -69,9 +83,17 @@ export class RestClient {
                 body: formData,
             });
 
-            return await this.handleResponse(response);
+            const data = await this.handleResponse(response);
+            return data;
         } catch (error) {
-            console.error('Ошибка при выполнении POST-запроса:', error);
+            console.error('Binary request error:', error);
+            if (error.status === 429) {
+                if (error.message.msg.type === 'requests') {
+                    alert(
+                        `It looks like you have reached your plan limit of ${error.message.msg.current_limit} requests. To continue, please upgrade to a new plan.`
+                    );
+                }
+            }
             throw error;
         }
     }
@@ -121,7 +143,8 @@ export class RestClient {
             throw { status: response.status, message: errorData };
         }
         if (response.status !== 204) {
-            return await response.json();
+            const data = await response.json();
+            return data;
         }
     }
 }

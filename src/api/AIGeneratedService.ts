@@ -19,7 +19,7 @@ export class AIGeneratedService {
     }
 
     public static async getReportsByBinary(file: File): Promise<any> {
-        const client = AIGeneratedService.getInstance().client;
+        const { client } = AIGeneratedService.getInstance();
 
         try {
             const formData = new FormData();
@@ -29,12 +29,15 @@ export class AIGeneratedService {
             if (error.status === 402) {
                 alert('Please verify your email to continue using the service');
             }
+            if (error.status === 429) {
+                alert(`You have reached the limit of requests per day. Alert: ${JSON.stringify(error.message)}`);
+            }
             console.error('Error getReportsByBinary:', error);
         }
     }
 
     public static async getReportsByUrl(url: string): Promise<any> {
-        const client = AIGeneratedService.getInstance().client;
+        const { client } = AIGeneratedService.getInstance();
 
         try {
             const endpoint = `reports/url?url=${url}`;
@@ -48,7 +51,8 @@ export class AIGeneratedService {
     }
 
     static async getAudioVerdict(file: File): Promise<any> {
-        const client = AIGeneratedService.getInstance().client;
+        console.log('getAudioVerdict');
+        const { client } = AIGeneratedService.getInstance();
         try {
             const formData = new FormData();
             formData.append('file', file);
@@ -62,7 +66,7 @@ export class AIGeneratedService {
     }
 
     static async getYoutubeVerdict(link: string): Promise<any> {
-        const client = AIGeneratedService.getInstance().client;
+        const { client } = AIGeneratedService.getInstance();
 
         try {
             const body = {

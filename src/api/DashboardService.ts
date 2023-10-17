@@ -18,31 +18,31 @@ export class DashboardService {
         return DashboardService.instance;
     }
 
-    public static async fetchRequests(offset: number = 0, limit: number = 10): Promise<any[]> {
+    public static async fetchRequests(offset = 0, limit = 10): Promise<any[]> {
         try {
-            const client = DashboardService.getInstance().client;
+            const { client } = DashboardService.getInstance();
             const endpoint = `data?filters=requests&offset=${offset}&limit=${limit}`;
             return await client.get(endpoint).then((data) => data.requests.array);
         } catch (error) {
-            console.error('Ошибка getRequests:', error);
+            console.error('getRequests:', error);
             return [];
         }
     }
 
     public static async fetchUsageApi(): Promise<any[]> {
         try {
-            const client = DashboardService.getInstance().client;
-            const endpoint = `data?filters=api&offset=0&limit=10`;
+            const { client } = DashboardService.getInstance();
+            const endpoint = `data?filters=all&offset=0&limit=1`;
             return await client.get(endpoint).then((data) => data.api);
         } catch (error) {
-            console.error('Ошибка fetchUsageApi:', error);
+            console.error('fetchUsageApi:', error);
             return [];
         }
     }
 
     public static async signUp(): Promise<boolean> {
         try {
-            const client = DashboardService.getInstance().client;
+            const { client } = DashboardService.getInstance();
             return await client
                 .post('sign_up', {})
                 .then(() => false)
@@ -53,45 +53,57 @@ export class DashboardService {
                     throw error;
                 });
         } catch (error) {
-            console.error('Ошибка signUp:', error);
+            console.error('signUp:', error);
             return false;
         }
     }
 
     public static async login(): Promise<any> {
         try {
-            const client = DashboardService.getInstance().client;
+            const { client } = DashboardService.getInstance();
             return await client.get('login');
         } catch (error) {
-            console.error('Ошибка login:', error);
+            console.error('login:', error);
         }
     }
 
     public static async delete(): Promise<void> {
         try {
-            const client = DashboardService.getInstance().client;
+            const { client } = DashboardService.getInstance();
             // AuthService.removeAuth(); // Раскомментируйте эту строку после импорта AuthService
             return await client.delete('');
         } catch (error) {
-            console.error('Ошибка delete:', error);
+            console.error('delete:', error);
         }
     }
 
     public static async fetchApiToken(): Promise<any> {
         try {
-            const client = DashboardService.getInstance().client;
+            const { client } = DashboardService.getInstance();
             return await client.post('api_token', {});
         } catch (error) {
-            console.error('Ошибка fetchApiToken:', error);
+            console.error('fetchApiToken:', error);
+            console.error('fetchApiToken:', error);
         }
     }
 
     public static async refreshApiToken(): Promise<any> {
         try {
-            const client = DashboardService.getInstance().client;
+            const { client } = DashboardService.getInstance();
             return await client.patch('api_token', {});
         } catch (error) {
-            console.error('Ошибка refreshApiToken:', error);
+            console.error('refreshApiToken:', error);
+        }
+    }
+
+    public static async fetchSubscriptionData(): Promise<any> {
+        const { client } = DashboardService.getInstance();
+
+        try {
+            const endpoint = `data?filters=all&offset=0&limit=1`;
+            return await client.get(endpoint).then((data) => data);
+        } catch (error) {
+            console.error('fetchSubscriptionData:', error);
         }
     }
 }

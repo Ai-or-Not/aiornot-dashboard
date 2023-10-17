@@ -1,8 +1,12 @@
 import { initFingerPrint, visitorId } from '$utils/fingerprint';
-import {AuthService, BASE_URL, BASE_URL_RESULTS, RequestCounter, WrapperAIGeneratedService} from '../api';
+
+import { AuthService, BASE_URL_RESULTS, DashboardService, RequestCounter, WrapperAIGeneratedService } from '../api';
 
 export const init = () => {
     //elements
+    const imageTab = document.getElementById('image-tab') as Element;
+    const audioTab = document.getElementById('audio-tab') as Element;
+
     const reportScreen = document.getElementById('report-screen') as any;
     const reportButton_submit = document.querySelector('#button-report-submit') as Element;
     const reportInput = document.querySelector('#input-report-comment') as any;
@@ -18,7 +22,7 @@ export const init = () => {
     const imageEl_nsfwImage = document.querySelector('#nsfw-preview-img') as Element;
     const textEl_inputError = document.querySelector('#input-error-text') as Element;
     const inputEl_urlWaiter = document.querySelector('#ai-or-not_image-url') as any;
-    const buttonEl_urlCheck = document.querySelector('#ai-or-not_submit') as Element;
+    const buttonEl_urlCheck = document.querySelector('#image-url-aion-submit') as Element;
     const uiEl_dropZone = document.querySelector('#ai-or-not_dropzone') as Element;
     const textEl_dropZoneError = document.querySelector('#ai-or-not_dropzone-text') as Element;
     const uiEl_resultCol = document.querySelector('#result-screen_col') as Element;
@@ -26,10 +30,16 @@ export const init = () => {
     const counterEl_requestCounterValue = document.querySelector('#ai-or-not-dropzone-counter') as Element;
     const counterEl_requestCounterBlock = document.querySelector('#ai-or-not-dropzone-counter-w') as Element;
 
-    const buttonPayFreePlan = document.querySelector('#bt-pay-free') as Element;
-    const buttonPayBasePlan = document.querySelector('#bt-pay-basic') as Element;
-    const buttonPayProPlan = document.querySelector('#bt-pay-prod') as Element;
-    const buttonPayEnterpricePlan = document.querySelector('#bt-pay-enterprice') as Element;
+    const notionLink = document.querySelector('#w-node-_80502d56-29f7-2965-16f1-d6c6c4ebbd86-c4ebbd86') as Element;
+    notionLink.classList.add('hide');
+    buttonEl_sharedButtons.classList.add('hide');
+
+    function activeTab() {
+        if (imageTab.classList.contains('w--current')) {
+            return 'image';
+        }
+        return 'audio';
+    }
 
     //variables
     let pastedUrl: any;
@@ -54,7 +64,7 @@ export const init = () => {
     initFingerPrint();
 
     const uiReported_false = () => {
-        let buttonText = document.querySelector('#button-report_false-text') as Element;
+        const buttonText = document.querySelector('#button-report_false-text') as Element;
         buttonText.classList.remove('hide');
         buttonText.textContent = buttonText.getAttribute('report-button-text-default_reported');
         reportButton_false.classList.add('is-reported');
@@ -62,7 +72,7 @@ export const init = () => {
     };
 
     const uiReported_true = () => {
-        let buttonText = document.querySelector('#button-report_true-text') as Element;
+        const buttonText = document.querySelector('#button-report_true-text') as Element;
         buttonText.classList.remove('hide');
         buttonText.textContent = buttonText.getAttribute('report-button-text-default_reported');
         reportButton_true.classList.add('is-reported');
@@ -72,8 +82,8 @@ export const init = () => {
     const uiReported_initialState = () => {
         reportInput.value = '';
 
-        let buttonText_true = document.querySelector('#button-report_true-text') as Element;
-        let buttonText_false = document.querySelector('#button-report_false-text') as Element;
+        const buttonText_true = document.querySelector('#button-report_true-text') as Element;
+        const buttonText_false = document.querySelector('#button-report_false-text') as Element;
         buttonText_false.classList.add('hide');
         buttonText_true.classList.remove('hide');
 
@@ -90,13 +100,13 @@ export const init = () => {
         currentResultId = responseId;
         const element = document.querySelector('[fs-socialshare-element="url"]') as Element;
 
-        let shareUrlTemplate = AuthService.isExpiredToken()
+        const shareUrlTemplate = AuthService.isExpiredToken()
             ? `${BASE_URL_RESULTS}/aiornot/`
             : `${BASE_URL_RESULTS}/aiornot/users/`;
         const shareUrl = `${shareUrlTemplate}${responseId}`;
 
         element.textContent = shareUrl;
-        let allShareUrl = document.querySelectorAll('.result-screen_share-item');
+        const allShareUrl = document.querySelectorAll('.result-screen_share-item');
         allShareUrl.forEach((el) => {
             el.setAttribute('data-url', shareUrl);
         });
@@ -199,14 +209,14 @@ export const init = () => {
             imageEl_currentImage.classList.remove('hide');
             imageEl_currentImageEmpty.classList.add('hide');
             // Show buttons for share the report.
-            buttonEl_sharedButtons.classList.remove('hide');
+            // buttonEl_sharedButtons.classList.remove('hide');
         }
 
         (document.querySelector('.processing-screen_triggers_3') as any).click();
         (document.querySelector('#processing-screen') as Element).classList.add('hide');
         (document.querySelector('.processing-screen_triggers_5') as any).click();
 
-        (document.querySelector('#scroll-to-top-trigger') as any).click();
+        // (document.querySelector('#scroll-to-top-trigger') as any).click();
         inputEl_fileInput.value = '';
         (document.querySelector('#ai-or-not_image-url') as any).value = '';
     }
@@ -223,9 +233,16 @@ export const init = () => {
             (document.getElementById('title-ai') as Element).classList.add('hide');
         } else {
             (document.getElementById('title-ai') as Element).innerHTML =
-                'This image is generated by <span class="text-color-green">AI</span>';
+                'This is likely <span class="text-color-green">AI</span> ' +
+                '<div style="font-size: 1rem; color: #FFFFFFB3; font-family: Space Grotesk, sans-serif;">\n' +
+                '<span> Free Research Preview. AI or Not may produce inaccurate results </span>\n' +
+                '</div>';
+
             (document.getElementById('title-human') as Element).innerHTML =
-                'This image is generated by <span class="text-color-green">Human</span>';
+                'This is likely <span class="text-color-green">Human</span>' +
+                '<div style="font-size: 1rem; color: #FFFFFFB3; font-family: Space Grotesk, sans-serif;">\n' +
+                '<span> Free Research Preview. AI or Not may produce inaccurate results </span>\n' +
+                '</div>';
             (document.getElementById('ai-or-not_result-message-50') as Element).classList.add('hide');
             (document.getElementById('ai-or-not_result-message') as Element).classList.remove('hide');
             (document.querySelector('#ai-or-not_model-name') as Element).textContent = data;
@@ -284,6 +301,12 @@ export const init = () => {
     });
 
     dropzone?.addEventListener('drop', async function (event: any) {
+        if (activeTab() !== 'image') {
+            return;
+        }
+
+        console.log('Image handler');
+
         event.preventDefault();
         (document.querySelector('.dropzone-fullscreen') as Element).classList.add('hide');
         const file = event.dataTransfer.files[0];
@@ -327,7 +350,7 @@ export const init = () => {
         }
 
         const currentImage = document.querySelector('#ai-or-not-current-image') as any;
-        let currentImageUrl = URL.createObjectURL(file);
+        const currentImageUrl = URL.createObjectURL(file);
         currentImage.setAttribute('src', currentImageUrl);
         imageEl_currentImage.classList.remove('hide');
         imageEl_currentImageEmpty.classList.add('hide');
@@ -385,7 +408,7 @@ export const init = () => {
         testImage?.addEventListener('click', () => {
             const testImageUrl = testImage.getAttribute('test-image-url');
             (document.querySelector('#ai-or-not_image-url') as any).value = testImageUrl;
-            (document.querySelector('#ai-or-not_submit') as any).click();
+            (document.querySelector('#image-url-aion-submit') as any).click();
             (document.querySelector('#ai-or-not_image-url') as any).value = '';
         });
     });
@@ -429,7 +452,7 @@ export const init = () => {
     });
 
     const imageUrlInput = document.querySelector('#ai-or-not_image-url') as any;
-    const submitButton = document.querySelector('#ai-or-not_submit') as Element;
+    const submitButton = document.querySelector('#image-url-aion-submit') as Element;
 
     imageUrlInput.addEventListener('input', function () {
         const imageUrl = imageUrlInput.value.trim();
@@ -456,38 +479,22 @@ export const init = () => {
         signInModalElement.style.zIndex = 0;
     });
 
-    // Payment buttons
-
-    buttonPayFreePlan?.addEventListener('click', () => {
-        // WrapperAIGeneratedService.sendFeedback(currentResultId, false, reportInput.value);
-        // uiReported_false();
-        console.log('buttonPayFreePlan')
-
-        fetch(`${BASE_URL}/aion/payments/checkout_session`)
-            .then(
-                (response) => {
-                    return response.json();
-                }
-            )
-
+    DashboardService.fetchSubscriptionData().then((user_plan) => {
+        const usage = document.querySelector('#image-quotas') as any;
+        console.log(user_plan);
+        if (user_plan) {
+            const { quantity } = user_plan.plan?.requests_limits || { quantity: 20 };
+            const { total } = user_plan.requests;
+            usage.innerHTML = `
+            <div style="margin-top: 20px; font-size: 1rem; color: white">
+            <span">
+                Available ${quantity - total} from ${quantity} requests 
+            </span>
+            </div>`;
+            // Base or Pro
+        } else {
+            // Free plan
+            usage.textContent = `Available 20 requests / 24 hours`;
+        }
     });
-
-    buttonPayBasePlan?.addEventListener('click', () => {
-        // WrapperAIGeneratedService.sendFeedback(currentResultId, false, reportInput.value);
-        // uiReported_false();
-        console.log('buttonPayBasePlan')
-    });
-
-    buttonPayProPlan?.addEventListener('click', () => {
-        // WrapperAIGeneratedService.sendFeedback(currentResultId, false, reportInput.value);
-        // uiReported_false();
-        console.log('buttonPayProPlan')
-    });
-
-    buttonPayEnterpricePlan?.addEventListener('click', () => {
-        // WrapperAIGeneratedService.sendFeedback(currentResultId, false, reportInput.value);
-        // uiReported_false();
-        console.log('buttonPayEnterpricePlan')
-    });
-
 };

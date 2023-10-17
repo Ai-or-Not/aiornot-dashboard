@@ -6,29 +6,19 @@ export class WrapperAIGeneratedService {
     static async getReportsByBinary(file: File, visitorId: string): Promise<any> {
         if (AuthService.isExpiredToken()) {
             return await OpenAIGeneratedService.getReportsByBinary(file, visitorId);
-        } else {
-            return await AIGeneratedService.getReportsByBinary(file);
         }
-
+        return await AIGeneratedService.getReportsByBinary(file);
     }
 
     static async getReportsByUrl(url: string, visitorId: string): Promise<any> {
         if (AuthService.isExpiredToken()) {
             return await OpenAIGeneratedService.getReportsByUrl(url, visitorId);
-        } else {
-            return await AIGeneratedService.getReportsByUrl(url);
         }
-
-        alert("Message")
-
+        return await AIGeneratedService.getReportsByUrl(url);
     }
 
     static async getAudioVerictByFile(file: File): Promise<any> {
-        if (AuthService.isExpiredToken()) {
-            return await OpenAIGeneratedService.getAudioVerdict(file);
-        } else {
-            return await AIGeneratedService.getAudioVerdict(file);
-        }
+        return await AIGeneratedService.getAudioVerdict(file);
     }
 
     static async getAudioVerictMock(verdict: boolean): Promise<any> {
@@ -53,9 +43,8 @@ export class WrapperAIGeneratedService {
     static async getYoutubeVerict(link: string): Promise<any> {
         if (AuthService.isExpiredToken()) {
             return await OpenAIGeneratedService.getYoutubeVerdict(link);
-        } else {
-            return await AIGeneratedService.getYoutubeVerdict(link);
         }
+        return await AIGeneratedService.getYoutubeVerdict(link);
     }
 
     static async sendFeedback(id: string, reportPredict: boolean, reportComment: string, isAudio = false): Promise<void> {
