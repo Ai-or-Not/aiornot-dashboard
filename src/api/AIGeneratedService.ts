@@ -31,6 +31,7 @@ export class AIGeneratedService {
             }
             if (error.status === 429) {
                 alert(`You have reached the limit of requests per day. Alert: ${JSON.stringify(error.message)}`);
+                window.location.href = `https://${window.location.host}/#plans`;
             }
             console.error('Error getReportsByBinary:', error);
         }

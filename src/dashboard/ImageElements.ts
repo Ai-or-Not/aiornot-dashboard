@@ -481,7 +481,6 @@ export const init = () => {
 
     DashboardService.fetchSubscriptionData().then((user_plan) => {
         const usage = document.querySelector('#image-quotas') as any;
-        console.log(user_plan);
         if (user_plan) {
             const { quantity } = user_plan.plan?.requests_limits || { quantity: 20 };
             const { total } = user_plan.requests;
@@ -494,7 +493,7 @@ export const init = () => {
             // Base or Pro
         } else {
             // Free plan
-            usage.textContent = `Available 20 requests / 24 hours`;
+            usage.textContent = ``;
         }
     });
 };

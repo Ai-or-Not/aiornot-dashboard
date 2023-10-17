@@ -503,7 +503,6 @@ export const initAudio = () => {
 
     DashboardService.fetchSubscriptionData().then((user_plan) => {
         const usage = document.querySelector('#audio-quotas') as any;
-        console.log(user_plan);
         if (user_plan) {
             const { quantity } = user_plan.plan?.requests_limits || { quantity: 20 };
             const { total } = user_plan.requests;
@@ -517,7 +516,7 @@ export const initAudio = () => {
             // Base or Pro
         } else {
             // Free plan
-            usage.textContent = `Available 20 requests / 24 hours`;
+            usage.textContent = ``;
         }
     });
 };

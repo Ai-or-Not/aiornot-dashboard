@@ -14,6 +14,13 @@ export class PaymentsClient {
     createPaymentForm(text: string) {
         this.home_element.innerHTML = `
         <div style="background: white; position: fixed; top: 0; left: 0; right: 0; bottom: 0; display: flex; flex-direction: column; justify-content: center; align-items: center">
+            <div style="width: 100%; display: flex; justify-content: center; align-items: center">
+                <h2 style="color: black; font-size: 2.5rem; justify-content: center">AI or Not</h2>
+                <br>
+                <br>
+                <br>
+            </div>
+        
            <div class="payment-container">
            <div class="sr-root" style="display: flex; flex-direction: row; align-items: center; justify-content: center; min-width: 380px">
             <div class="sr-main">
