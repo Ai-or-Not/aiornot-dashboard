@@ -505,8 +505,9 @@ export const init = () => {
             }
         });
     } else {
-        usage.textContent = 'Please Sign in to see your usage';
-        usage.style.color = 'white';
-        usage.style.marginTop = '20px';
+        console.log('Please Sign in to see your usage');
+        // usage.textContent = 'Please Sign in to see your usage';
+        // usage.style.color = 'white';
+        // usage.style.marginTop = '20px';
     }
 };

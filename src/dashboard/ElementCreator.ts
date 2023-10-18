@@ -1,5 +1,5 @@
-import { copyToClipboard } from '$utils/string';
 import { WrapperAIGeneratedService } from '@/api';
+import { copyToClipboard } from '$utils/string';
 
 interface Data {
     expiration_dt?: string;
@@ -27,17 +27,17 @@ export class ElementCreator {
 
         results.style.display = 'grid';
         array.forEach((item) => {
-            let requestItem = document.createElement('div');
+            const requestItem = document.createElement('div');
             requestItem.classList.add('request-item');
 
-            let verdict = document.createElement('div');
+            const verdict = document.createElement('div');
             verdict.classList.add('request-item-verdict');
             verdict.innerText = item.verdict;
 
             ElementCreator.fillCardControls(requestItem, item);
 
             if (item.url === 'unknown') {
-                let image = document.createElement('div');
+                const image = document.createElement('div');
                 image.innerHTML = `
                     <svg width="60%" height="auto" viewBox="0 0 225 65" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M2.484 51V44.736H7.452V19.464H2.484V13.2H18.036C23.112 13.2 26.964 14.496 29.592 17.088C32.256 19.644 33.588 23.46 33.588 28.536V35.664C33.588 40.74 32.256 44.574 29.592 47.166C26.964 49.722 23.112 51 18.036 51H2.484ZM14.58 44.52H18.144C21.024 44.52 23.13 43.764 24.462 42.252C25.794 40.74 26.46 38.616 26.46 35.88V28.32C26.46 25.548 25.794 23.424 24.462 21.948C23.13 20.436 21.024 19.68 18.144 19.68H14.58V44.52ZM39.5288 51V13.2H63.8288V19.68H46.6568V28.698H62.3168V35.178H46.6568V44.52H64.1528V51H39.5288ZM69.4292 51V13.2H76.5572V44.52H93.8372V51H69.4292ZM98.6968 51V13.2H122.997V19.68H105.825V28.698H121.485V35.178H105.825V44.52H123.321V51H98.6968ZM137.345 51V19.68H126.329V13.2H155.489V19.68H144.473V51H137.345ZM160.343 51V13.2H184.643V19.68H167.471V28.698H183.131V35.178H167.471V44.52H184.967V51H160.343ZM189.164 51V44.736H194.132V19.464H189.164V13.2H204.716C209.792 13.2 213.644 14.496 216.272 17.088C218.936 19.644 220.268 23.46 220.268 28.536V35.664C220.268 40.74 218.936 44.574 216.272 47.166C213.644 49.722 209.792 51 204.716 51H189.164ZM201.26 44.52H204.824C207.704 44.52 209.81 43.764 211.142 42.252C212.474 40.74 213.14 38.616 213.14 35.88V28.32C213.14 25.548 212.474 23.424 211.142 21.948C209.81 20.436 207.704 19.68 204.824 19.68H201.26V44.52Z" fill="#FF4651"/>
@@ -50,7 +50,7 @@ export class ElementCreator {
                 image.style.alignItems = 'center';
                 requestItem.appendChild(image);
             } else {
-                let image = document.createElement('img');
+                const image = document.createElement('img');
                 image.src = item.url;
                 image.alt = item.verdict;
                 requestItem.appendChild(image);
@@ -88,6 +88,7 @@ export class ElementCreator {
             progressLine.style.width = `${(data.usage.daily / data.limits.daily) * 100}%`;
             console.log((data.usage.daily / data.limits.daily) * 100);
             counterRequests.innerText = data.usage.daily.toString();
+            console.log(data.limits.daily);
             totalRequests.innerText = data.limits.daily.toString();
 
             apiKeyCard.style.display = 'flex';
@@ -102,7 +103,7 @@ export class ElementCreator {
     }
 
     static fillCardControls(parentElement: HTMLElement, item: Item): void {
-        let shareButton = document.createElement('button');
+        const shareButton = document.createElement('button');
         shareButton.onclick = () => {
             shareButton.innerText = 'Copied!';
             copyToClipboard(`https://results.aiornot.com/aiornot/users/${item.id}`);
@@ -115,11 +116,11 @@ export class ElementCreator {
         shareButton.style.opacity = '0';
 
         if (!item.hasOwnProperty('is_proper_predict')) {
-            let controlsContainer = document.createElement('div');
+            const controlsContainer = document.createElement('div');
             controlsContainer.id = 'request-item-controls';
             controlsContainer.style.display = 'none';
 
-            let likeButton = document.createElement('button');
+            const likeButton = document.createElement('button');
             likeButton.innerHTML = `
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M14.2 6.72001C14.0127 6.49511 13.7783 6.31406 13.5133 6.18966C13.2484 6.06525 12.9594 6.00051 12.6667 6.00001H9.62666L10 5.04668C10.1553 4.62926 10.207 4.18041 10.1507 3.73862C10.0944 3.29683 9.93179 2.87529 9.67679 2.51016C9.42178 2.14503 9.08201 1.84721 8.68662 1.64224C8.29123 1.43727 7.85202 1.33127 7.40666 1.33334C7.27842 1.33361 7.15298 1.37086 7.04538 1.44062C6.93777 1.51039 6.85257 1.60971 6.79999 1.72668L4.89999 6.00001H3.33333C2.8029 6.00001 2.29419 6.21072 1.91911 6.5858C1.54404 6.96087 1.33333 7.46958 1.33333 8.00001V12.6667C1.33333 13.1971 1.54404 13.7058 1.91911 14.0809C2.29419 14.456 2.8029 14.6667 3.33333 14.6667H11.82C12.2879 14.6665 12.7409 14.5023 13.1002 14.2027C13.4595 13.903 13.7024 13.4869 13.7867 13.0267L14.6333 8.36001C14.6857 8.0716 14.674 7.7752 14.5991 7.49179C14.5243 7.20839 14.388 6.94491 14.2 6.72001ZM4.66666 13.3333H3.33333C3.15652 13.3333 2.98695 13.2631 2.86192 13.1381C2.7369 13.0131 2.66666 12.8435 2.66666 12.6667V8.00001C2.66666 7.8232 2.7369 7.65363 2.86192 7.52861C2.98695 7.40358 3.15652 7.33334 3.33333 7.33334H4.66666V13.3333ZM13.3333 8.12001L12.4867 12.7867C12.4583 12.942 12.3757 13.0822 12.2536 13.1823C12.1315 13.2824 11.9779 13.3359 11.82 13.3333H6V6.80668L7.81333 2.72668C7.99998 2.78109 8.17333 2.87361 8.32243 2.9984C8.47153 3.12318 8.59314 3.27752 8.67959 3.45167C8.76604 3.62582 8.81545 3.816 8.8247 4.01021C8.83395 4.20442 8.80284 4.39843 8.73333 4.58001L8.37999 5.53334C8.30471 5.73485 8.27929 5.95157 8.30591 6.16503C8.33253 6.37849 8.41041 6.58233 8.53288 6.75917C8.65536 6.93601 8.8188 7.08059 9.00927 7.18057C9.19973 7.28055 9.41155 7.33297 9.62666 7.33334H12.6667C12.7646 7.33318 12.8614 7.35461 12.9501 7.39609C13.0388 7.43757 13.1173 7.49809 13.18 7.57334C13.2442 7.64756 13.2913 7.73504 13.3178 7.82954C13.3443 7.92404 13.3496 8.02322 13.3333 8.12001Z" fill="#ADFF00"/>
@@ -127,7 +128,7 @@ export class ElementCreator {
             `;
             likeButton.classList.add('request-item-like');
 
-            let dislikeButton = document.createElement('button');
+            const dislikeButton = document.createElement('button');
             dislikeButton.innerHTML = `
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M12.6667 1.33331H4.18C3.71213 1.33347 3.25912 1.49765 2.89979 1.7973C2.54046 2.09694 2.29755 2.51308 2.21333 2.97331L1.36667 7.63998C1.31391 7.92827 1.32516 8.22464 1.39962 8.5081C1.47408 8.79156 1.60993 9.0552 1.79756 9.28035C1.98518 9.5055 2.22 9.68666 2.48539 9.81102C2.75078 9.93537 3.04025 9.99988 3.33333 9.99998H6.37333L6 10.9533C5.84471 11.3707 5.793 11.8196 5.84929 12.2614C5.90558 12.7032 6.06821 13.1247 6.32321 13.4898C6.57821 13.855 6.91798 14.1528 7.31337 14.3578C7.70877 14.5627 8.14798 14.6687 8.59333 14.6666C8.72157 14.6664 8.84702 14.6291 8.95462 14.5594C9.06222 14.4896 9.14742 14.3903 9.2 14.2733L11.1 9.99998H12.6667C13.1971 9.99998 13.7058 9.78927 14.0809 9.41419C14.456 9.03912 14.6667 8.53041 14.6667 7.99998V3.33331C14.6667 2.80288 14.456 2.29417 14.0809 1.9191C13.7058 1.54403 13.1971 1.33331 12.6667 1.33331ZM10 9.19331L8.18667 13.2733C8.00113 13.2172 7.82905 13.1236 7.68103 12.9985C7.53301 12.8733 7.41218 12.7192 7.32599 12.5455C7.2398 12.3719 7.19007 12.1825 7.17987 11.9889C7.16967 11.7953 7.1992 11.6017 7.26667 11.42L7.62 10.4666C7.69529 10.2651 7.72071 10.0484 7.69408 9.83496C7.66746 9.6215 7.58959 9.41766 7.46711 9.24082C7.34463 9.06398 7.18119 8.9194 6.99073 8.81942C6.80027 8.71944 6.58844 8.66702 6.37333 8.66665H3.33333C3.23539 8.66681 3.13862 8.64538 3.0499 8.6039C2.96118 8.56242 2.88268 8.5019 2.82 8.42665C2.75578 8.35243 2.70873 8.26495 2.68223 8.17045C2.65572 8.07595 2.65041 7.97677 2.66667 7.87998L3.51333 3.21331C3.54173 3.05801 3.62432 2.91782 3.74641 2.81771C3.86849 2.7176 4.02214 2.66407 4.18 2.66665H10V9.19331ZM13.3333 7.99998C13.3333 8.17679 13.2631 8.34636 13.1381 8.47138C13.013 8.59641 12.8435 8.66665 12.6667 8.66665H11.3333V2.66665H12.6667C12.8435 2.66665 13.013 2.73688 13.1381 2.86191C13.2631 2.98693 13.3333 3.1565 13.3333 3.33331V7.99998Z" fill="#FF4651"/>
@@ -140,7 +141,7 @@ export class ElementCreator {
             parentElement.appendChild(controlsContainer);
 
             likeButton.onclick = () => {
-                let feedbackAlert = document.createElement('div');
+                const feedbackAlert = document.createElement('div');
                 feedbackAlert.classList.add('feedback-alert');
                 feedbackAlert.classList.add('feedback-alert__correct');
                 feedbackAlert.innerHTML = `
@@ -160,7 +161,7 @@ export class ElementCreator {
             };
 
             dislikeButton.onclick = () => {
-                let feedbackAlert = document.createElement('div');
+                const feedbackAlert = document.createElement('div');
                 feedbackAlert.classList.add('feedback-alert');
                 feedbackAlert.classList.add('feedback-alert__incorrect');
                 feedbackAlert.innerHTML = `

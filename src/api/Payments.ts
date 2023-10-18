@@ -105,8 +105,8 @@ export class PaymentsClient {
             body: JSON.stringify({
                 product_id: product_id,
                 quantity: 1,
-                success_redirect_url: 'https://aiornot.webflow.io/dashboard/history',
-                cancel_redirect_url: 'https://aiornot.webflow.io/new-home#pricing',
+                success_redirect_url: 'https://aiornot.com/dashboard/settings',
+                cancel_redirect_url: 'https://aiornot.com/new-home#pricing',
             }),
         })
             .then((result) => {

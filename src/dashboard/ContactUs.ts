@@ -40,7 +40,7 @@ if (submitButton) {
         }).then((response) => {
             if (response.ok) {
                 alert('Thank you for your application! We will contact you shortly.');
-                window.location.href = 'https://aiornot.webflow.io/';
+                window.location.href = 'https://aiornot.com/';
             } else {
                 alert('Something went wrong. Please try again.');
             }
