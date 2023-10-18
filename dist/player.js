@@ -1,18 +1,162 @@
-"use strict";(()=>{var Me=Object.create;var he=Object.defineProperty;var He=Object.getOwnPropertyDescriptor;var $e=Object.getOwnPropertyNames;var Ve=Object.getPrototypeOf,Re=Object.prototype.hasOwnProperty;var Ue=(o=>typeof require!="undefined"?require:typeof Proxy!="undefined"?new Proxy(o,{get:(e,t)=>(typeof require!="undefined"?require:e)[t]}):o)(function(o){if(typeof require!="undefined")return require.apply(this,arguments);throw new Error('Dynamic require of "'+o+'" is not supported')});var ze=(o,e,t,s)=>{if(e&&typeof e=="object"||typeof e=="function")for(let n of $e(e))!Re.call(o,n)&&n!==t&&he(o,n,{get:()=>e[n],enumerable:!(s=He(e,n))||s.enumerable});return o};var De=(o,e,t)=>(t=o!=null?Me(Ve(o)):{},ze(e||!o||!o.__esModule?he(t,"default",{value:o,enumerable:!0}):t,o));var H=class{constructor(e,t,s,n){this.progressInterval=0;this.audio=e,this.playPauseBtn=t,this.progressSlider=s,this.track=n,this.dragging=!1,this.progressInterval=0,this.audio.volume=.3,this.playPauseBtn.addEventListener("click",i=>this.playPauseAudio(i)),this.progressSlider.addEventListener("mousedown",i=>this.mouseDown(i)),document.addEventListener("mousemove",i=>this.mouseMove(i)),document.addEventListener("mouseup",()=>this.mouseUp())}playPauseAudio(e){e.stopPropagation(),this.audio.paused?(this.audio.play(),this.playPauseBtn.innerHTML=`
+"use strict";
+(() => {
+  var __create = Object.create;
+  var __defProp = Object.defineProperty;
+  var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+  var __getOwnPropNames = Object.getOwnPropertyNames;
+  var __getProtoOf = Object.getPrototypeOf;
+  var __hasOwnProp = Object.prototype.hasOwnProperty;
+  var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+  var __require = /* @__PURE__ */ ((x) => typeof require !== "undefined" ? require : typeof Proxy !== "undefined" ? new Proxy(x, {
+    get: (a, b) => (typeof require !== "undefined" ? require : a)[b]
+  }) : x)(function(x) {
+    if (typeof require !== "undefined")
+      return require.apply(this, arguments);
+    throw new Error('Dynamic require of "' + x + '" is not supported');
+  });
+  var __copyProps = (to, from, except, desc) => {
+    if (from && typeof from === "object" || typeof from === "function") {
+      for (let key of __getOwnPropNames(from))
+        if (!__hasOwnProp.call(to, key) && key !== except)
+          __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+    }
+    return to;
+  };
+  var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
+    // If the importer is in node compatibility mode or this is not an ESM
+    // file that has been converted to a CommonJS file using a Babel-
+    // compatible transform (i.e. "__esModule" has not been set), then set
+    // "default" to the CommonJS "module.exports" for node compatibility.
+    isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
+    mod
+  ));
+  var __publicField = (obj, key, value) => {
+    __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+    return value;
+  };
+
+  // bin/live-reload.js
+  new EventSource(`${"http://localhost:3000"}/esbuild`).addEventListener("change", () => location.reload());
+
+  // src/audio/player.ts
+  var AudioPlayer = class {
+    audio;
+    playPauseBtn;
+    progressSlider;
+    track;
+    dragging;
+    progressInterval = 0;
+    constructor(audio, playPauseBtn, progressSlider, track) {
+      this.audio = audio;
+      this.playPauseBtn = playPauseBtn;
+      this.progressSlider = progressSlider;
+      this.track = track;
+      this.dragging = false;
+      this.progressInterval = 0;
+      this.audio.volume = 0.3;
+      this.playPauseBtn.addEventListener("click", (e) => this.playPauseAudio(e));
+      this.progressSlider.addEventListener("mousedown", (e) => this.mouseDown(e));
+      document.addEventListener("mousemove", (e) => this.mouseMove(e));
+      document.addEventListener("mouseup", () => this.mouseUp());
+    }
+    playPauseAudio(e) {
+      e.stopPropagation();
+      if (this.audio.paused) {
+        this.audio.play();
+        this.playPauseBtn.innerHTML = `
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
                 <rect x="2.5" y="1.5" width="4" height="13" rx="1.5" stroke="white"/>
                 <rect x="9.5" y="1.5" width="4" height="13" rx="1.5" stroke="white"/>
             </svg>
-            `,this.progressInterval=setInterval(()=>{if(!this.dragging){let t=this.audio.currentTime/this.audio.duration*100;this.track.style.width=t+"%",t>=100&&this.finishAudio()}},1e3)):(this.audio.pause(),this.playPauseBtn.innerHTML=`
+            `;
+        this.progressInterval = setInterval(() => {
+          if (!this.dragging) {
+            const progress = this.audio.currentTime / this.audio.duration * 100;
+            this.track.style.width = progress + "%";
+            if (progress >= 100) {
+              this.finishAudio();
+            }
+          }
+        }, 1e3);
+      } else {
+        this.audio.pause();
+        this.playPauseBtn.innerHTML = `
             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
                 <path d="M13.3375 10.8944L21.7598 15.1056C22.4968 15.4741 22.4968 16.5259 21.7598 16.8944L13.3375 21.1056C12.3402 21.6042 11.1667 20.879 11.1667 19.7639V12.2361C11.1667 11.121 12.3402 10.3958 13.3375 10.8944Z" stroke="white"/>
-            </svg>`,clearInterval(this.progressInterval))}pauseAudio(){this.audio.pause(),this.playPauseBtn.innerHTML=`
+            </svg>`;
+        clearInterval(this.progressInterval);
+      }
+    }
+    pauseAudio() {
+      this.audio.pause();
+      this.playPauseBtn.innerHTML = `
         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
             <path d="M13.3375 10.8944L21.7598 15.1056C22.4968 15.4741 22.4968 16.5259 21.7598 16.8944L13.3375 21.1056C12.3402 21.6042 11.1667 20.879 11.1667 19.7639V12.2361C11.1667 11.121 12.3402 10.3958 13.3375 10.8944Z" stroke="white"/>
-        </svg>`,clearInterval(this.progressInterval)}mouseDown(e){this.dragging=!0,clearInterval(this.progressInterval),this.updateProgress(e)}mouseMove(e){this.dragging&&this.updateProgress(e)}mouseUp(){this.dragging=!1,this.progressInterval=setInterval(()=>{if(!this.dragging){let e=this.audio.currentTime/this.audio.duration*100;this.track.style.width=e+"%",e>=100&&this.finishAudio()}},1e3)}updateProgress(e){let t=this.progressSlider.getBoundingClientRect(),s=e.clientX-t.left,n=t.right-t.left,i=Math.min(Math.max(s/n,0),1)*100;this.track.style.width=i+"%",this.audio.currentTime=this.audio.duration*(i/100),i>=100&&this.finishAudio()}finishAudio(){this.playPauseBtn.innerHTML=`
+        </svg>`;
+      clearInterval(this.progressInterval);
+    }
+    mouseDown(e) {
+      this.dragging = true;
+      clearInterval(this.progressInterval);
+      this.updateProgress(e);
+    }
+    mouseMove(e) {
+      if (this.dragging) {
+        this.updateProgress(e);
+      }
+    }
+    mouseUp() {
+      this.dragging = false;
+      this.progressInterval = setInterval(() => {
+        if (!this.dragging) {
+          const progress = this.audio.currentTime / this.audio.duration * 100;
+          this.track.style.width = progress + "%";
+          if (progress >= 100) {
+            this.finishAudio();
+          }
+        }
+      }, 1e3);
+    }
+    updateProgress(e) {
+      const rect = this.progressSlider.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const width = rect.right - rect.left;
+      const progress = Math.min(Math.max(x / width, 0), 1) * 100;
+      this.track.style.width = progress + "%";
+      this.audio.currentTime = this.audio.duration * (progress / 100);
+      if (progress >= 100) {
+        this.finishAudio();
+      }
+    }
+    finishAudio() {
+      this.playPauseBtn.innerHTML = `
         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
             <path d="M13.3375 10.8944L21.7598 15.1056C22.4968 15.4741 22.4968 16.5259 21.7598 16.8944L13.3375 21.1056C12.3402 21.6042 11.1667 20.879 11.1667 19.7639V12.2361C11.1667 11.121 12.3402 10.3958 13.3375 10.8944Z" stroke="white"/>
-        </svg>`}},f=class{constructor(e,t,s,n=!1){this.containerId="";this.audioPlayer=null;this.name="";this.containerId=e,this.container=document.getElementById(e),this.audioSrc=t,this.name=s,n?this.initializeSquarePlayer():this.initializePlayer()}initializePlayer(){if(!this.container)return;this.container.classList.add("aiornot-player"),this.container.innerHTML=`
+        </svg>`;
+    }
+  };
+  var AudioPlayerContainer = class {
+    containerId = "";
+    container;
+    audioSrc;
+    audioPlayer = null;
+    name = "";
+    constructor(containerId, audioSrc, name2, isSquare = false) {
+      this.containerId = containerId;
+      this.container = document.getElementById(containerId);
+      this.audioSrc = audioSrc;
+      this.name = name2;
+      if (isSquare) {
+        this.initializeSquarePlayer();
+      } else {
+        this.initializePlayer();
+      }
+    }
+    initializePlayer() {
+      if (!this.container)
+        return;
+      this.container.classList.add("aiornot-player");
+      this.container.innerHTML = `
             <audio id="${this.container.id}-audio" src="${this.audioSrc}"></audio>
             <div class="aiornot-player-controls">
                 <div class="aiornot-player-button" id="${this.container.id}-playPauseBtn">
@@ -26,7 +170,18 @@
             <div id="${this.container.id}-slider" class="aiornot-player-slider">
                 <div id="${this.container.id}-progress" class="aiornot-player-progress"></div>
             </div>
-        `;let e=document.getElementById(`${this.container.id}-audio`),t=document.getElementById(`${this.container.id}-playPauseBtn`),s=document.getElementById(`${this.container.id}-slider`),n=document.getElementById(`${this.container.id}-progress`);this.audioPlayer=new H(e,t,s,n)}initializeSquarePlayer(){if(!this.container)return;this.container.classList.add("aiornot-player-square"),this.container.innerHTML=`
+        `;
+      const audio = document.getElementById(`${this.container.id}-audio`);
+      const playPauseBtn = document.getElementById(`${this.container.id}-playPauseBtn`);
+      const progressSlider = document.getElementById(`${this.container.id}-slider`);
+      const track = document.getElementById(`${this.container.id}-progress`);
+      this.audioPlayer = new AudioPlayer(audio, playPauseBtn, progressSlider, track);
+    }
+    initializeSquarePlayer() {
+      if (!this.container)
+        return;
+      this.container.classList.add("aiornot-player-square");
+      this.container.innerHTML = `
             <audio id="${this.container.id}-audio" src="${this.audioSrc}"></audio>
             <div class="aiornot-player-controls-square">
                 <div class="aiornot-player-button-sqaure" id="${this.container.id}-playPauseBtn">
@@ -40,16 +195,177 @@
             <div id="${this.container.id}-slider" class="aiornot-player-slider">
                 <div id="${this.container.id}-progress" class="aiornot-player-progress"></div>
             </div>
-        `;let e=document.getElementById(`${this.container.id}-audio`),t=document.getElementById(`${this.container.id}-playPauseBtn`),s=document.getElementById(`${this.container.id}-slider`),n=document.getElementById(`${this.container.id}-progress`);this.audioPlayer=new H(e,t,s,n)}},$=class{constructor(e=[]){this.players=[],e.forEach(t=>{this.addPlayer(t)})}addPlayer(e){var t;this.players.push(e),(t=e.audioPlayer)==null||t.audio.addEventListener("play",()=>this.pauseOtherPlayers(e))}pauseOtherPlayers(e){var t;for(let s of this.players)s!==e&&((t=s.audioPlayer)==null||t.pauseAudio())}};var J=class{constructor(e,t,s){this.progressInterval=0;this.playPauseBtn=e,this.progressSlider=t,this.track=s,this.dragging=!1,this.progressInterval=0,this.initListeners()}initListeners(){this.playPauseBtn.addEventListener("click",()=>this.playPauseVideo()),this.progressSlider.addEventListener("mousedown",e=>this.mouseDown(e)),document.addEventListener("mousemove",e=>this.mouseMove(e)),document.addEventListener("mouseup",()=>this.mouseUp())}onYouTubeIframeAPIReady(e){this.player=new YT.Player("youtube-player",{height:"48",width:"48",videoId:e,events:{onReady:()=>this.onPlayerReady(),onStateChange:t=>this.onPlayerStateChange(t)}})}onPlayerReady(){this.player.setVolume(30)}playPauseVideo(){let e=this.player.getPlayerState();e===YT.PlayerState.ENDED&&(this.player.seekTo(0),this.player.playVideo()),e===YT.PlayerState.PAUSED||e===YT.PlayerState.CUED?(this.player.playVideo(),this.playPauseBtn.innerHTML=` <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+        `;
+      const audio = document.getElementById(`${this.container.id}-audio`);
+      const playPauseBtn = document.getElementById(`${this.container.id}-playPauseBtn`);
+      const progressSlider = document.getElementById(`${this.container.id}-slider`);
+      const track = document.getElementById(`${this.container.id}-progress`);
+      this.audioPlayer = new AudioPlayer(audio, playPauseBtn, progressSlider, track);
+    }
+  };
+  var PlayerManager = class {
+    players;
+    constructor(players = []) {
+      this.players = [];
+      players.forEach((player) => {
+        this.addPlayer(player);
+      });
+    }
+    addPlayer(player) {
+      this.players.push(player);
+      player.audioPlayer?.audio.addEventListener("play", () => this.pauseOtherPlayers(player));
+    }
+    pauseOtherPlayers(currentPlayer) {
+      for (let player of this.players) {
+        if (player !== currentPlayer) {
+          player.audioPlayer?.pauseAudio();
+        }
+      }
+    }
+  };
+
+  // src/audio/youtube.ts
+  var YouTubePlayer = class {
+    player;
+    playPauseBtn;
+    progressSlider;
+    track;
+    dragging;
+    progressInterval = 0;
+    constructor(playPauseBtn, progressSlider, track) {
+      this.playPauseBtn = playPauseBtn;
+      this.progressSlider = progressSlider;
+      this.track = track;
+      this.dragging = false;
+      this.progressInterval = 0;
+      this.initListeners();
+    }
+    initListeners() {
+      this.playPauseBtn.addEventListener("click", () => this.playPauseVideo());
+      this.progressSlider.addEventListener("mousedown", (e) => this.mouseDown(e));
+      document.addEventListener("mousemove", (e) => this.mouseMove(e));
+      document.addEventListener("mouseup", () => this.mouseUp());
+    }
+    onYouTubeIframeAPIReady(videoID) {
+      this.player = new YT.Player("youtube-player", {
+        height: "48",
+        width: "48",
+        videoId: videoID,
+        events: {
+          onReady: () => this.onPlayerReady(),
+          onStateChange: (event) => this.onPlayerStateChange(event)
+        }
+      });
+    }
+    onPlayerReady() {
+      this.player.setVolume(30);
+    }
+    playPauseVideo() {
+      const state = this.player.getPlayerState();
+      if (state === YT.PlayerState.ENDED) {
+        this.player.seekTo(0);
+        this.player.playVideo();
+      }
+      if (state === YT.PlayerState.PAUSED || state === YT.PlayerState.CUED) {
+        this.player.playVideo();
+        this.playPauseBtn.innerHTML = ` <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
                 <rect x="2.5" y="1.5" width="4" height="13" rx="1.5" stroke="white"/>
                 <rect x="9.5" y="1.5" width="4" height="13" rx="1.5" stroke="white"/>
-            </svg>`,this.progressInterval=setInterval(()=>{if(!this.dragging){let t=this.player.getCurrentTime()/this.player.getDuration()*100;this.track.style.width=t+"%",t>=100&&this.finishVideo()}},1e3)):(this.player.pauseVideo(),this.playPauseBtn.innerHTML=`
+            </svg>`;
+        this.progressInterval = setInterval(() => {
+          if (!this.dragging) {
+            const progress = this.player.getCurrentTime() / this.player.getDuration() * 100;
+            this.track.style.width = progress + "%";
+            if (progress >= 100) {
+              this.finishVideo();
+            }
+          }
+        }, 1e3);
+      } else {
+        this.player.pauseVideo();
+        this.playPauseBtn.innerHTML = `
             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
                 <path d="M13.3375 10.8944L21.7598 15.1056C22.4968 15.4741 22.4968 16.5259 21.7598 16.8944L13.3375 21.1056C12.3402 21.6042 11.1667 20.879 11.1667 19.7639V12.2361C11.1667 11.121 12.3402 10.3958 13.3375 10.8944Z" stroke="white"/>
-            </svg>`,clearInterval(this.progressInterval))}onPlayerStateChange(e){e.data===YT.PlayerState.ENDED&&this.finishVideo()}mouseDown(e){this.dragging=!0,clearInterval(this.progressInterval),this.updateProgress(e)}mouseMove(e){this.dragging&&this.updateProgress(e)}mouseUp(){this.dragging=!1,this.progressInterval=setInterval(()=>{if(!this.dragging){let e=this.player.getCurrentTime()/this.player.getDuration()*100;this.track.style.width=e+"%",e>=100&&this.finishVideo()}},1e3)}updateProgress(e){let t=this.progressSlider.getBoundingClientRect(),s=e.clientX-t.left,n=t.right-t.left,i=Math.min(Math.max(s/n,0),1)*100;this.track.style.width=i+"%",this.player.seekTo(this.player.getDuration()*(i/100)),i>=100&&this.finishVideo()}finishVideo(){this.playPauseBtn.innerHTML=`
+            </svg>`;
+        clearInterval(this.progressInterval);
+      }
+    }
+    onPlayerStateChange(event) {
+      if (event.data === YT.PlayerState.ENDED) {
+        this.finishVideo();
+      }
+    }
+    mouseDown(e) {
+      this.dragging = true;
+      clearInterval(this.progressInterval);
+      this.updateProgress(e);
+    }
+    mouseMove(e) {
+      if (this.dragging) {
+        this.updateProgress(e);
+      }
+    }
+    mouseUp() {
+      this.dragging = false;
+      this.progressInterval = setInterval(() => {
+        if (!this.dragging) {
+          const progress = this.player.getCurrentTime() / this.player.getDuration() * 100;
+          this.track.style.width = progress + "%";
+          if (progress >= 100) {
+            this.finishVideo();
+          }
+        }
+      }, 1e3);
+    }
+    updateProgress(e) {
+      const rect = this.progressSlider.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const width = rect.right - rect.left;
+      const progress = Math.min(Math.max(x / width, 0), 1) * 100;
+      this.track.style.width = progress + "%";
+      this.player.seekTo(this.player.getDuration() * (progress / 100));
+      if (progress >= 100) {
+        this.finishVideo();
+      }
+    }
+    finishVideo() {
+      this.playPauseBtn.innerHTML = `
         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
             <path d="M13.3375 10.8944L21.7598 15.1056C22.4968 15.4741 22.4968 16.5259 21.7598 16.8944L13.3375 21.1056C12.3402 21.6042 11.1667 20.879 11.1667 19.7639V12.2361C11.1667 11.121 12.3402 10.3958 13.3375 10.8944Z" stroke="white"/>
-        </svg>`,clearInterval(this.progressInterval)}},X=class{constructor(e,t,s){this.containerId="";this.videoId="";this.youtubePlayer=null;this.name="";this.containerId=e,this.container=document.getElementById(e),this.videoId=t,this.name=s,this.initializePlayer()}async loadYouTubeIframeAPI(){return new Promise((e,t)=>{var i;window.onYouTubeIframeAPIReady=()=>{e()};let s=document.createElement("script");s.src="https://www.youtube.com/iframe_api",s.onerror=t;let n=document.getElementsByTagName("script")[0];(i=n.parentNode)==null||i.insertBefore(s,n)})}async initializePlayer(){if(!this.container)return;this.container.classList.add("aiornot-player-square"),this.container.innerHTML=`
+        </svg>`;
+      clearInterval(this.progressInterval);
+    }
+  };
+  var YoutubePlayerContainer = class {
+    containerId = "";
+    container;
+    videoId = "";
+    youtubePlayer = null;
+    name = "";
+    constructor(containerId, videoId, name2) {
+      this.containerId = containerId;
+      this.container = document.getElementById(containerId);
+      this.videoId = videoId;
+      this.name = name2;
+      this.initializePlayer();
+    }
+    async loadYouTubeIframeAPI() {
+      return new Promise((resolve, reject) => {
+        window.onYouTubeIframeAPIReady = () => {
+          resolve();
+        };
+        const tag = document.createElement("script");
+        tag.src = "https://www.youtube.com/iframe_api";
+        tag.onerror = reject;
+        const firstScriptTag = document.getElementsByTagName("script")[0];
+        firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag);
+      });
+    }
+    async initializePlayer() {
+      if (!this.container)
+        return;
+      this.container.classList.add("aiornot-player-square");
+      this.container.innerHTML = `
             <div id="youtube-player"></div>
             <div class="aiornot-player-controls-square">
                 <div class="aiornot-player-button-sqaure" id="${this.container.id}-playPauseBtn">
@@ -63,18 +379,1138 @@
             <div id="${this.container.id}-slider" class="aiornot-player-slider">
                 <div id="${this.container.id}-progress" class="aiornot-player-progress"></div>
             </div>
-        `;let e=document.getElementById(`${this.container.id}-playPauseBtn`),t=document.getElementById(`${this.container.id}-slider`),s=document.getElementById(`${this.container.id}-progress`);await this.loadYouTubeIframeAPI(),this.youtubePlayer=new J(e,t,s),this.youtubePlayer.onYouTubeIframeAPIReady(this.videoId)}},ye=(o,e)=>{let s=(n=>{var i;try{let c=new URL(n),g=new URLSearchParams(c.search).get("v"),T=/^(?:https?:\/\/)?(?:www\.)?youtu(?:be)?\.(?:com|be)\/(?:shorts\/)?([^\/?]+)/.exec(n);return(i=g!=null?g:T==null?void 0:T[0])!=null?i:""}catch(c){return console.error("\u041D\u0435\u0432\u0435\u0440\u043D\u044B\u0439 URL",c),""}})(e);new X(o,s,"")};var ge,Fe=import("https://openfpcdn.io/fingerprintjs/v3").then(o=>o.load()),K=async()=>{ge=await Fe.then(o=>o.get()).then(o=>o.visitorId)};function fe(o){var e=o.split(".")[1],t=e.replace(/-/g,"+").replace(/_/g,"/"),s=decodeURIComponent(atob(t).split("").map(function(n){return"%"+("00"+n.charCodeAt(0).toString(16)).slice(-2)}).join(""));return JSON.parse(s)}var d="http://localhost:8000",V="https://results.aiornot.com",_=class{constructor(e,t){this.apiUrl=e,this.bearerToken=t}async get(e){let t=`${this.apiUrl}/${e}`;try{let s=await fetch(t,{method:"GET",headers:{"Content-Type":"application/json",Authorization:`Bearer ${this.bearerToken}`}});return await this.handleResponse(s)}catch(s){throw s.status===429&&s.message.msg.type==="requests"&&alert(`It looks like you have reached your plan limit of ${s.message.msg.current_limit} requests. To continue, please upgrade to a new plan.`),console.error("Error",s),s}}async post(e,t){let s=`${this.apiUrl}/${e}`;try{let n=await fetch(s,{method:"POST",headers:{"Content-Type":"application/json",Authorization:`Bearer ${this.bearerToken}`},body:JSON.stringify(t)});return await this.handleResponse(n)}catch(n){throw console.error("Request error",n),n.status===429&&n.message.msg.type==="requests"&&alert(`It looks like you have reached your plan limit of ${n.message.msg.current_limit} requests. To continue, please upgrade to a new plan.`),n}}async postBinary(e,t){let s=`${this.apiUrl}/${e}`;console.log("url",s);try{let n=await fetch(s,{method:"POST",headers:{Accept:"application/json",Authorization:`Bearer ${this.bearerToken}`},body:t});return await this.handleResponse(n)}catch(n){throw console.error("Binary request error:",n),n.status===429&&n.message.msg.type==="requests"&&alert(`It looks like you have reached your plan limit of ${n.message.msg.current_limit} requests. To continue, please upgrade to a new plan.`),n}}async delete(e){let t=`${this.apiUrl}/${e}`;try{let s=await fetch(t,{method:"DELETE",headers:{accept:"*/*",Authorization:`Bearer ${this.bearerToken}`}});await this.handleResponse(s)}catch(s){throw console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u0440\u0438 \u0432\u044B\u043F\u043E\u043B\u043D\u0435\u043D\u0438\u0438 DELETE-\u0437\u0430\u043F\u0440\u043E\u0441\u0430:",s),s}}async patch(e,t){let s=`${this.apiUrl}/${e}`;try{let n=await fetch(s,{method:"PATCH",headers:{"Content-Type":"application/json",Authorization:`Bearer ${this.bearerToken}`},body:JSON.stringify(t)});return await this.handleResponse(n)}catch(n){throw console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u0440\u0438 \u0432\u044B\u043F\u043E\u043B\u043D\u0435\u043D\u0438\u0438 PATCH-\u0437\u0430\u043F\u0440\u043E\u0441\u0430:",n),n}}async handleResponse(e){if(!e.ok){let t=await e.json();throw{status:e.status,message:t}}if(e.status!==204)return await e.json()}};var u=class{constructor(){let e=l.getToken(),t=`${d}/aion/users`;this.client=new _(t,e)}static getInstance(){return u.instance||(u.instance=new u),u.instance}static async fetchRequests(e=0,t=10){try{let{client:s}=u.getInstance(),n=`data?filters=requests&offset=${e}&limit=${t}`;return await s.get(n).then(i=>i.requests.array)}catch(s){return console.error("getRequests:",s),[]}}static async fetchUsageApi(){try{let{client:e}=u.getInstance(),t="data?filters=all&offset=0&limit=1";return await e.get(t).then(s=>s.api)}catch(e){return console.error("fetchUsageApi:",e),[]}}static async signUp(){try{let{client:e}=u.getInstance();return await e.post("sign_up",{}).then(()=>!1).catch(t=>{if(t.status===400)return!0;throw t})}catch(e){return console.error("signUp:",e),!1}}static async login(){try{let{client:e}=u.getInstance();return await e.get("login")}catch(e){console.error("login:",e)}}static async delete(){try{let{client:e}=u.getInstance();return await e.delete("")}catch(e){console.error("delete:",e)}}static async fetchApiToken(){try{let{client:e}=u.getInstance();return await e.post("api_token",{})}catch(e){console.error("fetchApiToken:",e),console.error("fetchApiToken:",e)}}static async refreshApiToken(){try{let{client:e}=u.getInstance();return await e.patch("api_token",{})}catch(e){console.error("refreshApiToken:",e)}}static async fetchSubscriptionData(){let{client:e}=u.getInstance();try{let t="data?filters=all&offset=0&limit=1";return await e.get(t).then(s=>s)}catch(t){console.error("fetchSubscriptionData:",t)}}},p=u;p.instance=null;var C=class{constructor(){}static isAuth(){return localStorage.getItem(C.key)!==null}static setAuth(){localStorage.setItem(C.key,"true")}static removeAuth(){localStorage.removeItem(C.key)}static async init(){C.isAuth()?await p.login():(await p.signUp(),C.setAuth(),await p.login())}static getToken(){var e;return(e=localStorage.getItem("_ms-mid"))!=null?e:""}static isExpiredToken(){let e=C.getToken();if((e==null?void 0:e.length)>0){let t=fe(e),s=Date.now()/1e3;return t.exp<s}return!0}},l=C;l.key="isSignUp";var v=class{constructor(){let e=l.getToken(),t=`${d}/aion/ai-generated`;this.client=new _(t,e)}static getInstance(){return v.instance||(v.instance=new v),v.instance}static async getReportsByBinary(e){let{client:t}=v.getInstance();try{let s=new FormData;return s.append("binary",e,"uploaded-file.png"),await t.postBinary("reports/binary",s)}catch(s){s.status===402&&alert("Please verify your email to continue using the service"),s.status===429&&(alert(`You have reached the limit of requests per day. Alert: ${JSON.stringify(s.message)}`),window.location.href=`https://${window.location.host}/#plans`),console.error("Error getReportsByBinary:",s)}}static async getReportsByUrl(e){let{client:t}=v.getInstance();try{let s=`reports/url?url=${e}`;return await t.post(s,{})}catch(s){s.status===402&&alert("Please verify your email to continue using the service"),console.error("getReportsByUrl:",s)}}static async getAudioVerdict(e){console.log("getAudioVerdict");let{client:t}=v.getInstance();try{let s=new FormData;return s.append("file",e),await t.postBinary("reports/audio/binary",s)}catch(s){s.status===402&&alert("Please verify your email to continue using the service"),console.error("Error getAudioVerdict:",s)}}static async getYoutubeVerdict(e){let{client:t}=v.getInstance();try{let s={url:e};return await t.post("reports/audio/link",s)}catch(s){s.status===402&&alert("Please verify your email to continue using the service"),console.error("Error getYoutubeVerdict:",s)}}},x=v;x.instance=null;var q=class{constructor(){}static async getReportsByBinary(e,t){let s=`${d}/results/api/detector/reports/raw?source=web&user_id=${t}`,n=new FormData;n.append("binary",e,"file_name.png");let i={method:"POST",headers:{Accept:"application/json",Authorization:`Bearer ${l.getToken()}`},body:n};return await fetch(s,i).then(c=>c.json())}static async getReportsByUrl(e,t){let s=`${d}/results/api/detector/reports/json?source=web&user_id=${t}`,n={method:"POST",headers:{Accept:"application/json","Content-Type":"application/json",Authorization:`Bearer ${l.getToken()}`},body:JSON.stringify({object:e})};return await fetch(s,n).then(i=>i.json())}static async sendFeedback(e,t,s,n=!1){let i={is_proper_predict:t,comment:s},c=`${d}/results/api/detector/reports/result/${e}`,g={method:"PUT",body:JSON.stringify(i),headers:{Accept:"application/json","Content-Type":"application/json"}};(n||!l.isExpiredToken())&&(c=`${d}/aion/ai-generated/reports/${e}`,g={method:"PATCH",body:JSON.stringify(i),headers:{Accept:"application/json","Content-Type":"application/json"}}),await fetch(c,g).then(h=>h.json()).then(h=>console.log(h)).catch(h=>console.error(h))}static async getAudioVerdict(e){let t=`${d}/aion/ai-generated/reports/audio/binary`,s=new FormData;return s.append("file",e),await fetch(t,{method:"POST",headers:{Accept:"application/json",ContentType:"multipart/form-data"},body:s}).then(i=>i.json())}static async getYoutubeVerdict(e){let t=`${d}/aion/ai-generated/reports/audio/link`,s={method:"POST",headers:{Accept:"application/json","Content-Type":"application/json"},body:JSON.stringify({url:e})};return await fetch(t,s).then(n=>n.json())}};var R=class{constructor(){}static isLimitExceeded(){return!!l.isExpiredToken()}static increment(){let e=localStorage.getItem(R.key),t=e===null?1:Number(e)+1;localStorage.setItem(R.key,t.toString())}},I=R;I.key="requestCount";var E=class{static async getReportsByBinary(e,t){return l.isExpiredToken()?await q.getReportsByBinary(e,t):await x.getReportsByBinary(e)}static async getReportsByUrl(e,t){return l.isExpiredToken()?await q.getReportsByUrl(e,t):await x.getReportsByUrl(e)}static async getAudioVerictByFile(e){return await x.getAudioVerdict(e)}static async getAudioVerictMock(e){let s=await((n,i)=>new Promise(c=>{setTimeout(()=>{c(i)},n)}))(1500,e);return JSON.parse(`{
+        `;
+      const playPauseBtn = document.getElementById(`${this.container.id}-playPauseBtn`);
+      const progressSlider = document.getElementById(`${this.container.id}-slider`);
+      const track = document.getElementById(`${this.container.id}-progress`);
+      await this.loadYouTubeIframeAPI();
+      this.youtubePlayer = new YouTubePlayer(playPauseBtn, progressSlider, track);
+      this.youtubePlayer.onYouTubeIframeAPIReady(this.videoId);
+    }
+  };
+  var createYoutubePlayer = (elementId, url) => {
+    const getYoutubeVideoID = (url2) => {
+      try {
+        let urlObject = new URL(url2);
+        let id = new URLSearchParams(urlObject.search).get("v");
+        let regExp = /^(?:https?:\/\/)?(?:www\.)?youtu(?:be)?\.(?:com|be)\/(?:shorts\/)?([^\/?]+)/;
+        let result = regExp.exec(url2);
+        return id ?? result?.[0] ?? "";
+      } catch (e) {
+        console.error("\u041D\u0435\u0432\u0435\u0440\u043D\u044B\u0439 URL", e);
+        return "";
+      }
+    };
+    const videoID = getYoutubeVideoID(url);
+    new YoutubePlayerContainer(elementId, videoID, "");
+  };
+
+  // src/utils/fingerprint.ts
+  var visitorId;
+  var fpPromise = import("https://openfpcdn.io/fingerprintjs/v3").then((FingerprintJS) => FingerprintJS.load());
+  var initFingerPrint = async () => {
+    visitorId = await fpPromise.then((fp) => fp.get()).then((result) => {
+      return result.visitorId;
+    });
+  };
+
+  // src/utils/string.ts
+  function parseJwt(token) {
+    var base64Url = token.split(".")[1];
+    var base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+    var jsonPayload = decodeURIComponent(
+      atob(base64).split("").map(function(c) {
+        return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+      }).join("")
+    );
+    return JSON.parse(jsonPayload);
+  }
+
+  // src/api/RestClient.ts
+  var BASE_URL = "https://api.ai-or-not.com";
+  var BASE_URL_RESULTS = "https://results.aiornot.com";
+  var RestClient = class {
+    apiUrl;
+    bearerToken;
+    constructor(apiUrl, bearerToken) {
+      this.apiUrl = apiUrl;
+      this.bearerToken = bearerToken;
+    }
+    async get(endpoint) {
+      const url = `${this.apiUrl}/${endpoint}`;
+      try {
+        const response = await fetch(url, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${this.bearerToken}`
+          }
+        });
+        return await this.handleResponse(response);
+      } catch (error) {
+        if (error.status === 429) {
+          if (error.message.msg.type === "requests") {
+            alert(
+              `It looks like you have reached your plan limit of ${error.message.msg.current_limit} requests. To continue, please upgrade to a new plan.`
+            );
+          }
+        }
+        console.error("Error", error);
+        throw error;
+      }
+    }
+    async post(endpoint, body) {
+      const url = `${this.apiUrl}/${endpoint}`;
+      try {
+        const response = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${this.bearerToken}`
+          },
+          body: JSON.stringify(body)
+        });
+        return await this.handleResponse(response);
+      } catch (error) {
+        console.error("Request error", error);
+        if (error.status === 429) {
+          if (error.message.msg.type === "requests") {
+            alert(
+              `It looks like you have reached your plan limit of ${error.message.msg.current_limit} requests. To continue, please upgrade to a new plan.`
+            );
+          }
+        }
+        throw error;
+      }
+    }
+    async postBinary(endpoint, formData) {
+      const url = `${this.apiUrl}/${endpoint}`;
+      console.log("url", url);
+      try {
+        const response = await fetch(url, {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${this.bearerToken}`
+          },
+          body: formData
+        });
+        const data = await this.handleResponse(response);
+        return data;
+      } catch (error) {
+        console.error("Binary request error:", error);
+        if (error.status === 429) {
+          if (error.message.msg.type === "requests") {
+            alert(
+              `It looks like you have reached your plan limit of ${error.message.msg.current_limit} requests. To continue, please upgrade to a new plan.`
+            );
+          }
+        }
+        throw error;
+      }
+    }
+    async delete(endpoint) {
+      const url = `${this.apiUrl}/${endpoint}`;
+      try {
+        const response = await fetch(url, {
+          method: "DELETE",
+          headers: {
+            accept: "*/*",
+            Authorization: `Bearer ${this.bearerToken}`
+          }
+        });
+        await this.handleResponse(response);
+      } catch (error) {
+        console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u0440\u0438 \u0432\u044B\u043F\u043E\u043B\u043D\u0435\u043D\u0438\u0438 DELETE-\u0437\u0430\u043F\u0440\u043E\u0441\u0430:", error);
+        throw error;
+      }
+    }
+    async patch(endpoint, body) {
+      const url = `${this.apiUrl}/${endpoint}`;
+      try {
+        const response = await fetch(url, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${this.bearerToken}`
+          },
+          body: JSON.stringify(body)
+        });
+        return await this.handleResponse(response);
+      } catch (error) {
+        console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u0440\u0438 \u0432\u044B\u043F\u043E\u043B\u043D\u0435\u043D\u0438\u0438 PATCH-\u0437\u0430\u043F\u0440\u043E\u0441\u0430:", error);
+        throw error;
+      }
+    }
+    async handleResponse(response) {
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw { status: response.status, message: errorData };
+      }
+      if (response.status !== 204) {
+        const data = await response.json();
+        return data;
+      }
+    }
+  };
+
+  // src/api/DashboardService.ts
+  var _DashboardService = class {
+    client;
+    constructor() {
+      const bearerToken = AuthService.getToken();
+      const baseUrl = `${BASE_URL}/aion/users`;
+      this.client = new RestClient(baseUrl, bearerToken);
+    }
+    static getInstance() {
+      if (!_DashboardService.instance) {
+        _DashboardService.instance = new _DashboardService();
+      }
+      return _DashboardService.instance;
+    }
+    static async fetchRequests(offset = 0, limit = 10) {
+      try {
+        const { client } = _DashboardService.getInstance();
+        const endpoint = `data?filters=requests&offset=${offset}&limit=${limit}`;
+        return await client.get(endpoint).then((data) => data.requests.array);
+      } catch (error) {
+        console.error("getRequests:", error);
+        return [];
+      }
+    }
+    static async fetchUsageApi() {
+      try {
+        const { client } = _DashboardService.getInstance();
+        const endpoint = `data?filters=all&offset=0&limit=1`;
+        return await client.get(endpoint).then((data) => data.api);
+      } catch (error) {
+        console.error("fetchUsageApi:", error);
+        return [];
+      }
+    }
+    static async signUp() {
+      try {
+        const { client } = _DashboardService.getInstance();
+        return await client.post("sign_up", {}).then(() => false).catch((error) => {
+          if (error.status === 400) {
+            return true;
+          }
+          throw error;
+        });
+      } catch (error) {
+        console.error("signUp:", error);
+        return false;
+      }
+    }
+    static async login() {
+      try {
+        const { client } = _DashboardService.getInstance();
+        return await client.get("login");
+      } catch (error) {
+        console.error("login:", error);
+      }
+    }
+    static async delete() {
+      try {
+        const { client } = _DashboardService.getInstance();
+        return await client.delete("");
+      } catch (error) {
+        console.error("delete:", error);
+      }
+    }
+    static async fetchApiToken() {
+      try {
+        const { client } = _DashboardService.getInstance();
+        return await client.post("api_token", {});
+      } catch (error) {
+        console.error("fetchApiToken:", error);
+        console.error("fetchApiToken:", error);
+      }
+    }
+    static async refreshApiToken() {
+      try {
+        const { client } = _DashboardService.getInstance();
+        return await client.patch("api_token", {});
+      } catch (error) {
+        console.error("refreshApiToken:", error);
+      }
+    }
+    static async fetchSubscriptionData() {
+      const { client } = _DashboardService.getInstance();
+      try {
+        const endpoint = `data?filters=all&offset=0&limit=1`;
+        return await client.get(endpoint).then((data) => data);
+      } catch (error) {
+        console.error("fetchSubscriptionData:", error);
+      }
+    }
+  };
+  var DashboardService = _DashboardService;
+  __publicField(DashboardService, "instance", null);
+
+  // src/api/AuthService.ts
+  var _AuthService = class {
+    constructor() {
+    }
+    static isAuth() {
+      if (localStorage.getItem(_AuthService.token_key) !== null) {
+        return true;
+      }
+      return false;
+    }
+    static setAuth() {
+      localStorage.setItem(_AuthService.key, "true");
+    }
+    static removeAuth() {
+      localStorage.removeItem(_AuthService.key);
+    }
+    static async init() {
+      if (_AuthService.isAuth()) {
+        await DashboardService.signUp();
+        _AuthService.setAuth();
+        await DashboardService.login();
+      } else {
+        await DashboardService.signUp();
+        _AuthService.setAuth();
+        await DashboardService.login();
+      }
+    }
+    static getToken() {
+      return localStorage.getItem("_ms-mid") ?? "";
+    }
+    static isExpiredToken() {
+      const token = _AuthService.getToken();
+      if (token?.length > 0) {
+        const jwt = parseJwt(token);
+        const current_time = Date.now() / 1e3;
+        return jwt.exp < current_time;
+      }
+      return true;
+    }
+    static checkAuth(redirect_function) {
+      if (!_AuthService.isAuth()) {
+        const signInModalElement = document.getElementById("sign-up");
+        signInModalElement.style.display = "flex";
+        signInModalElement.style.zIndex = 100;
+        redirect_function();
+        return true;
+      }
+      return false;
+    }
+  };
+  var AuthService = _AuthService;
+  __publicField(AuthService, "key", "isSignUp");
+  __publicField(AuthService, "token_key", "_ms-mid");
+
+  // src/api/AIGeneratedService.ts
+  var _AIGeneratedService = class {
+    client;
+    constructor() {
+      const bearerToken = AuthService.getToken();
+      const baseUrl = `${BASE_URL}/aion/ai-generated`;
+      this.client = new RestClient(baseUrl, bearerToken);
+    }
+    static getInstance() {
+      if (!_AIGeneratedService.instance) {
+        _AIGeneratedService.instance = new _AIGeneratedService();
+      }
+      return _AIGeneratedService.instance;
+    }
+    static async getReportsByBinary(file) {
+      const { client } = _AIGeneratedService.getInstance();
+      try {
+        const formData = new FormData();
+        formData.append("binary", file, "uploaded-file.png");
+        return await client.postBinary("reports/binary", formData);
+      } catch (error) {
+        if (error.status === 402) {
+          alert("Please verify your email to continue using the service");
+        }
+        if (error.status === 429) {
+          alert(`You have reached the limit of requests per day. Alert: ${JSON.stringify(error.message)}`);
+          window.location.href = `https://${window.location.host}/#plans`;
+        }
+        console.error("Error getReportsByBinary:", error);
+      }
+    }
+    static async getReportsByUrl(url) {
+      const { client } = _AIGeneratedService.getInstance();
+      try {
+        const endpoint = `reports/url?url=${url}`;
+        return await client.post(endpoint, {});
+      } catch (error) {
+        if (error.status === 402) {
+          alert("Please verify your email to continue using the service");
+        }
+        console.error("getReportsByUrl:", error);
+      }
+    }
+    static async getAudioVerdict(file) {
+      console.log("getAudioVerdict");
+      const { client } = _AIGeneratedService.getInstance();
+      try {
+        const formData = new FormData();
+        formData.append("file", file);
+        return await client.postBinary("reports/audio/binary", formData);
+      } catch (error) {
+        if (error.status === 402) {
+          alert("Please verify your email to continue using the service");
+        }
+        console.error("Error getAudioVerdict:", error);
+      }
+    }
+    static async getYoutubeVerdict(link) {
+      const { client } = _AIGeneratedService.getInstance();
+      try {
+        const body = {
+          url: link
+        };
+        return await client.post("reports/audio/link", body);
+      } catch (error) {
+        if (error.status === 402) {
+          alert("Please verify your email to continue using the service");
+        }
+        console.error("Error getYoutubeVerdict:", error);
+      }
+    }
+  };
+  var AIGeneratedService = _AIGeneratedService;
+  __publicField(AIGeneratedService, "instance", null);
+
+  // src/api/OpenAIGeneratedService.ts
+  var OpenAIGeneratedService = class {
+    constructor() {
+    }
+    static async getReportsByBinary(file, visitorId2) {
+      const baseUrl = `${BASE_URL}/results/api/detector/reports/raw?source=web&user_id=${visitorId2}`;
+      const formData = new FormData();
+      formData.append("binary", file, "file_name.png");
+      const options = {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${AuthService.getToken()}`
+        },
+        body: formData
+      };
+      return await fetch(baseUrl, options).then((response) => response.json());
+    }
+    static async getReportsByUrl(url, visitorId2) {
+      const baseUrl = `${BASE_URL}/results/api/detector/reports/json?source=web&user_id=${visitorId2}`;
+      const options = {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${AuthService.getToken()}`
+        },
+        body: JSON.stringify({
+          object: url
+        })
+      };
+      return await fetch(baseUrl, options).then((response) => response.json());
+    }
+    static async sendFeedback(id, reportPredict, reportComment, isAudio = false) {
+      const body = {
+        is_proper_predict: reportPredict,
+        comment: reportComment
+      };
+      let url = `${BASE_URL}/results/api/detector/reports/result/${id}`;
+      let options = {
+        method: "PUT",
+        body: JSON.stringify(body),
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        }
+      };
+      if (isAudio || !AuthService.isExpiredToken()) {
+        url = `${BASE_URL}/aion/ai-generated/reports/${id}`;
+        options = {
+          method: "PATCH",
+          body: JSON.stringify(body),
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json"
+          }
+        };
+      }
+      await fetch(url, options).then((response) => response.json()).then((data) => console.log(data)).catch((error) => console.error(error));
+    }
+    static async getAudioVerdict(file) {
+      const baseUrl = `${BASE_URL}/aion/ai-generated/reports/audio/binary`;
+      const formData = new FormData();
+      formData.append("file", file);
+      const options = {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          ContentType: "multipart/form-data"
+        },
+        body: formData
+      };
+      return await fetch(baseUrl, options).then((response) => response.json());
+    }
+    static async getYoutubeVerdict(link) {
+      const baseUrl = `${BASE_URL}/aion/ai-generated/reports/audio/link`;
+      const options = {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          url: link
+        })
+      };
+      return await fetch(baseUrl, options).then((response) => response.json());
+    }
+  };
+
+  // src/api/RequestCounter.ts
+  var _RequestCounter = class {
+    constructor() {
+    }
+    static isLimitExceeded() {
+      if (!AuthService.isExpiredToken()) {
+        return false;
+      }
+      return true;
+    }
+    static increment() {
+      const count = localStorage.getItem(_RequestCounter.key);
+      const newCount = count === null ? 1 : Number(count) + 1;
+      localStorage.setItem(_RequestCounter.key, newCount.toString());
+    }
+  };
+  var RequestCounter = _RequestCounter;
+  __publicField(RequestCounter, "key", "requestCount");
+
+  // src/api/WrapperAIGeneratedService.ts
+  var WrapperAIGeneratedService = class {
+    static async getReportsByBinary(file, visitorId2) {
+      if (AuthService.isExpiredToken()) {
+        return await OpenAIGeneratedService.getReportsByBinary(file, visitorId2);
+      }
+      return await AIGeneratedService.getReportsByBinary(file);
+    }
+    static async getReportsByUrl(url, visitorId2) {
+      if (AuthService.isExpiredToken()) {
+        return await OpenAIGeneratedService.getReportsByUrl(url, visitorId2);
+      }
+      return await AIGeneratedService.getReportsByUrl(url);
+    }
+    static async getAudioVerictByFile(file) {
+      return await AIGeneratedService.getAudioVerdict(file);
+    }
+    static async getAudioVerictMock(verdict) {
+      const delay = (ms, value) => {
+        return new Promise((resolve) => {
+          setTimeout(() => {
+            resolve(value);
+          }, ms);
+        });
+      };
+      const result = await delay(1500, verdict);
+      return JSON.parse(`{
             "id": "41994fdd-0161-43a9-b873-581eccbe6d72",
             "report": {
                 "version": "0.0.0",
-                "verdict": ${s}
+                "verdict": ${result}
             }
-        }`)}static async getYoutubeVerict(e){return l.isExpiredToken()?await q.getYoutubeVerdict(e):await x.getYoutubeVerdict(e)}static async sendFeedback(e,t,s,n=!1){return await q.sendFeedback(e,t,s,n)}};var ve=()=>{var me,pe;let o=document.getElementById("image-tab"),e=document.getElementById("audio-tab"),t=document.getElementById("report-screen"),s=document.querySelector("#button-report-submit"),n=document.querySelector("#input-report-comment"),i=document.querySelector("#button-report_true"),c=document.querySelector("#button-report_false"),g=document.querySelector("#button-report_close"),h=document.querySelector("#url-error-message"),T=document.querySelector("#processing_cancel"),m=document.querySelector("#file-input"),F=document.querySelector("#input-error-text"),w=document.getElementById("ai-or-not_audio-url"),B=document.getElementById("audio-aion-submit"),oe=document.querySelector("#ai-or-not-audio_dropzone"),b=document.querySelector("#ai-or-not_dropzone-text"),ie=document.querySelector("#audio-result-screen_col"),be=document.querySelector("#share-items-hide"),tt=document.querySelector("#result-screen_share-component"),Ce=document.querySelector("#ai-or-not-dropzone-counter"),P=document.querySelector("#ai-or-not-dropzone-counter-w"),k,j;be.classList.add("hide");function xe(){return o.classList.contains("w--current")?"image":"audio"}(()=>{if(!l.isExpiredToken())P==null||P.classList.add("hide");else{let r=localStorage.getItem("requestCount")||"0";Ce.textContent=Number(r)<=5?r:"5",P.classList.remove("hide")}})(),K();let Te=()=>{n.value="";let r=document.querySelector("#button-report_true-text"),a=document.querySelector("#button-report_false-text");a.classList.add("hide"),r.classList.remove("hide"),r.textContent=r.getAttribute("report-button-text-default"),a.textContent=a.getAttribute("report-button-text-default"),i.classList.remove("is-reported"),c.classList.remove("is-reported"),i.classList.remove("hide"),c.classList.remove("hide")},ae=r=>{j=r;let a=document.querySelector('[fs-socialshare-element="url"]'),S=`${l.isExpiredToken()?`${V}/aiornot/`:`${V}/aiornot/users/`}${r}`;a.textContent=S,document.querySelectorAll(".audio-result-screen_share-item").forEach(Ae=>{Ae.setAttribute("data-url",S)})},le=()=>{b.textContent="We support 10 Mb of maximum size.",b.classList.remove("text-color-red"),F.textContent="Something went wrong. Try again.",h.classList.add("hide")},ce=()=>{h.classList.remove("hide")},nt=()=>{h.classList.add("hide")},A=()=>{ie.classList.contains("hide")?(b.textContent="File is too large (max 10 MB)",b.classList.add("text-color-red")):(F.textContent="File is too large (max 10 MB)",h.classList.remove("hide"))},qe=r=>{let a=URL.createObjectURL(r);new f("result-screen_audio-wrapper",a,r.name,!0)},ke=r=>{ye("result-screen_audio-wrapper",r)};m==null||m.addEventListener("change",()=>{let r=m==null?void 0:m.files[0].size,a=10*1024*1024;r>a?(k=!1,A()):(k=!0,le())});let _e=()=>{document.querySelector("#processing-screen").classList.add("hide"),b.classList.add("error"),oe.classList.add("red-border"),b.textContent="Something went wrong. Try again."},Z=()=>{b.classList.remove("error"),oe.classList.remove("red-border"),b.textContent="We support jpeg, png, webp, gif, tiff, bmp. 10 Mb of maximum size."},M=()=>{document.querySelector("#choose-file-row").classList.add("hide"),document.querySelector("#legal-tip").classList.remove("hide"),document.querySelector("#processing-screen").classList.add("hide"),document.querySelector("#hero-home_title-description").classList.remove("hide"),document.querySelector("#hero-home_gallery").classList.remove("hide"),document.querySelector("#ai-or-not-audio_dropzone").classList.remove("hide"),document.querySelector("#hero-home_drop-zone-divider").classList.remove("hide"),document.querySelector("#audio-result-screen_col").classList.add("hide"),document.querySelector("#result-screen_audio-wrapper").classList.add("hide")},O=()=>{Te(),F.textContent="Something went wrong. Try again.",document.querySelector("#choose-file-row").classList.remove("hide"),document.querySelector("#legal-tip").classList.add("hide"),document.querySelector(".processing-screen_triggers_5").click(),document.querySelector("#processing-screen").classList.remove("hide"),document.querySelector(".processing-screen_triggers_1").click(),document.querySelector("#hero-home_title-description").classList.add("hide"),document.querySelector("#hero-home_gallery").classList.add("hide"),document.querySelector("#ai-or-not-audio_dropzone").classList.add("hide"),document.querySelector("#hero-home_drop-zone-divider").classList.add("hide"),document.querySelector("#audio-result-screen_col").classList.remove("hide"),document.querySelector("#result-screen_audio-wrapper").classList.remove("hide")};function N(){var r,a;(r=document.querySelector(".processing-screen_triggers_3"))==null||r.click(),document.querySelector("#processing-screen").classList.add("hide"),(a=document.querySelector(".processing-screen_triggers_5"))==null||a.click(),document.querySelector("#audio-report-buttons-screen").classList.add("hide"),document.querySelector("#audio-share-items-hide").classList.add("hide"),document.querySelector("#audio-hero-home_drop-zone-divider").classList.add("hide"),document.querySelector("#audio-hero-home_title-description").classList.add("hide"),document.querySelector("#audio-hero-home_gallery").classList.add("hide"),m.value="",w.value=""}let Y=r=>{r==="unknown"?(document.getElementById("audio-title-human").innerHTML="Sorry, but in this case we can't really say if it's AI or Not",document.getElementById("audio-ai-or-not_result-message-50").classList.remove("hide"),document.getElementById("audio-ai-or-not_result-message").classList.add("hide"),document.getElementById("audio-ai-or-not_result-message-50").innerHTML="Probly the uploaded audio has most likely been modified or compressed",document.getElementById("audio-title-human").classList.remove("hide"),document.getElementById("audio-title-ai").classList.add("hide")):(document.getElementById("audio-title-ai").innerHTML='This is likely <span class="text-color-green">AI</span>',document.getElementById("audio-title-human").innerHTML='This is likely <span class="text-color-green">Human</span>',document.getElementById("audio-ai-or-not_result-message-50").classList.add("hide"),document.getElementById("audio-ai-or-not_result-message").classList.remove("hide"),document.querySelector("#audio-ai-or-not_model-name").textContent=r,r==="ai"?(document.getElementById("audio-title-human").classList.add("hide"),document.getElementById("audio-title-ai").classList.remove("hide")):(document.getElementById("audio-title-human").classList.remove("hide"),document.getElementById("audio-title-ai").classList.add("hide")))},de=async r=>{if(I.isLimitExceeded()){let a=document.getElementById("sign-up");a.style.display="flex",a.style.zIndex=100,M()}else h.classList.add("hide"),O(),await E.getYoutubeVerict(r).then(a=>{ae(a.id),Y(a.report.verdict===!0?"ai":"human"),N(),ke(r)}).catch(a=>{ie.classList.contains("hide")?ce():(ce(),M()),console.log(a)})},L=document.body,rt=document.querySelector("#dropzone-fullscreen_message-tip"),ot=document.querySelector("#dropzone-fullscreen_message-format");L==null||L.addEventListener("dragover",function(r){r.preventDefault(),document.querySelector(".dropzone-fullscreen").classList.remove("hide")}),L==null||L.addEventListener("dragleave",function(r){r.preventDefault(),document.querySelector(".dropzone-fullscreen").classList.add("hide")}),L==null||L.addEventListener("drop",async function(r){if(xe()!=="audio")return;r.preventDefault(),document.querySelector(".dropzone-fullscreen").classList.add("hide");let a=r.dataTransfer.files[0],y=a.size,S=10*1024*1024;y>S?(k=!1,A()):(k=!0,le()),k==!0?await ue(a):A()}),m==null||m.addEventListener("change",async r=>{if(k==!0){let a=m.files[0];await ue(a)}else A()});let ue=async r=>{console.log(r.type),(r.type==="audio/mpeg"||r.type==="audio/mp3")&&(O(),await E.getAudioVerictByFile(r).then(a=>{console.log(a),Z(),Y(a.report.verdict===!0?"ai":"human"),N(),qe(r)}).catch(a=>{console.log(a),_e(),M()}))},Ie=async(r,a)=>{O(),await E.getAudioVerictMock(!0).then(y=>{ae(y.id),Z(),Y(y.report.verdict===!0?"ai":"human"),N(),new f("result-screen_audio-wrapper",r,a,!0)})};T==null||T.addEventListener("click",function(){Z(),M()}),(me=document.querySelector("#ai-or-not_dropzone"))==null||me.addEventListener("click",function(){m.click()}),(pe=document.querySelector("#choose-file-row"))==null||pe.addEventListener("click",function(){m.click()}),B==null||B.addEventListener("click",()=>{w.value!=""&&(console.log("youtubeLinkInput.value"),de(w.value))}),w==null||w.addEventListener("keypress",r=>{r.key==="Enter"&&w.value!=""&&de(w.value)}),w.addEventListener("input",r=>{let a=r.target.value;(S=>/^(?:https?:\/\/)?(?:www\.)?(?:music\.)?youtu(?:be)?\.(?:com|be)\/(?:shorts\/)?([^\/?]+)/.test(S))(a)?B.classList.remove("is-disabled"):B.classList.add("is-disabled")});let Be=()=>{let r=document.querySelector("#button-report_false-text");r.classList.remove("hide"),r.textContent=r.getAttribute("report-button-text-default_reported"),c.classList.add("is-reported"),i.classList.add("hide"),t.style.display="none"},Pe=()=>{let r=document.querySelector("#button-report_true-text");r.classList.remove("hide"),r.textContent=r.getAttribute("report-button-text-default_reported"),i.classList.add("is-reported"),c.classList.add("hide")};i==null||i.addEventListener("click",()=>{Pe(),E.sendFeedback(j,!0,"",!0)}),c==null||c.addEventListener("click",()=>{t.style.display="flex"}),g==null||g.addEventListener("click",()=>{t.style.display="none"}),s==null||s.addEventListener("click",()=>{Be(),E.sendFeedback(j,!1,n.value,!0)}),document==null||document.addEventListener("keydown",r=>{r.code==="Escape"&&t.style.display!=="none"&&g.click()}),n==null||n.addEventListener("change",()=>{n.value!=""?s.classList.remove("is-disabled"):s.classList.add("is-disabled")}),n==null||n.addEventListener("input",()=>{n.value!=""?s.classList.remove("is-disabled"):s.classList.add("is-disabled")}),new $([new f("audio-sample-1","https://atrium-junk.s3.amazonaws.com/ai-or-not-audio-samples/Adel","Adel"),new f("audio-sample-2","https://atrium-junk.s3.amazonaws.com/ai-or-not-audio-samples/Bull+Greek.mp3","Bull Greek"),new f("audio-sample-3","https://atrium-junk.s3.amazonaws.com/ai-or-not-audio-samples/Sample+1.mp3","Sample 1"),new f("audio-sample-4","https://atrium-junk.s3.amazonaws.com/ai-or-not-audio-samples/Sample+2.mp3","Sample 2"),new f("audio-sample-5","https://atrium-junk.s3.amazonaws.com/ai-or-not-audio-samples/Sample+3.mp3","Sample 3"),new f("audio-sample-6","https://atrium-junk.s3.amazonaws.com/ai-or-not-audio-samples/Trump+speech.mp3","Trump speech")]).players.forEach(r=>{var a;(a=r.container)==null||a.addEventListener("click",async()=>{var y;(y=r.audioPlayer)!=null&&y.audio.paused&&Ie(r.audioSrc,r.name)})});let W=document.getElementById("close-sign-up");W==null||W.addEventListener("click",()=>{let r=document.getElementById("sign-up");r.style.display="none",r.style.zIndex=0}),p.fetchSubscriptionData().then(r=>{var y;let a=document.querySelector("#audio-quotas");if(r){let{quantity:S}=((y=r.plan)==null?void 0:y.requests_limits)||{quantity:20},{total:G}=r.requests;a.innerHTML=`
+        }`);
+    }
+    static async getYoutubeVerict(link) {
+      if (AuthService.isExpiredToken()) {
+        return await OpenAIGeneratedService.getYoutubeVerdict(link);
+      }
+      return await AIGeneratedService.getYoutubeVerdict(link);
+    }
+    static async sendFeedback(id, reportPredict, reportComment, isAudio = false) {
+      return await OpenAIGeneratedService.sendFeedback(id, reportPredict, reportComment, isAudio);
+    }
+  };
+
+  // src/dashboard/AudioElements.ts
+  var initAudio = () => {
+    const imageTab = document.getElementById("image-tab");
+    const audioTab = document.getElementById("audio-tab");
+    const reportScreen = document.getElementById("report-screen");
+    const reportButton_submit = document.querySelector("#button-report-submit");
+    const reportInput = document.querySelector("#input-report-comment");
+    const reportButtonLike = document.querySelector("#button-report_true");
+    const reportButtonDislike = document.querySelector("#button-report_false");
+    const reportScreenCloseButton = document.querySelector("#button-report_close");
+    const errorMessage = document.querySelector("#url-error-message");
+    const cancelProcessingButton = document.querySelector("#processing_cancel");
+    const fileInput = document.querySelector("#audio-file-input");
+    const fileInputErrorMessage = document.querySelector("#input-error-text");
+    const youtubeLinkInput = document.getElementById("ai-or-not_audio-url");
+    const checkYoutubeLinkButton = document.getElementById("audio-aion-submit");
+    const dropZone = document.querySelector("#ai-or-not-audio_dropzone");
+    const dropZoneErrorMessage = document.querySelector("#ai-or-not_dropzone-text");
+    const resultContainer = document.querySelector("#audio-result-screen_col");
+    const shareButtonsContainer = document.querySelector("#share-items-hide");
+    const shareComponentContainer = document.querySelector("#result-screen_share-component");
+    const dropZoneRequestCounter = document.querySelector("#ai-or-not-dropzone-counter");
+    const dropZoneRequestCounterContainer = document.querySelector("#ai-or-not-dropzone-counter-w");
+    let fileSizeAllow;
+    let currentResultId;
+    shareButtonsContainer.classList.add("hide");
+    function activeTab() {
+      if (imageTab.classList.contains("w--current")) {
+        return "image";
+      }
+      return "audio";
+    }
+    initFingerPrint();
+    const uiReported_initialState = () => {
+      reportInput.value = "";
+      const buttonText_true = document.querySelector("#button-report_true-text");
+      const buttonText_false = document.querySelector("#button-report_false-text");
+      buttonText_false.classList.add("hide");
+      buttonText_true.classList.remove("hide");
+      buttonText_true.textContent = buttonText_true.getAttribute("report-button-text-default");
+      buttonText_false.textContent = buttonText_false.getAttribute("report-button-text-default");
+      reportButtonLike.classList.remove("is-reported");
+      reportButtonDislike.classList.remove("is-reported");
+      reportButtonLike.classList.remove("hide");
+      reportButtonDislike.classList.remove("hide");
+    };
+    const changeShareUrl = (responseId) => {
+      currentResultId = responseId;
+      const element = document.querySelector('[fs-socialshare-element="url"]');
+      const shareUrlTemplate = AuthService.isExpiredToken() ? `${BASE_URL_RESULTS}/aiornot/` : `${BASE_URL_RESULTS}/aiornot/users/`;
+      const shareUrl = `${shareUrlTemplate}${responseId}`;
+      element.textContent = shareUrl;
+      const allShareUrl = document.querySelectorAll(".audio-result-screen_share-item");
+      allShareUrl.forEach((el) => {
+        el.setAttribute("data-url", shareUrl);
+      });
+    };
+    const fileSizeMessage_ok = () => {
+      dropZoneErrorMessage.textContent = "We support 10 Mb of maximum size.";
+      dropZoneErrorMessage.classList.remove("text-color-red");
+      fileInputErrorMessage.textContent = "Something went wrong. Try again.";
+      errorMessage.classList.add("hide");
+    };
+    const someThingWentWrong_error = () => {
+      errorMessage.classList.remove("hide");
+    };
+    const someThingWentWrong_ok = () => {
+      errorMessage.classList.add("hide");
+    };
+    const fileSizeMessage_error = () => {
+      if (resultContainer.classList.contains("hide")) {
+        dropZoneErrorMessage.textContent = "File is too large (max 10 MB)";
+        dropZoneErrorMessage.classList.add("text-color-red");
+      } else {
+        fileInputErrorMessage.textContent = "File is too large (max 10 MB)";
+        errorMessage.classList.remove("hide");
+      }
+    };
+    const fillPlayerCardByFile = (file) => {
+      const fileURL = URL.createObjectURL(file);
+      new AudioPlayerContainer("result-screen_audio-wrapper", fileURL, file.name, true);
+    };
+    const fillYoutubePlayerCard = (link) => {
+      createYoutubePlayer("result-screen_audio-wrapper", link);
+    };
+    fileInput?.addEventListener("change", () => {
+      console.log("audio change");
+      if (AuthService.checkAuth(screen_homeShow))
+        return;
+      const fileSize = fileInput?.files[0].size;
+      const maxSize = 10 * 1024 * 1024;
+      if (fileSize > maxSize) {
+        fileSizeAllow = false;
+        fileSizeMessage_error();
+      } else {
+        fileSizeAllow = true;
+        fileSizeMessage_ok();
+      }
+    });
+    const error_dropZone = () => {
+      document.querySelector("#processing-screen").classList.add("hide");
+      dropZoneErrorMessage.classList.add("error");
+      dropZone.classList.add("red-border");
+      dropZoneErrorMessage.textContent = "Something went wrong. Try again.";
+    };
+    const initial_dropZone = () => {
+      dropZoneErrorMessage.classList.remove("error");
+      dropZone.classList.remove("red-border");
+      dropZoneErrorMessage.textContent = "We support jpeg, png, webp, gif, tiff, bmp. 10 Mb of maximum size.";
+    };
+    const screen_homeShow = () => {
+      document.querySelector("#choose-file-row").classList.add("hide");
+      document.querySelector("#legal-tip").classList.remove("hide");
+      document.querySelector("#processing-screen").classList.add("hide");
+      document.querySelector("#hero-home_title-description").classList.remove("hide");
+      document.querySelector("#hero-home_gallery").classList.remove("hide");
+      document.querySelector("#ai-or-not-audio_dropzone").classList.remove("hide");
+      document.querySelector("#hero-home_drop-zone-divider").classList.remove("hide");
+      document.querySelector("#audio-result-screen_col").classList.add("hide");
+      document.querySelector("#result-screen_audio-wrapper").classList.add("hide");
+    };
+    const loadingStart = () => {
+      uiReported_initialState();
+      fileInputErrorMessage.textContent = "Something went wrong. Try again.";
+      document.querySelector("#choose-file-row").classList.remove("hide");
+      document.querySelector("#legal-tip").classList.add("hide");
+      document.querySelector(".processing-screen_triggers_5").click();
+      document.querySelector("#processing-screen").classList.remove("hide");
+      document.querySelector(".processing-screen_triggers_1").click();
+      document.querySelector("#hero-home_title-description").classList.add("hide");
+      document.querySelector("#hero-home_gallery").classList.add("hide");
+      document.querySelector("#ai-or-not-audio_dropzone").classList.add("hide");
+      document.querySelector("#hero-home_drop-zone-divider").classList.add("hide");
+      document.querySelector("#audio-result-screen_col").classList.remove("hide");
+      document.querySelector("#result-screen_audio-wrapper").classList.remove("hide");
+    };
+    function loadingFinish() {
+      document.querySelector(".processing-screen_triggers_3")?.click();
+      document.querySelector("#processing-screen").classList.add("hide");
+      document.querySelector(".processing-screen_triggers_5")?.click();
+      document.querySelector("#audio-report-buttons-screen").classList.add("hide");
+      document.querySelector("#audio-share-items-hide").classList.add("hide");
+      document.querySelector("#audio-hero-home_drop-zone-divider").classList.add("hide");
+      document.querySelector("#audio-hero-home_title-description").classList.add("hide");
+      document.querySelector("#audio-hero-home_gallery").classList.add("hide");
+      fileInput.value = "";
+      youtubeLinkInput.value = "";
+    }
+    const findHighestConfidence = (data) => {
+      if (data === "unknown") {
+        document.getElementById("audio-title-human").innerHTML = "Sorry, but in this case we can't really say if it's AI or Not";
+        document.getElementById("audio-ai-or-not_result-message-50").classList.remove("hide");
+        document.getElementById("audio-ai-or-not_result-message").classList.add("hide");
+        document.getElementById("audio-ai-or-not_result-message-50").innerHTML = "Probly the uploaded audio has most likely been modified or compressed";
+        document.getElementById("audio-title-human").classList.remove("hide");
+        document.getElementById("audio-title-ai").classList.add("hide");
+      } else {
+        document.getElementById("audio-title-ai").innerHTML = 'This is likely <span class="text-color-green">AI</span>';
+        document.getElementById("audio-title-human").innerHTML = 'This is likely <span class="text-color-green">Human</span>';
+        document.getElementById("audio-ai-or-not_result-message-50").classList.add("hide");
+        document.getElementById("audio-ai-or-not_result-message").classList.remove("hide");
+        document.querySelector("#audio-ai-or-not_model-name").textContent = data;
+        if (data === "ai") {
+          document.getElementById("audio-title-human").classList.add("hide");
+          document.getElementById("audio-title-ai").classList.remove("hide");
+        } else {
+          document.getElementById("audio-title-human").classList.remove("hide");
+          document.getElementById("audio-title-ai").classList.add("hide");
+        }
+      }
+    };
+    const submitYoutubeLink = async (link) => {
+      if (RequestCounter.isLimitExceeded()) {
+        const signInModalElement = document.getElementById("sign-up");
+        signInModalElement.style.display = "flex";
+        signInModalElement.style.zIndex = 100;
+        screen_homeShow();
+      } else {
+        errorMessage.classList.add("hide");
+        loadingStart();
+        await WrapperAIGeneratedService.getYoutubeVerict(link).then((response) => {
+          changeShareUrl(response.id);
+          findHighestConfidence(response.report.verdict === true ? "ai" : "human");
+          loadingFinish();
+          fillYoutubePlayerCard(link);
+        }).catch((error) => {
+          if (resultContainer.classList.contains("hide")) {
+            someThingWentWrong_error();
+          } else {
+            someThingWentWrong_error();
+            screen_homeShow();
+          }
+          console.log(error);
+        });
+      }
+    };
+    const dropzone = document.body;
+    const tipMessage = document.querySelector("#dropzone-fullscreen_message-tip");
+    const formatMessage = document.querySelector("#dropzone-fullscreen_message-format");
+    dropzone?.addEventListener("dragover", function(event) {
+      event.preventDefault();
+      document.querySelector(".dropzone-fullscreen").classList.remove("hide");
+    });
+    dropzone?.addEventListener("dragleave", function(event) {
+      event.preventDefault();
+      document.querySelector(".dropzone-fullscreen").classList.add("hide");
+    });
+    dropzone?.addEventListener("drop", async function(event) {
+      if (AuthService.checkAuth(screen_homeShow)) {
+        document.querySelector(".dropzone-fullscreen").classList.add("hide");
+        return;
+      }
+      if (activeTab() !== "audio") {
+        return;
+      }
+      event.preventDefault();
+      document.querySelector(".dropzone-fullscreen").classList.add("hide");
+      const file = event.dataTransfer.files[0];
+      const fileSize = file.size;
+      const maxSize = 10 * 1024 * 1024;
+      if (fileSize > maxSize) {
+        fileSizeAllow = false;
+        fileSizeMessage_error();
+      } else {
+        fileSizeAllow = true;
+        fileSizeMessage_ok();
+      }
+      if (fileSizeAllow == true) {
+        await uploadBinaryFileAudio(file);
+      } else {
+        fileSizeMessage_error();
+      }
+    });
+    fileInput?.addEventListener("change", async (event) => {
+      if (fileSizeAllow == true) {
+        const file = fileInput.files[0];
+        await uploadBinaryFileAudio(file);
+      } else {
+        fileSizeMessage_error();
+      }
+    });
+    const uploadBinaryFileAudio = async (file) => {
+      console.log(file.type);
+      if (file.type === "audio/mpeg" || file.type === "audio/mp3") {
+        loadingStart();
+        await WrapperAIGeneratedService.getAudioVerictByFile(file).then((response) => {
+          console.log(response);
+          initial_dropZone();
+          findHighestConfidence(response.report.verdict === true ? "ai" : "human");
+          loadingFinish();
+          fillPlayerCardByFile(file);
+        }).catch((error) => {
+          console.log(error);
+          error_dropZone();
+          screen_homeShow();
+        });
+      }
+    };
+    const tappedSampleAudio = async (url, name2) => {
+      if (AuthService.checkAuth(screen_homeShow))
+        return;
+      loadingStart();
+      await WrapperAIGeneratedService.getAudioVerictMock(true).then((response) => {
+        changeShareUrl(response.id);
+        initial_dropZone();
+        findHighestConfidence(response.report.verdict === true ? "ai" : "human");
+        loadingFinish();
+        new AudioPlayerContainer("result-screen_audio-wrapper", url, name2, true);
+      });
+    };
+    cancelProcessingButton?.addEventListener("click", function() {
+      initial_dropZone();
+      screen_homeShow();
+    });
+    document.querySelector("#ai-or-not-audio_dropzone")?.addEventListener("click", function() {
+      if (activeTab() !== "audio") {
+        return;
+      }
+      if (AuthService.checkAuth(screen_homeShow))
+        return;
+      fileInput.click();
+    });
+    document.querySelector("#choose-file-row")?.addEventListener("click", function() {
+      fileInput.click();
+    });
+    checkYoutubeLinkButton?.addEventListener("click", () => {
+      if (youtubeLinkInput.value != "") {
+        console.log("youtubeLinkInput.value");
+        submitYoutubeLink(youtubeLinkInput.value);
+      }
+    });
+    youtubeLinkInput?.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") {
+        if (youtubeLinkInput.value != "") {
+          submitYoutubeLink(youtubeLinkInput.value);
+        }
+      }
+    });
+    youtubeLinkInput.addEventListener("input", (e) => {
+      const youtubeLink = e.target.value;
+      const isYouTubeLink = (url) => {
+        const regExp = /^(?:https?:\/\/)?(?:www\.)?(?:music\.)?youtu(?:be)?\.(?:com|be)\/(?:shorts\/)?([^\/?]+)/;
+        return regExp.test(url);
+      };
+      if (isYouTubeLink(youtubeLink)) {
+        checkYoutubeLinkButton.classList.remove("is-disabled");
+      } else {
+        checkYoutubeLinkButton.classList.add("is-disabled");
+      }
+    });
+    const uiReported_false = () => {
+      const buttonText = document.querySelector("#button-report_false-text");
+      buttonText.classList.remove("hide");
+      buttonText.textContent = buttonText.getAttribute("report-button-text-default_reported");
+      reportButtonDislike.classList.add("is-reported");
+      reportButtonLike.classList.add("hide");
+      reportScreen.style.display = "none";
+    };
+    const uiReported_true = () => {
+      const buttonText = document.querySelector("#button-report_true-text");
+      buttonText.classList.remove("hide");
+      buttonText.textContent = buttonText.getAttribute("report-button-text-default_reported");
+      reportButtonLike.classList.add("is-reported");
+      reportButtonDislike.classList.add("hide");
+    };
+    reportButtonLike?.addEventListener("click", () => {
+      uiReported_true();
+      WrapperAIGeneratedService.sendFeedback(currentResultId, true, "", true);
+    });
+    reportButtonDislike?.addEventListener("click", () => {
+      reportScreen.style.display = "flex";
+    });
+    reportScreenCloseButton?.addEventListener("click", () => {
+      reportScreen.style.display = "none";
+    });
+    reportButton_submit?.addEventListener("click", () => {
+      uiReported_false();
+      WrapperAIGeneratedService.sendFeedback(currentResultId, false, reportInput.value, true);
+    });
+    document?.addEventListener("keydown", (event) => {
+      if (event.code === "Escape") {
+        if (reportScreen.style.display !== "none") {
+          reportScreenCloseButton.click();
+        }
+      }
+    });
+    reportInput?.addEventListener("change", () => {
+      if (reportInput.value != "") {
+        reportButton_submit.classList.remove("is-disabled");
+      } else {
+        reportButton_submit.classList.add("is-disabled");
+      }
+    });
+    reportInput?.addEventListener("input", () => {
+      if (reportInput.value != "") {
+        reportButton_submit.classList.remove("is-disabled");
+      } else {
+        reportButton_submit.classList.add("is-disabled");
+      }
+    });
+    const manager = new PlayerManager([
+      new AudioPlayerContainer("audio-sample-1", "https://atrium-junk.s3.amazonaws.com/ai-or-not-audio-samples/Adel", "Adel"),
+      new AudioPlayerContainer(
+        "audio-sample-2",
+        "https://atrium-junk.s3.amazonaws.com/ai-or-not-audio-samples/Bull+Greek.mp3",
+        "Bull Greek"
+      ),
+      new AudioPlayerContainer(
+        "audio-sample-3",
+        "https://atrium-junk.s3.amazonaws.com/ai-or-not-audio-samples/Sample+1.mp3",
+        "Sample 1"
+      ),
+      new AudioPlayerContainer(
+        "audio-sample-4",
+        "https://atrium-junk.s3.amazonaws.com/ai-or-not-audio-samples/Sample+2.mp3",
+        "Sample 2"
+      ),
+      new AudioPlayerContainer(
+        "audio-sample-5",
+        "https://atrium-junk.s3.amazonaws.com/ai-or-not-audio-samples/Sample+3.mp3",
+        "Sample 3"
+      ),
+      new AudioPlayerContainer(
+        "audio-sample-6",
+        "https://atrium-junk.s3.amazonaws.com/ai-or-not-audio-samples/Trump+speech.mp3",
+        "Trump speech"
+      )
+    ]);
+    manager.players.forEach((player) => {
+      player.container?.addEventListener("click", async () => {
+        if (player.audioPlayer?.audio.paused) {
+          tappedSampleAudio(player.audioSrc, player.name);
+        }
+      });
+    });
+    const closeSignUpButton = document.getElementById("close-sign-up");
+    closeSignUpButton?.addEventListener("click", () => {
+      const signInModalElement = document.getElementById("sign-up");
+      signInModalElement.style.display = "none";
+      signInModalElement.style.zIndex = 0;
+    });
+    const usage = document.querySelector("#audio-quotas");
+    if (AuthService.isAuth()) {
+      DashboardService.fetchSubscriptionData().then((user_plan) => {
+        if (user_plan) {
+          const { quantity } = user_plan.plan?.requests_limits || { quantity: 20 };
+          const { total } = user_plan.requests;
+          usage.innerHTML = `
             <div style="margin-top: 20px; font-size: 1rem; color: white">
             <span">
-                Available ${S-G} from ${S} requests 
+                Available ${quantity - total} from ${quantity} requests 
             </span>
-            </div>`}else a.textContent=""})};var Q=document.querySelector("#contact-us-submit-button"),je=document.querySelector("#name"),Ze=document.querySelector("#E-Mail"),Oe=document.querySelector("#Note"),Ne=document.querySelector("#Company");Q&&(Q.classList.remove("is-disabled"),Q.addEventListener("click",async o=>{o.preventDefault();let e={name:je.value,email:Ze.value,note:Oe.value,company:Ne.value};for(let t in e)if(t!=="company"&&e[t]===""){alert(`Please fill in all required fields ${t}`);return}console.log(e),fetch(`${d}/aion/system/post_message`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(e)}).then(t=>{t.ok?(alert("Thank you for your application! We will contact you shortly."),window.location.href="https://aiornot.webflow.io/"):alert("Something went wrong. Please try again.")})}));var we="https://js.stripe.com/v3",Ye=/^https:\/\/js\.stripe\.com\/v3\/?(\?.*)?$/,Ee="loadStripe.setLoadParameters was called but an existing Stripe.js script already exists in the document; existing script parameters will be used",We=function(){for(var e=document.querySelectorAll('script[src^="'.concat(we,'"]')),t=0;t<e.length;t++){var s=e[t];if(Ye.test(s.src))return s}return null},Ge=function(e){var t=e&&!e.advancedFraudSignals?"?advancedFraudSignals=false":"",s=document.createElement("script");s.src="".concat(we).concat(t);var n=document.head||document.body;if(!n)throw new Error("Expected document.body not to be null. Stripe.js requires a <body> element.");return n.appendChild(s),s},Je=function(e,t){!e||!e._registerWrapper||e._registerWrapper({name:"stripe-js",version:"2.1.7",startTime:t})},U=null,Xe=function(e){return U!==null||(U=new Promise(function(t,s){if(typeof window=="undefined"||typeof document=="undefined"){t(null);return}if(window.Stripe&&e&&console.warn(Ee),window.Stripe){t(window.Stripe);return}try{var n=We();n&&e?console.warn(Ee):n||(n=Ge(e)),n.addEventListener("load",function(){window.Stripe?t(window.Stripe):s(new Error("Stripe.js not available"))}),n.addEventListener("error",function(){s(new Error("Failed to load Stripe.js"))})}catch(i){s(i);return}})),U},Ke=function(e,t,s){if(e===null)return null;var n=e.apply(void 0,t);return Je(n,s),n},Le=Promise.resolve().then(function(){return Xe(null)}),Se=!1;Le.catch(function(o){Se||console.warn(o)});var ee=function(){for(var e=arguments.length,t=new Array(e),s=0;s<e;s++)t[s]=arguments[s];Se=!0;var n=Date.now();return Le.then(function(i){return Ke(i,t,n)})};var z=class{constructor(){this.elements=null;this.stripe=null;this.home_element=document.querySelector("#home")}createPaymentForm(e){this.home_element.innerHTML=`
+            </div>`;
+        } else {
+          usage.textContent = ``;
+        }
+      });
+    } else {
+      usage.textContent = "Please Sign in to see your usage";
+      usage.style.color = "white";
+      usage.style.marginTop = "20px";
+    }
+  };
+
+  // src/dashboard/ContactUs.ts
+  var submitButton = document.querySelector("#contact-us-submit-button");
+  var name = document.querySelector("#name");
+  var email = document.querySelector("#E-Mail");
+  var note = document.querySelector("#Note");
+  var company = document.querySelector("#Company");
+  if (submitButton) {
+    submitButton.classList.remove("is-disabled");
+    submitButton.addEventListener("click", async (event) => {
+      event.preventDefault();
+      const response = {
+        name: name.value,
+        email: email.value,
+        note: note.value,
+        company: company.value
+      };
+      for (const key in response) {
+        if (key === "company")
+          continue;
+        if (response[key] === "") {
+          alert(`Please fill in all required fields ${key}`);
+          return;
+        }
+      }
+      console.log(response);
+      fetch(`${BASE_URL}/aion/system/post_message`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(response)
+      }).then((response2) => {
+        if (response2.ok) {
+          alert("Thank you for your application! We will contact you shortly.");
+          window.location.href = "https://aiornot.webflow.io/";
+        } else {
+          alert("Something went wrong. Please try again.");
+        }
+      });
+    });
+  }
+
+  // node_modules/@stripe/stripe-js/dist/stripe.esm.js
+  var V3_URL = "https://js.stripe.com/v3";
+  var V3_URL_REGEX = /^https:\/\/js\.stripe\.com\/v3\/?(\?.*)?$/;
+  var EXISTING_SCRIPT_MESSAGE = "loadStripe.setLoadParameters was called but an existing Stripe.js script already exists in the document; existing script parameters will be used";
+  var findScript = function findScript2() {
+    var scripts = document.querySelectorAll('script[src^="'.concat(V3_URL, '"]'));
+    for (var i = 0; i < scripts.length; i++) {
+      var script = scripts[i];
+      if (!V3_URL_REGEX.test(script.src)) {
+        continue;
+      }
+      return script;
+    }
+    return null;
+  };
+  var injectScript = function injectScript2(params) {
+    var queryString = params && !params.advancedFraudSignals ? "?advancedFraudSignals=false" : "";
+    var script = document.createElement("script");
+    script.src = "".concat(V3_URL).concat(queryString);
+    var headOrBody = document.head || document.body;
+    if (!headOrBody) {
+      throw new Error("Expected document.body not to be null. Stripe.js requires a <body> element.");
+    }
+    headOrBody.appendChild(script);
+    return script;
+  };
+  var registerWrapper = function registerWrapper2(stripe, startTime) {
+    if (!stripe || !stripe._registerWrapper) {
+      return;
+    }
+    stripe._registerWrapper({
+      name: "stripe-js",
+      version: "2.1.7",
+      startTime
+    });
+  };
+  var stripePromise = null;
+  var loadScript = function loadScript2(params) {
+    if (stripePromise !== null) {
+      return stripePromise;
+    }
+    stripePromise = new Promise(function(resolve, reject) {
+      if (typeof window === "undefined" || typeof document === "undefined") {
+        resolve(null);
+        return;
+      }
+      if (window.Stripe && params) {
+        console.warn(EXISTING_SCRIPT_MESSAGE);
+      }
+      if (window.Stripe) {
+        resolve(window.Stripe);
+        return;
+      }
+      try {
+        var script = findScript();
+        if (script && params) {
+          console.warn(EXISTING_SCRIPT_MESSAGE);
+        } else if (!script) {
+          script = injectScript(params);
+        }
+        script.addEventListener("load", function() {
+          if (window.Stripe) {
+            resolve(window.Stripe);
+          } else {
+            reject(new Error("Stripe.js not available"));
+          }
+        });
+        script.addEventListener("error", function() {
+          reject(new Error("Failed to load Stripe.js"));
+        });
+      } catch (error) {
+        reject(error);
+        return;
+      }
+    });
+    return stripePromise;
+  };
+  var initStripe = function initStripe2(maybeStripe, args, startTime) {
+    if (maybeStripe === null) {
+      return null;
+    }
+    var stripe = maybeStripe.apply(void 0, args);
+    registerWrapper(stripe, startTime);
+    return stripe;
+  };
+  var stripePromise$1 = Promise.resolve().then(function() {
+    return loadScript(null);
+  });
+  var loadCalled = false;
+  stripePromise$1["catch"](function(err) {
+    if (!loadCalled) {
+      console.warn(err);
+    }
+  });
+  var loadStripe = function loadStripe2() {
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+    loadCalled = true;
+    var startTime = Date.now();
+    return stripePromise$1.then(function(maybeStripe) {
+      return initStripe(maybeStripe, args, startTime);
+    });
+  };
+
+  // src/api/Payments.ts
+  var PaymentsClient = class {
+    elements = null;
+    stripe = null;
+    home_element = document.querySelector("#home");
+    PRODUCT_ID_BASE_PLAN = { id: "price_1O2Ba4Ba9yG4sk8k4y3ZnEVT", msg: "Base plan: $30/month" };
+    PRODUCT_ID_PRO_PLAN = { id: "price_1O2Ku4Ba9yG4sk8kIQBdzpPj", msg: "Pro plan: $250/month" };
+    createPaymentForm(text) {
+      this.home_element.innerHTML = `
         <div style="background: white; position: fixed; top: 0; left: 0; right: 0; bottom: 0; display: flex; flex-direction: column; justify-content: center; align-items: center">
             <div style="width: 100%; display: flex; justify-content: center; align-items: center">
                 <h2 style="color: black; font-size: 2.5rem; justify-content: center">AI or Not</h2>
@@ -86,7 +1522,7 @@
            <div class="payment-container">
            <div class="sr-root" style="display: flex; flex-direction: row; align-items: center; justify-content: center; min-width: 380px">
             <div class="sr-main">
-                <h2 style="color: black; font-size: 2.5rem; justify-content: center">${e}</h2>
+                <h2 style="color: black; font-size: 2.5rem; justify-content: center">${text}</h2>
                 <br>
                 <form id="payment-form" style="min-width: 380px">
                     <div id="payment-element"></div>
@@ -101,4 +1537,146 @@
         </div>
         </div>
         </div>
-    `,document.querySelector("#submit").addEventListener("click",()=>{console.log("test"),this.completePayment()})}async createPaymentIntent(e){fetch(`${d}/aion/payments/config`).then(t=>t.json()).then(t=>{ee(t.stripe_public_key).then(s=>{this.stripe=s,fetch(`${d}/aion/payments/create_intent`,{method:"POST",headers:{"Content-Type":"application/json",Authorization:`Bearer ${this.checkUserToken()}`},body:JSON.stringify({product_id:e})}).then(n=>n.json()).then(n=>{if(n.code===10)throw console.warn(n.message),alert(n.message),window.location.href=`https://${window.location.host}/`,new Error(n.message);this.elements=this.stripe.elements({clientSecret:n.client_secret}),this.elements.create("payment").mount("#payment-element")})})})}paymentCheckoutSession(e){fetch(`${d}/aion/payments/checkout_session`,{method:"POST",headers:{"Content-Type":"application/json",Authorization:`Bearer ${this.checkUserToken()}`},body:JSON.stringify({product_id:e,quantity:1,success_redirect_url:"https://aiornot.webflow.io/dashboard/history",cancel_redirect_url:"https://aiornot.webflow.io/new-home#pricing"})}).then(t=>t.json()).then(t=>{if(console.log(t),t.code===10)throw console.warn(t.message),alert(t.message),new Error(t.message);ee(t.checkout_public_key).then(s=>{if(!s){console.error("Something wrong when create a Stripe object");return}s.redirectToCheckout({sessionId:t.checkout_session_id})})}).catch(t=>{console.error("Something wrong when create a checkout session",t)})}checkUserToken(){let e=localStorage.getItem("_ms-mid");if(!e)throw new Error("User token not found");return e}completePayment(){console.log("completePayment"),console.log(this.elements),this.stripe.confirmPayment({elements:this.elements,confirmParams:{return_url:`https://${window.location.host}/dashboard/history`}}).then(e=>{e.error?(console.error(e.error.message),alert(e.error.message)):console.log(e)})}};var te=document.querySelector("#bt-pay-free"),se=document.querySelector("#bt-pay-basic"),ne=document.querySelector("#bt-pay-pro"),re=document.querySelector("#bt-pay-enterprice"),Qe="price_1O2Ba4Ba9yG4sk8k4y3ZnEVT",et="price_1O2BZtBa9yG4sk8kGov7oQ8u",D=new z;te==null||te.addEventListener("click",()=>{localStorage.getItem("_ms-mid")?window.location.href=`https://${window.location.host}/`:window.location.href=`https://${window.location.host}/signup`});se==null||se.addEventListener("click",()=>{p.fetchSubscriptionData().then(o=>{o?alert("You already have a subscription !!!"):(D.createPaymentForm("Basic plan: $30/month"),D.createPaymentIntent(Qe))})});ne==null||ne.addEventListener("click",()=>{p.fetchSubscriptionData().then(o=>{o?alert("You already have a subscription !!!"):(D.createPaymentForm("Pro plan: $100/month"),D.createPaymentIntent(et))})});re==null||re.addEventListener("click",()=>{window.location.href=`https://${window.location.host}/contact-us`});ve();})();
+    `;
+      const btn = document.querySelector("#submit");
+      btn.addEventListener("click", () => {
+        console.log("test");
+        this.completePayment();
+      });
+    }
+    async createPaymentIntent(product) {
+      fetch(`${BASE_URL}/aion/payments/config`).then((result) => {
+        return result.json();
+      }).then((data) => {
+        loadStripe(data.stripe_public_key).then((stripe) => {
+          this.stripe = stripe;
+          fetch(`${BASE_URL}/aion/payments/create_intent`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${this.checkUserToken()}`
+            },
+            body: JSON.stringify({
+              product_id: product.id
+            })
+          }).then((result) => {
+            return result.json();
+          }).then((data2) => {
+            if (data2.code === 10) {
+              console.warn(data2.message);
+              alert(data2.message);
+              window.location.href = `https://${window.location.host}/`;
+              throw new Error(data2.message);
+            }
+            this.createPaymentForm(product.msg);
+            this.elements = this.stripe.elements({ clientSecret: data2.client_secret });
+            const paymentElement = this.elements.create("payment");
+            paymentElement.mount("#payment-element");
+          }).catch((error) => {
+            console.error("Something wrong when create a payment intent", error);
+            alert("Something wrong when create a payment. Please try again.");
+          });
+        });
+      });
+    }
+    paymentCheckoutSession(product_id) {
+      fetch(`${BASE_URL}/aion/payments/checkout_session`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${this.checkUserToken()}`
+        },
+        body: JSON.stringify({
+          product_id,
+          quantity: 1,
+          success_redirect_url: "https://aiornot.webflow.io/dashboard/history",
+          cancel_redirect_url: "https://aiornot.webflow.io/new-home#pricing"
+        })
+      }).then((result) => {
+        return result.json();
+      }).then((data) => {
+        console.log(data);
+        if (data.code === 10) {
+          console.warn(data.message);
+          alert(data.message);
+          throw new Error(data.message);
+        }
+        loadStripe(data.checkout_public_key).then((stripe) => {
+          if (!stripe) {
+            console.error("Something wrong when create a Stripe object");
+            return;
+          }
+          stripe.redirectToCheckout({
+            sessionId: data.checkout_session_id
+          });
+        });
+      }).catch((error) => {
+        console.error("Something wrong when create a checkout session", error);
+      });
+    }
+    checkUserToken() {
+      const userAccessToken = localStorage.getItem("_ms-mid");
+      if (!userAccessToken) {
+        throw new Error("User token not found");
+      }
+      return userAccessToken;
+    }
+    completePayment() {
+      console.log("completePayment");
+      console.log(this.elements);
+      this.stripe.confirmPayment({
+        elements: this.elements,
+        confirmParams: {
+          return_url: `https://${window.location.host}/dashboard/history`
+        }
+      }).then((result) => {
+        if (result.error) {
+          console.error(result.error.message);
+          alert(result.error.message);
+        } else {
+          console.log(result);
+        }
+      });
+    }
+  };
+
+  // src/dashboard/Payments.ts
+  var buttonPayFreePlan = document.querySelector("#bt-pay-free");
+  var buttonPayBasePlan = document.querySelector("#bt-pay-basic");
+  var buttonPayProPlan = document.querySelector("#bt-pay-pro");
+  var buttonPayEnterpricePlan = document.querySelector("#bt-pay-enterprice");
+  var paymentClient = new PaymentsClient();
+  buttonPayFreePlan?.addEventListener("click", () => {
+    if (localStorage.getItem("_ms-mid")) {
+      window.location.href = `https://${window.location.host}/`;
+    } else {
+      window.location.href = `https://${window.location.host}/signup`;
+    }
+  });
+  buttonPayBasePlan?.addEventListener("click", () => {
+    DashboardService.fetchSubscriptionData().then((user_plan) => {
+      if (user_plan.plan) {
+        alert("You already have a subscription !!!");
+      } else {
+        paymentClient.createPaymentForm("Basic plan: $30/month");
+        paymentClient.createPaymentIntent(paymentClient.PRODUCT_ID_BASE_PLAN);
+      }
+    });
+  });
+  buttonPayProPlan?.addEventListener("click", () => {
+    DashboardService.fetchSubscriptionData().then((user_plan) => {
+      if (user_plan.plan) {
+        alert("You already have a subscription !!!");
+      } else {
+        paymentClient.createPaymentIntent(paymentClient.PRODUCT_ID_PRO_PLAN);
+      }
+    });
+  });
+  buttonPayEnterpricePlan?.addEventListener("click", () => {
+    window.location.href = `https://${window.location.host}/contact-us`;
+  });
+
+  // src/player.ts
+  initAudio();
+})();
+//# sourceMappingURL=player.js.map

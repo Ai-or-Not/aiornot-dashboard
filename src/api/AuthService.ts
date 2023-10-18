@@ -1,4 +1,5 @@
 import { parseJwt } from '$utils/string';
+
 import { DashboardService } from './DashboardService';
 // import * as jwt from 'jsonwebtoken';
 // import * as NodeRSA from 'node-rsa';
@@ -15,12 +16,13 @@ interface KeyData {
 }
 
 export class AuthService {
-    static key: string = 'isSignUp';
+    static key = 'isSignUp';
+    static token_key = '_ms-mid';
 
     constructor() {}
 
     static isAuth(): boolean {
-        if (localStorage.getItem(AuthService.key) !== null) {
+        if (localStorage.getItem(AuthService.token_key) !== null) {
             return true;
         }
 
@@ -37,6 +39,8 @@ export class AuthService {
 
     static async init(): Promise<void> {
         if (AuthService.isAuth()) {
+            await DashboardService.signUp();
+            AuthService.setAuth();
             await DashboardService.login();
         } else {
             await DashboardService.signUp();
@@ -59,5 +63,16 @@ export class AuthService {
         }
 
         return true;
+    }
+
+    static checkAuth(redirect_function) {
+        if (!AuthService.isAuth()) {
+            const signInModalElement = document.getElementById('sign-up') as any;
+            signInModalElement.style.display = 'flex';
+            signInModalElement.style.zIndex = 100;
+            redirect_function();
+            return true;
+        }
+        return false;
     }
 }

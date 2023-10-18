@@ -4,8 +4,8 @@
 //Staging URL
 // export const BASE_URL = 'https://v3-atrium-prod-api.optic.xyz';
 // export const BASE_URL = 'https://v3-atrium-stage-api.optic.xyz';
-export const BASE_URL = 'http://localhost:8000';
-// export const BASE_URL = 'http://atrium-api-gateway-stage-alb-950527470.us-east-1.elb.amazonaws.com';
+// export const BASE_URL = 'http://localhost:8000';
+export const BASE_URL = 'https://api.ai-or-not.com';
 
 export const BASE_URL_RESULTS = 'https://results.aiornot.com';
 

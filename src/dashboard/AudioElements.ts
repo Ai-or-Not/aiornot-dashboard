@@ -16,7 +16,7 @@ export const initAudio = () => {
     const reportScreenCloseButton = document.querySelector('#button-report_close') as any;
     const errorMessage = document.querySelector('#url-error-message') as Element;
     const cancelProcessingButton = document.querySelector('#processing_cancel') as Element;
-    const fileInput = document.querySelector('#file-input') as any;
+    const fileInput = document.querySelector('#audio-file-input') as any;
     const fileInputErrorMessage = document.querySelector('#input-error-text') as Element;
     const youtubeLinkInput = document.getElementById('ai-or-not_audio-url') as any;
     // const youtubeLinkInput = document.querySelector('#ai-or-not_audio-url') as any;
@@ -45,20 +45,6 @@ export const initAudio = () => {
         }
         return 'audio';
     }
-
-    const updateRequestCounter = () => {
-        if (!AuthService.isExpiredToken()) {
-            // Hide element
-            dropZoneRequestCounterContainer?.classList.add('hide');
-        } else {
-            // Increment the count and show element
-            const value = localStorage.getItem('requestCount') || '0';
-            dropZoneRequestCounter.textContent = Number(value) <= 5 ? value : '5';
-            dropZoneRequestCounterContainer.classList.remove('hide');
-        }
-    };
-
-    updateRequestCounter();
 
     initFingerPrint();
 
@@ -132,6 +118,9 @@ export const initAudio = () => {
     // Listeners
 
     fileInput?.addEventListener('change', () => {
+        console.log('audio change');
+        if (AuthService.checkAuth(screen_homeShow)) return;
+
         const fileSize = fileInput?.files[0].size;
         const maxSize = 10 * 1024 * 1024; // 10 MB in bytes
         if (fileSize > maxSize) {
@@ -272,15 +261,22 @@ export const initAudio = () => {
     const formatMessage = document.querySelector('#dropzone-fullscreen_message-format');
 
     dropzone?.addEventListener('dragover', function (event) {
+        // if (AuthService.checkAuth(screen_homeShow)) return;
         event.preventDefault();
         (document.querySelector('.dropzone-fullscreen') as Element).classList.remove('hide');
     });
     dropzone?.addEventListener('dragleave', function (event) {
+        // if (AuthService.checkAuth(screen_homeShow)) return;
         event.preventDefault();
         (document.querySelector('.dropzone-fullscreen') as Element).classList.add('hide');
     });
 
     dropzone?.addEventListener('drop', async function (event: any) {
+        if (AuthService.checkAuth(screen_homeShow)) {
+            (document.querySelector('.dropzone-fullscreen') as Element).classList.add('hide');
+            return;
+        }
+
         if (activeTab() !== 'audio') {
             return;
         }
@@ -346,6 +342,8 @@ export const initAudio = () => {
     };
 
     const tappedSampleAudio = async (url: string, name: string) => {
+        if (AuthService.checkAuth(screen_homeShow)) return;
+
         loadingStart();
 
         await WrapperAIGeneratedService.getAudioVerictMock(true).then((response) => {
@@ -362,7 +360,13 @@ export const initAudio = () => {
         screen_homeShow();
     });
 
-    (document.querySelector('#ai-or-not_dropzone') as Element)?.addEventListener('click', function () {
+    (document.querySelector('#ai-or-not-audio_dropzone') as Element)?.addEventListener('click', function () {
+        if (activeTab() !== 'audio') {
+            return;
+        }
+
+        if (AuthService.checkAuth(screen_homeShow)) return;
+
         fileInput.click();
     });
 
@@ -501,22 +505,27 @@ export const initAudio = () => {
         signInModalElement.style.zIndex = 0;
     });
 
-    DashboardService.fetchSubscriptionData().then((user_plan) => {
-        const usage = document.querySelector('#audio-quotas') as any;
-        if (user_plan) {
-            const { quantity } = user_plan.plan?.requests_limits || { quantity: 20 };
-            const { total } = user_plan.requests;
-            // usage.textContent = `Available ${quantity - total} from ${quantity} requests`;
-            usage.innerHTML = `
+    const usage = document.querySelector('#audio-quotas') as Element;
+    if (AuthService.isAuth()) {
+        DashboardService.fetchSubscriptionData().then((user_plan) => {
+            if (user_plan) {
+                const { quantity } = user_plan.plan?.requests_limits || { quantity: 20 };
+                const { total } = user_plan.requests;
+                usage.innerHTML = `
             <div style="margin-top: 20px; font-size: 1rem; color: white">
             <span">
                 Available ${quantity - total} from ${quantity} requests 
             </span>
             </div>`;
-            // Base or Pro
-        } else {
-            // Free plan
-            usage.textContent = ``;
-        }
-    });
+                // Base or Pro
+            } else {
+                // Free plan
+                usage.textContent = ``;
+            }
+        });
+    } else {
+        usage.textContent = 'Please Sign in to see your usage';
+        usage.style.color = 'white';
+        usage.style.marginTop = '20px';
+    }
 };

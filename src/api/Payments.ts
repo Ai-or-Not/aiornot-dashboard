@@ -11,6 +11,9 @@ export class PaymentsClient {
     private stripe: any = null;
     private home_element = document.querySelector('#home') as Element;
 
+    public PRODUCT_ID_BASE_PLAN = { id: 'price_1O2Ba4Ba9yG4sk8k4y3ZnEVT', msg: 'Base plan: $30/month' };
+    public PRODUCT_ID_PRO_PLAN = { id: 'price_1O2Ku4Ba9yG4sk8kIQBdzpPj', msg: 'Pro plan: $250/month' };
+
     createPaymentForm(text: string) {
         this.home_element.innerHTML = `
         <div style="background: white; position: fixed; top: 0; left: 0; right: 0; bottom: 0; display: flex; flex-direction: column; justify-content: center; align-items: center">
@@ -48,7 +51,7 @@ export class PaymentsClient {
         });
     }
 
-    async createPaymentIntent(product_id: string) {
+    async createPaymentIntent(product: { id: string; msg: string }) {
         fetch(`${BASE_URL}/aion/payments/config`)
             .then((result) => {
                 return result.json();
@@ -65,7 +68,7 @@ export class PaymentsClient {
                             Authorization: `Bearer ${this.checkUserToken()}`,
                         },
                         body: JSON.stringify({
-                            product_id: product_id,
+                            product_id: product.id,
                         }),
                     })
                         .then((result) => {
@@ -78,10 +81,15 @@ export class PaymentsClient {
                                 window.location.href = `https://${window.location.host}/`;
                                 throw new Error(data.message);
                             }
+                            this.createPaymentForm(product.msg);
                             this.elements = this.stripe.elements({ clientSecret: data.client_secret });
                             const paymentElement = this.elements.create('payment');
 
                             paymentElement.mount('#payment-element');
+                        })
+                        .catch((error) => {
+                            console.error('Something wrong when create a payment intent', error);
+                            alert('Something wrong when create a payment. Please try again.');
                         });
                 });
             });

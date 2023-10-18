@@ -16,7 +16,7 @@ export const init = () => {
     const testImages = document.querySelectorAll('.test-image');
     const uiEl_urlError = document.querySelector('#url-error-message') as Element;
     const buttonEl_processClose = document.querySelector('#processing_cancel') as Element;
-    const inputEl_fileInput = document.querySelector('#file-input') as any;
+    const inputEl_fileInput = document.querySelector('#image-file-input') as any;
     const imageEl_currentImage = document.querySelector('#ai-or-not-current-image') as any;
     const imageEl_currentImageEmpty = document.querySelector('#empty-preview-img') as Element;
     const imageEl_nsfwImage = document.querySelector('#nsfw-preview-img') as Element;
@@ -47,19 +47,19 @@ export const init = () => {
     let fileSizeAllow: any;
     let currentResultId: any;
 
-    const updateRequestCounter = () => {
-        if (!AuthService.isExpiredToken()) {
-            // Hide element
-            counterEl_requestCounterBlock?.classList.add('hide');
-        } else {
-            // Increment the count and show element
-            const value = localStorage.getItem('requestCount') || '0';
-            counterEl_requestCounterValue.textContent = Number(value) <= 5 ? value : '5';
-            counterEl_requestCounterBlock.classList.remove('hide');
-        }
-    };
-
-    updateRequestCounter();
+    // const updateRequestCounter = () => {
+    //     if (!AuthService.isExpiredToken()) {
+    //         // Hide element
+    //         counterEl_requestCounterBlock?.classList.add('hide');
+    //     } else {
+    //         // Increment the count and show element
+    //         const value = localStorage.getItem('requestCount') || '0';
+    //         // counterEl_requestCounterValue.textContent = Number(value) <= 5 ? value : '5';
+    //         counterEl_requestCounterBlock.classList.remove('hide');
+    //     }
+    // };
+    //
+    // updateRequestCounter();
 
     initFingerPrint();
 
@@ -377,11 +377,18 @@ export const init = () => {
     });
 
     (document.querySelector('#ai-or-not_dropzone') as Element)?.addEventListener('click', function () {
+        if (activeTab() !== 'image') {
+            return;
+        }
+
+        if (AuthService.checkAuth(screen_homeShow)) return;
+
         fileUpload_way = 'screen_home';
         inputEl_fileInput.click();
     });
 
     (document.querySelector('#choose-file-row') as Element)?.addEventListener('click', function () {
+        console.log('click 1');
         fileUpload_way = 'screen_result';
         inputEl_fileInput.click();
     });
@@ -479,21 +486,27 @@ export const init = () => {
         signInModalElement.style.zIndex = 0;
     });
 
-    DashboardService.fetchSubscriptionData().then((user_plan) => {
-        const usage = document.querySelector('#image-quotas') as any;
-        if (user_plan) {
-            const { quantity } = user_plan.plan?.requests_limits || { quantity: 20 };
-            const { total } = user_plan.requests;
-            usage.innerHTML = `
+    const usage = document.querySelector('#image-quotas') as Element;
+    if (AuthService.isAuth()) {
+        DashboardService.fetchSubscriptionData().then((user_plan) => {
+            if (user_plan) {
+                const { quantity } = user_plan.plan?.requests_limits || { quantity: 20 };
+                const { total } = user_plan.requests;
+                usage.innerHTML = `
             <div style="margin-top: 20px; font-size: 1rem; color: white">
             <span">
                 Available ${quantity - total} from ${quantity} requests 
             </span>
             </div>`;
-            // Base or Pro
-        } else {
-            // Free plan
-            usage.textContent = ``;
-        }
-    });
+                // Base or Pro
+            } else {
+                // Free plan
+                usage.textContent = ``;
+            }
+        });
+    } else {
+        usage.textContent = 'Please Sign in to see your usage';
+        usage.style.color = 'white';
+        usage.style.marginTop = '20px';
+    }
 };
