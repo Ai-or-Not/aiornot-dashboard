@@ -36,6 +36,7 @@ async function initUsagePage() {
 }
 
 (document.getElementById('sign-out') as any).onclick = () => {
+    localStorage.removeItem('_aion_in');
     AuthService.removeAuth();
 };
 

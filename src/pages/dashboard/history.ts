@@ -24,7 +24,9 @@ async function initHystory() {
 }
 
 (document.getElementById('sign-out') as any).onclick = () => {
+    console.log('sign out');
     AuthService.removeAuth();
+    localStorage.removeItem('_aion_in');
 };
 
 initHystory();

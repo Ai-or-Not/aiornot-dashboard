@@ -38,15 +38,26 @@ export class AuthService {
     }
 
     static async init(): Promise<void> {
-        if (AuthService.isAuth()) {
-            await DashboardService.signUp();
-            AuthService.setAuth();
-            await DashboardService.login();
-        } else {
-            await DashboardService.signUp();
-            AuthService.setAuth();
-            await DashboardService.login();
+        if (localStorage.getItem('_aion_in') === null) {
+            try {
+                await DashboardService.signUp();
+                AuthService.setAuth();
+                await DashboardService.login();
+
+                localStorage.setItem('_aion_in', 'true');
+            } catch (e) {
+                console.log(e);
+            }
         }
+        // if (AuthService.isAuth()) {
+        //     await DashboardService.signUp();
+        //     AuthService.setAuth();
+        //     await DashboardService.login();
+        // } else {
+        //     await DashboardService.signUp();
+        //     AuthService.setAuth();
+        //     await DashboardService.login();
+        // }
     }
 
     static getToken(): string {

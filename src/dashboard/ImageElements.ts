@@ -490,16 +490,15 @@ export const init = () => {
             if (user_plan) {
                 const { quantity } = user_plan.plan?.requests_limits || { quantity: 20 };
                 let { total } = user_plan.requests;
-
                 if (!user_plan.plan) {
                     try {
-                        total -= user_plan.api.usage?.daily;
+                        total -= user_plan.api.usage?.daily || 0;
                     } catch (error) {
                         console.log(error);
                     }
                 }
 
-                // console.log(user_plan);
+                console.log(user_plan);
                 usage.innerHTML = `
             <div style="margin-top: 20px; font-size: 1rem; color: white">
             <span">
@@ -512,11 +511,6 @@ export const init = () => {
                 usage.textContent = ``;
             }
         });
-    } else {
-        console.log('Please Sign in to see your usage');
-        // usage.textContent = 'Please Sign in to see your usage';
-        // usage.style.color = 'white';
-        // usage.style.marginTop = '20px';
     }
 
     // Call payments.

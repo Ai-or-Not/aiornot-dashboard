@@ -51,14 +51,12 @@ export class DashboardService {
                 .post('sign_up', {})
                 .then(() => false)
                 .catch((error) => {
-                    if (error.status === 400) {
-                        return true;
-                    }
                     throw error;
                 });
         } catch (error) {
             console.error('signUp:', error);
-            return false;
+            // return false;
+            throw error;
         }
     }
 
@@ -130,9 +128,9 @@ export class DashboardService {
         if (!data?.plan) {
             // Free plan
             planInfo.innerHTML = `You\'re on the <span class="text-color-green">Free</span> plan. You have limits of 20 & 100 checks per month via web & API, respectively. If you need more, check out our <a class="text-color-green" href='https://${window.location.host}/#plans' >plans</a>.`;
-            usageInfo.innerHTML = `You have used ${data?.requests?.total || 0} of 20 checks via web and ${
-                data?.api?.usage?.daily || 0
-            } of 100 checks via API.`;
+            usageInfo.innerHTML = `You have used ${
+                (data?.requests?.total || 0) - (data?.api?.usage?.daily || 0)
+            } of 20 checks via web and ${data?.api?.usage?.daily || 0} of 100 checks via API.`;
 
             planInfo.classList.remove('hide');
             usageInfo.classList.remove('hide');
@@ -142,9 +140,7 @@ export class DashboardService {
             planInfo.innerHTML =
                 'You\'re on the <span class="text-color-green">Base</span> plan. You have limits of 1000 requests for both web & API.';
 
-            usageInfo.innerHTML = `You have used ${
-                (data?.requests?.total || 0) + (data?.api?.usage?.daily || 0)
-            } of 1000 checks via both web API.`;
+            usageInfo.innerHTML = `You have used ${data?.requests?.total || 0} of 1000 checks via both web API.`;
 
             if (subscription?.subscription.meta?.was_canceled) {
                 btnCancel.classList.add('hide');
@@ -164,9 +160,7 @@ export class DashboardService {
             // Pro plan
             planInfo.innerHTML =
                 'You\'re on the <span class="text-color-green">PRO</span> plan. You have limits of 10000 requests for both web & API.';
-            usageInfo.innerHTML = `You have used ${
-                (data?.requests?.total || 0) + (data?.api?.usage?.daily || 0)
-            } of 10000 checks via both web & API.`;
+            usageInfo.innerHTML = `You have used ${data?.requests?.total || 0} of 10000 checks via both web & API.`;
 
             if (subscription?.subscription.meta.was_canceled) {
                 btnCancel.classList.add('hide');
@@ -185,9 +179,7 @@ export class DashboardService {
         if (data?.plan.requests_limits.quantity > 10000) {
             // Pro plan
             planInfo.innerHTML = `You\'re on the <span class="text-color-green">Custom</span> plan. You have limits of ${data?.plan.requests_limits.quantity} requests for both web & API.`;
-            usageInfo.innerHTML = `You have used ${
-                (data?.requests?.total || 0) + (data?.api?.usage?.daily || 0)
-            } of 10000 checks via both web & API.`;
+            usageInfo.innerHTML = `You have used ${data?.requests?.total || 0} of 10000 checks via both web & API.`;
             btnCancel.innerHTML = 'Contact US  to update your plan.';
 
             btnCancel.classList.remove('hide');

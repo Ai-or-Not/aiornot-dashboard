@@ -509,7 +509,16 @@ export const initAudio = () => {
         DashboardService.fetchSubscriptionData().then((user_plan) => {
             if (user_plan) {
                 const { quantity } = user_plan.plan?.requests_limits || { quantity: 20 };
-                const { total } = user_plan.requests;
+                let { total } = user_plan.requests;
+
+                if (!user_plan.plan) {
+                    try {
+                        total -= user_plan.api.usage?.daily || 0;
+                    } catch (error) {
+                        console.log(error);
+                    }
+                }
+
                 usage.innerHTML = `
             <div style="margin-top: 20px; font-size: 1rem; color: white">
             <span">

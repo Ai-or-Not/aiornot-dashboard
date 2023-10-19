@@ -30,7 +30,9 @@ export class AIGeneratedService {
                 alert('Please verify your email to continue using the service');
             }
             if (error.status === 429) {
-                alert(`You have reached the limit of requests per day. Alert: ${JSON.stringify(error.message)}`);
+                alert(
+                    `It looks like you have reached your plan limit of ${error.message.msg.current_limit} requests. To continue, please upgrade to a new plan.`
+                );
                 window.location.href = `https://${window.location.host}/#plans`;
             }
             console.error('Error getReportsByBinary:', error);
@@ -47,6 +49,12 @@ export class AIGeneratedService {
             if (error.status === 402) {
                 alert('Please verify your email to continue using the service');
             }
+            if (error.status === 429) {
+                alert(
+                    `It looks like you have reached your plan limit of ${error.message.msg.current_limit} requests. To continue, please upgrade to a new plan.`
+                );
+                window.location.href = `https://${window.location.host}/#plans`;
+            }
             console.error('getReportsByUrl:', error);
         }
     }
@@ -61,6 +69,12 @@ export class AIGeneratedService {
         } catch (error) {
             if (error.status === 402) {
                 alert('Please verify your email to continue using the service');
+            }
+            if (error.status === 429) {
+                alert(
+                    `It looks like you have reached your plan limit of ${error.message.msg.current_limit} requests. To continue, please upgrade to a new plan.`
+                );
+                window.location.href = `https://${window.location.host}/#plans`;
             }
             console.error('Error getAudioVerdict:', error);
         }
@@ -78,6 +92,12 @@ export class AIGeneratedService {
         } catch (error) {
             if (error.status === 402) {
                 alert('Please verify your email to continue using the service');
+            }
+            if (error.status === 429) {
+                alert(
+                    `It looks like you have reached your plan limit of ${error.message.msg.current_limit} requests. To continue, please upgrade to a new plan.`
+                );
+                window.location.href = `https://${window.location.host}/#plans`;
             }
             console.error('Error getYoutubeVerdict:', error);
         }

@@ -21,6 +21,12 @@ export const initPay = () => {
     });
 
     buttonPayBasePlan?.addEventListener('click', () => {
+        // Check if user is signed in.
+        if (!localStorage.getItem('_ms-mid')) {
+            window.location.href = `https://${window.location.host}/signup`;
+            return;
+        }
+
         paymentClient.createPaymentForm(paymentClient.PRODUCT_ID_BASE_PLAN.msg);
         DashboardService.fetchSubscriptionData().then((user_plan) => {
             if (user_plan.plan) {
@@ -33,6 +39,10 @@ export const initPay = () => {
     });
 
     buttonPayProPlan?.addEventListener('click', () => {
+        if (!localStorage.getItem('_ms-mid')) {
+            window.location.href = `https://${window.location.host}/signup`;
+            return;
+        }
         paymentClient.createPaymentForm(paymentClient.PRODUCT_ID_PRO_PLAN.msg);
         DashboardService.fetchSubscriptionData().then((user_plan) => {
             if (user_plan.plan) {

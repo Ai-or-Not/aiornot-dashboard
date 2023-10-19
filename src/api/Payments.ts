@@ -37,17 +37,10 @@ export class PaymentsClient {
             <div class="sr-main">
                 <h2 style="color: black; font-size: 2.5rem; justify-content: center">${text}</h2>
                 <br>
-<!--                <div>-->
-<!--                    <div class="loader" style="border: 16px solid #f3f3f3; border-top: 16px solid #adff00; border-bottom: 16px solid #adff00; border-radius: 50%;width: 120px;height: 120px;animation: spin 2s linear infinite;"></div>-->
-<!--                </div>-->
                 <form id="payment-form" style="min-width: 380px">
                     <div id="payment-element"></div>
                     <br>
                     // Add callback function
-<!--                    <button class="button" style="width: 100%;" id="submit">-->
-<!--                        <span style="width: 100 %;" id="button-text">Pay</span>-->
-<!--                    </button>-->
-                    
                 </form>
                 
                     <button class="button" style="width: 100%; visibility: hidden" id="submit">
@@ -138,13 +131,14 @@ export class PaymentsClient {
             .confirmPayment({
                 elements: this.elements,
                 confirmParams: {
-                    return_url: `https://${window.location.host}/dashboard/history`,
+                    return_url: `https://${window.location.host}/dashboard/settings`,
                 },
             })
             .then((result: any) => {
                 if (result.error) {
                     console.error(result.error.message);
                     alert(result.error.message);
+                    window.location.href = `https://${window.location.host}/#plans`;
                 } else {
                     console.log(result);
                 }
