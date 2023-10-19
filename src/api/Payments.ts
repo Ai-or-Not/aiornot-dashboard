@@ -2,10 +2,6 @@ import { loadStripe } from '@stripe/stripe-js';
 
 import { BASE_URL } from '@/api/RestClient';
 
-function test() {
-    console.log('test');
-}
-
 export class PaymentsClient {
     private elements: any = null;
     private stripe: any = null;
@@ -68,7 +64,6 @@ export class PaymentsClient {
 
         const btn = document.querySelector('#submit') as Element;
         btn.addEventListener('click', () => {
-            console.log('test');
             this.completePayment();
         });
     }
@@ -135,9 +130,6 @@ export class PaymentsClient {
     }
 
     completePayment() {
-        console.log('completePayment');
-        console.log(this.elements);
-
         document.querySelector('#progress-loader')?.classList.remove('hide');
         document.querySelector('#submit').style.visibility = 'hidden';
         document.querySelector('#payment-element')?.classList.add('hide');

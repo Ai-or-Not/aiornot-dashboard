@@ -52,7 +52,7 @@ export class AIGeneratedService {
     }
 
     static async getAudioVerdict(file: File): Promise<any> {
-        console.log('getAudioVerdict');
+        // console.log('getAudioVerdict');
         const { client } = AIGeneratedService.getInstance();
         try {
             const formData = new FormData();

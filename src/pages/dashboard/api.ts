@@ -9,9 +9,8 @@ async function initUsagePage() {
     const dashAPIContentBlock = document.getElementById('dash-api-content') as any;
 
     refreshApiTokenButton.onclick = async () => {
-        console.log('refreshApiTokenButton');
+        // console.log('refreshApiTokenButton');
         const token = await DashboardService.refreshApiToken();
-        console.log('token', token);
         initUsagePage();
     };
 
@@ -21,14 +20,14 @@ async function initUsagePage() {
     };
 
     if (usage.access) {
-        console.log('usage', usage);
+        // console.log('usage', usage);
         dashAPIEmptyBlock.style.display = 'none';
         dashAPIContentBlock.style.display = 'block';
         //	refreshApiTokenButton.style.display = 'flex'
         //	getApiTokenButton.style.display = 'none'
         ElementCreator.fillApiKeyCard(usage);
     } else {
-        console.log('usage else', usage);
+        // console.log('usage else', usage);
         dashAPIEmptyBlock.style.display = 'flex';
         dashAPIContentBlock.style.display = 'none';
         //	refreshApiTokenButton.style.display = 'none'

@@ -118,7 +118,6 @@ export const initAudio = () => {
     // Listeners
 
     fileInput?.addEventListener('change', () => {
-        console.log('audio change');
         if (AuthService.checkAuth(screen_homeShow)) return;
 
         const fileSize = fileInput?.files[0].size;
@@ -251,7 +250,7 @@ export const initAudio = () => {
                         someThingWentWrong_error();
                         screen_homeShow();
                     }
-                    console.log(error);
+                    // console.log(error);
                 });
         }
     };
@@ -311,7 +310,7 @@ export const initAudio = () => {
     });
 
     const uploadBinaryFileAudio = async (file: any) => {
-        console.log(file.type);
+        // console.log(file.type);
         if (file.type === 'audio/mpeg' || file.type === 'audio/mp3') {
             loadingStart();
             // if (RequestCounter.isLimitExceeded()) {
@@ -325,7 +324,7 @@ export const initAudio = () => {
 
             await WrapperAIGeneratedService.getAudioVerictByFile(file)
                 .then((response) => {
-                    console.log(response);
+                    // console.log(response);
                     // RequestCounter.increment();
                     // changeShareUrl(response.id);
                     initial_dropZone();
@@ -334,7 +333,7 @@ export const initAudio = () => {
                     fillPlayerCardByFile(file);
                 })
                 .catch((error) => {
-                    console.log(error);
+                    // console.log(error);
                     error_dropZone();
                     screen_homeShow();
                 });
@@ -376,7 +375,7 @@ export const initAudio = () => {
 
     checkYoutubeLinkButton?.addEventListener('click', () => {
         if (youtubeLinkInput.value != '') {
-            console.log('youtubeLinkInput.value');
+            // console.log('youtubeLinkInput.value');
             submitYoutubeLink(youtubeLinkInput.value);
         }
     });

@@ -73,7 +73,7 @@ export class RestClient {
 
     async postBinary(endpoint: string, formData: FormData): Promise<any> {
         const url = `${this.apiUrl}/${endpoint}`;
-        console.log('url', url);
+        // console.log('url', url);
         try {
             const response = await fetch(url, {
                 method: 'POST',

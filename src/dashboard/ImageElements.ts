@@ -283,7 +283,7 @@ export const init = () => {
                         someThingWentWrong_error();
                         screen_homeShow();
                     }
-                    console.log(error);
+                    // console.log(error);
                 });
         }
     };
@@ -305,8 +305,6 @@ export const init = () => {
         if (activeTab() !== 'image') {
             return;
         }
-
-        console.log('Image handler');
 
         event.preventDefault();
         (document.querySelector('.dropzone-fullscreen') as Element).classList.add('hide');
@@ -339,7 +337,7 @@ export const init = () => {
     });
 
     const uploadBinaryFile = async (file: any) => {
-        console.log(file);
+        // console.log(file);
         loadingStart();
         if (RequestCounter.isLimitExceeded()) {
             const signInModalElement = document.getElementById('sign-up') as any;
@@ -366,7 +364,7 @@ export const init = () => {
             })
 
             .catch((error) => {
-                console.log(error);
+                // console.log(error);
                 error_dropZone();
                 screen_homeShow();
             });
@@ -389,7 +387,6 @@ export const init = () => {
     });
 
     (document.querySelector('#choose-file-row') as Element)?.addEventListener('click', function () {
-        console.log('click 1');
         fileUpload_way = 'screen_result';
         inputEl_fileInput.click();
     });
@@ -502,7 +499,7 @@ export const init = () => {
                     }
                 }
 
-                console.log(user_plan);
+                // console.log(user_plan);
                 usage.innerHTML = `
             <div style="margin-top: 20px; font-size: 1rem; color: white">
             <span">

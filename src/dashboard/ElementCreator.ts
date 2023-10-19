@@ -86,9 +86,9 @@ export class ElementCreator {
             expireDate.innerText = formattedDate(data.expiration_dt);
             rps.innerText = data.limits.secondly.toString();
             progressLine.style.width = `${(data.usage.daily / data.limits.daily) * 100}%`;
-            console.log((data.usage.daily / data.limits.daily) * 100);
+            // console.log((data.usage.daily / data.limits.daily) * 100);
             counterRequests.innerText = data.usage.daily.toString();
-            console.log(data.limits.daily);
+            // console.log(data.limits.daily);
             totalRequests.innerText = data.limits.daily.toString();
 
             apiKeyCard.style.display = 'flex';
