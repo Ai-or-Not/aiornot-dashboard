@@ -1,6 +1,7 @@
 import { initFingerPrint, visitorId } from '$utils/fingerprint';
 
 import { AuthService, BASE_URL_RESULTS, DashboardService, RequestCounter, WrapperAIGeneratedService } from '../api';
+import { initPay } from './Payments';
 
 export const init = () => {
     //elements
@@ -510,4 +511,7 @@ export const init = () => {
         // usage.style.color = 'white';
         // usage.style.marginTop = '20px';
     }
+
+    // Call payments.
+    initPay();
 };
