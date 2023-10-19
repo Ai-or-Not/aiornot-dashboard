@@ -492,7 +492,17 @@ export const init = () => {
         DashboardService.fetchSubscriptionData().then((user_plan) => {
             if (user_plan) {
                 const { quantity } = user_plan.plan?.requests_limits || { quantity: 20 };
-                const { total } = user_plan.requests;
+                let { total } = user_plan.requests;
+
+                if (!user_plan.plan) {
+                    try {
+                        total -= user_plan.api.usage?.daily;
+                    } catch (error) {
+                        console.log(error);
+                    }
+                }
+
+                console.log(user_plan);
                 usage.innerHTML = `
             <div style="margin-top: 20px; font-size: 1rem; color: white">
             <span">

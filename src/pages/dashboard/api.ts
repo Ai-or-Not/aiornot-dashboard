@@ -8,25 +8,31 @@ async function initUsagePage() {
     const dashAPIEmptyBlock = document.getElementById('dash-api-empty') as any;
     const dashAPIContentBlock = document.getElementById('dash-api-content') as any;
 
+    refreshApiTokenButton.onclick = async () => {
+        console.log('refreshApiTokenButton');
+        const token = await DashboardService.refreshApiToken();
+        console.log('token', token);
+        initUsagePage();
+    };
+
+    getApiTokenButton.onclick = async () => {
+        await DashboardService.fetchApiToken();
+        initUsagePage();
+    };
+
     if (usage.access) {
+        console.log('usage', usage);
         dashAPIEmptyBlock.style.display = 'none';
         dashAPIContentBlock.style.display = 'block';
         //	refreshApiTokenButton.style.display = 'flex'
         //	getApiTokenButton.style.display = 'none'
         ElementCreator.fillApiKeyCard(usage);
-        refreshApiTokenButton.onclick = async () => {
-            await DashboardService.refreshApiToken();
-            initUsagePage();
-        };
     } else {
+        console.log('usage else', usage);
         dashAPIEmptyBlock.style.display = 'flex';
         dashAPIContentBlock.style.display = 'none';
         //	refreshApiTokenButton.style.display = 'none'
         //	getApiTokenButton.style.display = 'flex'
-        getApiTokenButton.onclick = async () => {
-            await DashboardService.fetchApiToken();
-            initUsagePage();
-        };
     }
 }
 
