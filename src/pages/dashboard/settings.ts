@@ -9,3 +9,5 @@ import { AuthService, DashboardService } from '../../api';
 (document.getElementById('sign-out') as any).onclick = () => {
     AuthService.removeAuth();
 };
+
+DashboardService.subscriptionInfo().then((response) => {});
