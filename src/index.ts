@@ -1,3 +1,4 @@
-import { init } from './dashboard';
+import { init, personaDetectionInit } from './dashboard';
 
 init();
+personaDetectionInit();

@@ -6,7 +6,6 @@ import { initPay } from './Payments';
 export const init = () => {
     //elements
     const imageTab = document.getElementById('image-tab') as Element;
-    const audioTab = document.getElementById('audio-tab') as Element;
 
     const reportScreen = document.getElementById('report-screen') as any;
     const reportButton_submit = document.querySelector('#button-report-submit') as Element;
@@ -14,7 +13,6 @@ export const init = () => {
     const reportButton_true = document.querySelector('#button-report_true') as Element;
     const reportButton_false = document.querySelector('#button-report_false') as Element;
     const reportButton_close = document.querySelector('#button-report_close') as any;
-    const testImages = document.querySelectorAll('.test-image');
     const uiEl_urlError = document.querySelector('#url-error-message') as Element;
     const buttonEl_processClose = document.querySelector('#processing_cancel') as Element;
     const inputEl_fileInput = document.querySelector('#image-file-input') as any;
@@ -30,6 +28,9 @@ export const init = () => {
     const buttonEl_sharedButtons = document.querySelector('#share-items-hide') as Element;
     const counterEl_requestCounterValue = document.querySelector('#ai-or-not-dropzone-counter') as Element;
     const counterEl_requestCounterBlock = document.querySelector('#ai-or-not-dropzone-counter-w') as Element;
+
+    // const testImages = document.querySelectorAll('.test-image');
+    const testImages = document.querySelectorAll('#image-test-image');
 
     const notionLink = document.querySelector('#w-node-_80502d56-29f7-2965-16f1-d6c6c4ebbd86-c4ebbd86') as Element;
     notionLink.classList.add('hide');
@@ -140,6 +141,7 @@ export const init = () => {
 
     // Listeners
 
+    // Solve file size variables.
     inputEl_fileInput?.addEventListener('change', () => {
         const fileSize = inputEl_fileInput?.files[0].size;
         const maxSize = 10 * 1024 * 1024; // 10 MB in bytes
@@ -327,7 +329,8 @@ export const init = () => {
 
     inputEl_fileInput?.addEventListener('change', async (event: any) => {
         if (fileSizeAllow == true) {
-            const fileInput = document.querySelector('#file-input') as any;
+            const fileInput = inputEl_fileInput as any;
+            console.log(fileInput);
             const file = fileInput.files[0];
 
             await uploadBinaryFile(file);
@@ -387,6 +390,10 @@ export const init = () => {
     });
 
     (document.querySelector('#choose-file-row') as Element)?.addEventListener('click', function () {
+        if (activeTab() !== 'image') {
+            return;
+        }
+
         fileUpload_way = 'screen_result';
         inputEl_fileInput.click();
     });

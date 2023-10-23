@@ -47,6 +47,15 @@ export class WrapperAIGeneratedService {
         return await AIGeneratedService.getYoutubeVerdict(link);
     }
 
+    static async getPdetReportByUrl(url: string): Promise<any> {
+        return await AIGeneratedService.getPdetReportByUrl(url);
+    }
+
+    static async getPdetReportByBinary(file: File): Promise<any> {
+        console.log('getPdetReportByBinary');
+        // return await OpenAIGeneratedService.getPdetReportByBinary(file);
+    }
+
     static async sendFeedback(id: string, reportPredict: boolean, reportComment: string, isAudio = false): Promise<void> {
         return await OpenAIGeneratedService.sendFeedback(id, reportPredict, reportComment, isAudio);
     }

@@ -102,4 +102,27 @@ export class AIGeneratedService {
             console.error('Error getYoutubeVerdict:', error);
         }
     }
+
+    static async getPdetReportByUrl(url: string): Promise<any> {
+        const { client } = AIGeneratedService.getInstance();
+
+        try {
+            const body = {
+                object: url,
+            };
+
+            return await client.post('reports/person_detection/url', body);
+        } catch (error) {
+            if (error.status === 402) {
+                alert('Please verify your email to continue using the service');
+            }
+            if (error.status === 429) {
+                alert(
+                    `It looks like you have reached your plan limit of ${error.message.msg.current_limit} requests. To continue, please upgrade to a new plan.`
+                );
+                window.location.href = `https://${window.location.host}/#plans`;
+            }
+            console.error('Error getYoutubeVerdict:', error);
+        }
+    }
 }
