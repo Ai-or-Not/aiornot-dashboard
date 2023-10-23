@@ -29,7 +29,7 @@ export const initPay = () => {
 
         paymentClient.createPaymentForm(paymentClient.PRODUCT_ID_BASE_PLAN.msg);
         DashboardService.fetchSubscriptionData().then((user_plan) => {
-            if (user_plan.plan) {
+            if (user_plan?.plan) {
                 window.location.href = `https://${window.location.host}/`;
                 alert('You already have a subscription !!!');
             } else {
@@ -45,7 +45,7 @@ export const initPay = () => {
         }
         paymentClient.createPaymentForm(paymentClient.PRODUCT_ID_PRO_PLAN.msg);
         DashboardService.fetchSubscriptionData().then((user_plan) => {
-            if (user_plan.plan) {
+            if (user_plan?.plan) {
                 window.location.href = `https://${window.location.host}/`;
                 alert('You already have a subscription !!!');
             } else {

@@ -4,8 +4,8 @@
 //Staging URL
 // export const BASE_URL = 'https://v3-atrium-prod-api.optic.xyz';
 // export const BASE_URL = 'https://v3-atrium-stage-api.optic.xyz';
-// export const BASE_URL = 'http://localhost:8000';
-export const BASE_URL = 'https://api.ai-or-not.com';
+export const BASE_URL = 'http://localhost:8000';
+// export const BASE_URL = 'https://api.ai-or-not.com';
 
 export const BASE_URL_RESULTS = 'https://results.aiornot.com';
 
@@ -115,7 +115,7 @@ export class RestClient {
 
             await this.handleResponse(response);
         } catch (error) {
-            console.error('Ошибка при выполнении DELETE-запроса:', error);
+            console.error('Error when perform DELETE-request:', error);
             throw error;
         }
     }

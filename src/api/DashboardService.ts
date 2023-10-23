@@ -72,7 +72,7 @@ export class DashboardService {
     public static async delete(): Promise<void> {
         try {
             const { client } = DashboardService.getInstance();
-            // AuthService.removeAuth(); // Раскомментируйте эту строку после импорта AuthService
+            AuthService.removeAuth();
             return await client.delete('');
         } catch (error) {
             console.error('delete:', error);

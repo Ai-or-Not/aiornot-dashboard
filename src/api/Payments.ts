@@ -26,16 +26,13 @@ export class PaymentsClient {
 
 
         <div style="background: white; position: fixed; top: 0; left: 0; right: 0; bottom: 0; display: flex; flex-direction: column; justify-content: center; align-items: center">
-            <div style="width: 100%; display: flex; justify-content: center; align-items: center">
-                <h2 style="color: black; font-size: 2.5rem; justify-content: center">AI or Not</h2>
+           <div class="payment-container" style="overflow-y: auto">
+                <h2 style="color: black; font-size: 2.5rem; text-align: center">AI or Not</h2>
                 <br>
-                <br>
-                <br>
-            </div>
-           <div class="payment-container">
-           <div class="sr-root" style="display: flex; flex-direction: row; align-items: center; justify-content: center; min-width: 380px">
+
+           <div class="sr-root" style="display: flex; flex-direction: row; align-items: center; justify-content: center; min-width: 380px;">
             <div class="sr-main">
-                <h2 style="color: black; font-size: 2.5rem; justify-content: center">${text}</h2>
+                <h3 style="color: black; font-size: 2.5rem; justify-content: center">${text}</h3>
                 <br>
                 <form id="payment-form" style="min-width: 380px">
                     <div id="payment-element"></div>
@@ -46,8 +43,7 @@ export class PaymentsClient {
                     <button class="button" style="width: 100%; visibility: hidden" id="submit">
                         <span style="width: 100 %;" id="button-text">Pay</span>
                     </button>
-                    
-                
+                    <br>
             </div>
         </div>
         </div>
