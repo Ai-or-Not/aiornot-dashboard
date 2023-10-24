@@ -1,7 +1,6 @@
-import { WrapperAIGeneratedService } from '@/api';
-import { loadingEnd, loadingStart } from '$utils/common';
-
-import { initPay } from './Payments';
+import { AuthService, DashboardService, WrapperAIGeneratedService } from '@/api';
+import { goSignIn, loadingEnd, loadingStart } from '$utils/common';
+import { activeTab } from '$utils/tabs';
 
 export const personaDetectionInit = () => {
     //elements
@@ -13,9 +12,9 @@ export const personaDetectionInit = () => {
     // const reportButton_true = document.querySelector('#button-report_true') as Element;
     // const reportButton_false = document.querySelector('#button-report_false') as Element;
     // const reportButton_close = document.querySelector('#button-report_close') as any;
-    // const uiEl_urlError = document.querySelector('#url-error-message') as Element;
+    // const uiEl_urlError = document.querySelector('#pdet-url-error-message') as Element;
     // const buttonEl_processClose = document.querySelector('#processing_cancel') as Element;
-    // const inputEl_fileInput = document.querySelector('#image-file-input') as any;
+    const inputEl_fileInput = document.querySelector('#pdet-file-input') as any;
     const imageEl_currentImage = document.querySelector('#aion-pdet-current-image') as any;
     const imageEl_currentImageEmpty = document.querySelector('#pdet-empty-preview-img') as Element;
     const imageEl_nsfwImage = document.querySelector('#pdet-nsfw-preview-img') as Element;
@@ -25,8 +24,8 @@ export const personaDetectionInit = () => {
     const imageUrlInput = document.querySelector('#aion-pdet-image-url') as any;
     const submitButton = document.querySelector('#aion-pdet-url-submit') as Element;
 
-    // const uiEl_dropZone = document.querySelector('#ai-or-not_dropzone') as Element;
-    // const textEl_dropZoneError = document.querySelector('#ai-or-not_dropzone-text') as Element;
+    const uiEl_dropZone = document.querySelector('#aion-pdet-dropzone') as Element;
+    const textEl_dropZoneError = document.querySelector('#aion-pdet-dropzone-text') as Element;
     // const uiEl_resultCol = document.querySelector('#result-screen_col') as Element;
 
     //variables
@@ -52,25 +51,17 @@ export const personaDetectionInit = () => {
     // };
 
     const uiReported_initialState = () => {
-        // reportInput.value = '';
-
-        const buttonText_true = document.querySelector('#button-report_true-text') as Element;
-        const buttonText_false = document.querySelector('#button-report_false-text') as Element;
-        buttonText_false.classList.add('hide');
-        buttonText_true.classList.remove('hide');
-
-        buttonText_true.textContent = buttonText_true.getAttribute('report-button-text-default');
-        buttonText_false.textContent = buttonText_false.getAttribute('report-button-text-default');
-
-        // reportButton_true.classList.remove('is-reported');
-        // reportButton_false.classList.remove('is-reported');
-        // reportButton_true.classList.remove('hide');
-        // reportButton_false.classList.remove('hide');
-
         // Hide
         document.querySelector('#pdet-hero-home-title-description')?.classList.add('hide');
         document.querySelector('#pdet-hero-home-gallery')?.classList.add('hide');
         document.querySelector('#aion-pdet-dropzone')?.classList.add('hide');
+
+        // Hide buttons
+        document.querySelector('#pdet-button-report-true')?.classList.add('hide');
+        document.querySelector('#pdet-button-report-false')?.classList.add('hide');
+
+        // Hide devider
+        document.querySelector('#pdet-hero-home_drop-zone-divider')?.classList.add('hide');
     };
 
     // const fileSizeMessage_ok = () => {
@@ -80,9 +71,12 @@ export const personaDetectionInit = () => {
     //     uiEl_urlError.classList.add('hide');
     // };
     //
-    // const someThingWentWrong_error = () => {
-    //     uiEl_urlError.classList.remove('hide');
-    // };
+    const someThingWentWrong_error = () => {
+        uiEl_dropZone.classList.add('red-border');
+        textEl_dropZoneError.textContent = 'Something went wrong. Try again.';
+        textEl_dropZoneError.classList.add('error');
+        // uiEl_urlError.classList.remove('hide');
+    };
     //
     // const someThingWentWrong_ok = () => {
     //     uiEl_urlError.classList.add('hide');
@@ -100,18 +94,18 @@ export const personaDetectionInit = () => {
 
     // Listeners
 
-    // inputEl_fileInput?.addEventListener('change', () => {
-    //     const fileSize = inputEl_fileInput?.files[0].size;
-    //     const maxSize = 10 * 1024 * 1024; // 10 MB in bytes
-    //     if (fileSize > maxSize) {
-    //         fileSizeAllow = false;
-    //         fileSizeMessage_error();
-    //     } else {
-    //         fileSizeAllow = true;
-    //         fileSizeMessage_ok();
-    //     }
-    // });
-    //
+    inputEl_fileInput?.addEventListener('change', () => {
+        const fileSize = inputEl_fileInput?.files[0].size;
+        const maxSize = 10 * 1024 * 1024; // 10 MB in bytes
+        if (fileSize > maxSize) {
+            fileSizeAllow = false;
+            // fileSizeMessage_error();
+        } else {
+            fileSizeAllow = true;
+            // fileSizeMessage_ok();
+        }
+    });
+
     // const error_dropZone = () => {
     //     (document.querySelector('#processing-screen') as Element).classList.add('hide');
     //     textEl_dropZoneError.classList.add('error');
@@ -158,9 +152,11 @@ export const personaDetectionInit = () => {
     //     (document.querySelector('#result-screen_image-wrapper') as Element).classList.remove('hide');
     // };
     //
-    function pdetLoadingFinish(nsfw_detected = false, url: string) {
+
+    function pdetLoadingFinish(nsfw_detected = false, verdict: string, url: string) {
         uiReported_initialState();
         loadingEnd();
+
         if (nsfw_detected) {
             // imageEl_nsfwImage.classList.remove('hide');
             // imageEl_currentImage.classList.add('hide');
@@ -168,7 +164,6 @@ export const personaDetectionInit = () => {
             // // Hide buttons for share the report.
             // buttonEl_sharedButtons.classList.add('hide');
         } else {
-            console.log('nsfw_detected', nsfw_detected);
             imageEl_nsfwImage.classList.add('hide');
             imageEl_currentImage.classList.remove('hide');
             imageEl_currentImageEmpty.classList.add('hide');
@@ -178,17 +173,16 @@ export const personaDetectionInit = () => {
             imageEl_currentImage.classList.remove('hide');
             imageEl_currentImage.src = url;
 
-            // Show buttons for share the report.
-            // buttonEl_sharedButtons.classList.remove('hide');
+            document.querySelector('#pdet-result-screen-col')?.classList.remove('hide');
+            (document.getElementById('pdet-title-human') as Element).classList.remove('hide'); // Show text result.
+            (document.getElementById('pdet-title-human') as Element).innerHTML =
+                `This is likely <span class="text-color-green">${verdict}</span>` +
+                `<div style="font-size: 1rem; color: #FFFFFFB3; font-family: Space Grotesk, sans-serif;">\n` +
+                `<span> Free Research Preview. AI or Not may produce inaccurate results </span>\n` +
+                `</div>`;
         }
 
-        // (document.querySelector('.processing-screen_triggers_3') as any).click();
-        // (document.querySelector('#processing-screen') as Element).classList.add('hide');
-        // (document.querySelector('.processing-screen_triggers_5') as any).click();
-
-        // (document.querySelector('#scroll-to-top-trigger') as any).click();
         imageUrlInput.value = '';
-        // (document.querySelector('#ai-or-not_image-url') as any).value = '';
     }
 
     const pdetPostToApiUrl = async () => {
@@ -198,128 +192,109 @@ export const personaDetectionInit = () => {
 
         await WrapperAIGeneratedService.getPdetReportByUrl(pastedUrl)
             .then((response) => {
-                console.log(response);
-                //         imageEl_currentImage.src = pastedUrl;
-                pdetLoadingFinish(response.nsfw_detected, response.url);
+                pdetLoadingFinish(response.nsfw_detected, response?.verdict ? 'AI' : 'Human', response.url);
             })
             .catch((error) => {
+                loadingEnd();
+                someThingWentWrong_error();
+                // Show error message.
                 //         if (uiEl_resultCol.classList.contains('hide')) {
                 //             someThingWentWrong_error();
                 //         } else {
                 //             someThingWentWrong_error();
                 //             screen_homeShow();
                 //         }
-                console.log(error);
             });
     };
 
-    // const dropzone = document.body;
-    // const tipMessage = document.querySelector('#dropzone-fullscreen_message-tip');
-    // const formatMessage = document.querySelector('#dropzone-fullscreen_message-format');
-    //
-    // dropzone?.addEventListener('dragover', function (event) {
-    //     event.preventDefault();
-    //     (document.querySelector('.dropzone-fullscreen') as Element).classList.remove('hide');
-    // });
-    // dropzone?.addEventListener('dragleave', function (event) {
-    //     event.preventDefault();
-    //     (document.querySelector('.dropzone-fullscreen') as Element).classList.add('hide');
-    // });
-    //
-    // dropzone?.addEventListener('drop', async function (event: any) {
-    //     if (activeTab() !== 'image') {
-    //         return;
-    //     }
-    //
-    //     event.preventDefault();
-    //     (document.querySelector('.dropzone-fullscreen') as Element).classList.add('hide');
-    //     const file = event.dataTransfer.files[0];
-    //     const fileSize = file.size;
-    //     const maxSize = 10 * 1024 * 1024; // 10 MB in bytes
-    //     if (fileSize > maxSize) {
-    //         fileSizeAllow = false;
-    //         fileSizeMessage_error();
-    //     } else {
-    //         fileSizeAllow = true;
-    //         fileSizeMessage_ok();
-    //     }
-    //     if (fileSizeAllow == true) {
-    //         await uploadBinaryFile(file);
-    //     } else {
-    //         fileSizeMessage_error();
-    //     }
-    // });
-    //
-    // inputEl_fileInput?.addEventListener('change', async (event: any) => {
-    //     if (fileSizeAllow == true) {
-    //         const fileInput = document.querySelector('#file-input') as any;
-    //         const file = fileInput.files[0];
-    //
-    //         await uploadBinaryFile(file);
-    //     } else {
-    //         fileSizeMessage_error();
-    //     }
-    // });
-    //
-    // const uploadBinaryFile = async (file: any) => {
-    //     // console.log(file);
-    //     loadingStart();
-    //     if (RequestCounter.isLimitExceeded()) {
-    //         const signInModalElement = document.getElementById('sign-up') as any;
-    //         signInModalElement.style.display = 'flex';
-    //         signInModalElement.style.zIndex = 100;
-    //         screen_homeShow();
-    //         // loadingFinish()
-    //         return;
-    //     }
-    //
-    //     const currentImage = document.querySelector('#ai-or-not-current-image') as any;
-    //     const currentImageUrl = URL.createObjectURL(file);
-    //     currentImage.setAttribute('src', currentImageUrl);
-    //     imageEl_currentImage.classList.remove('hide');
-    //     imageEl_currentImageEmpty.classList.add('hide');
-    //
-    //     await WrapperAIGeneratedService.getReportsByBinary(file, visitorId as string)
-    //         .then((response) => {
-    //             RequestCounter.increment();
-    //             changeShareUrl(response.id);
-    //             initial_dropZone();
-    //             findHighestConfidence(response.verdict);
-    //             loadingFinish(response.nsfw_detected);
-    //         })
-    //
-    //         .catch((error) => {
-    //             // console.log(error);
-    //             error_dropZone();
-    //             screen_homeShow();
-    //         });
-    // };
-    //
+    const pdetPostToApiBinaryFile = async (file: any) => {
+        // console.log(file);
+        loadingStart();
+
+        const currentImage = document.querySelector('#ai-or-not-current-image') as any;
+        const currentImageUrl = URL.createObjectURL(file);
+        currentImage.setAttribute('src', currentImageUrl);
+        imageEl_currentImage.classList.remove('hide');
+        imageEl_currentImageEmpty.classList.add('hide');
+
+        await WrapperAIGeneratedService.getPdetReportByBinary(file)
+            .then((response) => {
+                pdetLoadingFinish(response.nsfw_detected, response?.verdict ? 'AI' : 'Human', response.url);
+            })
+            .catch((error) => {
+                loadingEnd();
+                someThingWentWrong_error();
+            });
+    };
+
+    const dropzone = document.body;
+
+    dropzone?.addEventListener('dragover', function (event) {
+        event.preventDefault();
+        (document.querySelector('.dropzone-fullscreen') as Element).classList.remove('hide');
+    });
+    dropzone?.addEventListener('dragleave', function (event) {
+        event.preventDefault();
+        (document.querySelector('.dropzone-fullscreen') as Element).classList.add('hide');
+    });
+
+    dropzone?.addEventListener('drop', async function (event: any) {
+        if (activeTab() !== 'pdet') {
+            return;
+        }
+
+        event.preventDefault();
+        (document.querySelector('.dropzone-fullscreen') as Element).classList.add('hide');
+        const file = event.dataTransfer.files[0];
+        const fileSize = file.size;
+        const maxSize = 10 * 1024 * 1024; // 10 MB in bytes
+        if (fileSize > maxSize) {
+            fileSizeAllow = false;
+            // fileSizeMessage_error();
+        } else {
+            fileSizeAllow = true;
+            // fileSizeMessage_ok();
+        }
+        if (fileSizeAllow == true) {
+            await pdetPostToApiBinaryFile(file);
+        } else {
+            someThingWentWrong_error();
+        }
+    });
+
+    inputEl_fileInput?.addEventListener('change', async (event: any) => {
+        if (fileSizeAllow == true) {
+            const fileInput = inputEl_fileInput as any;
+            const file = fileInput.files[0];
+
+            await pdetPostToApiBinaryFile(file);
+        } else {
+            console.log('fileSizeAllow');
+            someThingWentWrong_error();
+        }
+    });
+
     // buttonEl_processClose?.addEventListener('click', function () {
     //     initial_dropZone();
     //     screen_homeShow();
     // });
     //
-    // (document.querySelector('#ai-or-not_dropzone') as Element)?.addEventListener('click', function () {
-    //     if (activeTab() !== 'image') {
-    //         return;
-    //     }
-    //
-    //     if (AuthService.checkAuth(screen_homeShow)) return;
-    //
-    //     fileUpload_way = 'screen_home';
-    //     inputEl_fileInput.click();
-    // });
-    //
-    // (document.querySelector('#choose-file-row') as Element)?.addEventListener('click', function () {
-    //     fileUpload_way = 'screen_result';
-    //     inputEl_fileInput.click();
-    // });
+    (uiEl_dropZone as Element)?.addEventListener('click', function () {
+        if (AuthService.checkAuth(goSignIn)) return;
+
+        fileUpload_way = 'screen_home';
+        inputEl_fileInput.click();
+    });
+
+    (document.querySelector('#choose-file-row') as Element)?.addEventListener('click', function () {
+        fileUpload_way = 'screen_result';
+        inputEl_fileInput.click();
+    });
     //
 
     submitButton?.addEventListener('click', () => {
         loadingStart();
-        if (imageUrlInput.value != '') {
+        if (imageUrlInput.value !== '') {
             pastedUrl = imageUrlInput.value;
             pdetPostToApiUrl();
         }
@@ -411,35 +386,32 @@ export const personaDetectionInit = () => {
     //     signInModalElement.style.zIndex = 0;
     // });
     //
-    // const usage = document.querySelector('#image-quotas') as Element;
-    // if (AuthService.isAuth()) {
-    //     DashboardService.fetchSubscriptionData().then((user_plan) => {
-    //         if (user_plan) {
-    //             const { quantity } = user_plan.plan?.requests_limits || { quantity: 20 };
-    //             let { total } = user_plan.requests;
-    //             if (!user_plan.plan) {
-    //                 try {
-    //                     total -= user_plan.api.usage?.daily || 0;
-    //                 } catch (error) {
-    //                     console.log(error);
-    //                 }
-    //             }
-    //
-    //             console.log(user_plan);
-    //             usage.innerHTML = `
-    //         <div style="margin-top: 20px; font-size: 1rem; color: white">
-    //         <span">
-    //             Available ${quantity - total} from ${quantity} requests
-    //         </span>
-    //         </div>`;
-    //             // Base or Pro
-    //         } else {
-    //             // Free plan
-    //             usage.textContent = ``;
-    //         }
-    //     });
-    // }
+    const usage = document.querySelector('#image-quotas') as Element;
+    if (AuthService.isAuth()) {
+        DashboardService.fetchSubscriptionData().then((user_plan) => {
+            if (user_plan) {
+                const { quantity } = user_plan.plan?.requests_limits || { quantity: 20 };
+                let { total } = user_plan.requests;
+                if (!user_plan.plan) {
+                    try {
+                        total -= user_plan.api.usage?.daily || 0;
+                    } catch (error) {
+                        console.log(error);
+                    }
+                }
 
-    // Call payments.
-    initPay();
+                console.log(user_plan);
+                usage.innerHTML = `
+            <div style="margin-top: 20px; font-size: 1rem; color: white">
+            <span">
+                Available ${quantity - total} from ${quantity} requests
+            </span>
+            </div>`;
+                // Base or Pro
+            } else {
+                // Free plan
+                usage.textContent = ``;
+            }
+        });
+    }
 };

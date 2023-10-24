@@ -125,4 +125,25 @@ export class AIGeneratedService {
             console.error('Error getYoutubeVerdict:', error);
         }
     }
+
+    static async getPdetReportByBinary(file: string): Promise<any> {
+        const { client } = AIGeneratedService.getInstance();
+
+        try {
+            const formData = new FormData();
+            formData.append('file', file, 'uploaded-file.png');
+            return await client.postBinary('reports/person_detection/binary', formData);
+        } catch (error) {
+            if (error.status === 402) {
+                alert('Please verify your email to continue using the service');
+            }
+            if (error.status === 429) {
+                alert(
+                    `It looks like you have reached your plan limit of ${error.message.msg.current_limit} requests. To continue, please upgrade to a new plan.`
+                );
+                window.location.href = `https://${window.location.host}/#plans`;
+            }
+            console.error('Error getReportsByBinary:', error);
+        }
+    }
 }

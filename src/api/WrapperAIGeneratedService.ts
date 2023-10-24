@@ -53,7 +53,7 @@ export class WrapperAIGeneratedService {
 
     static async getPdetReportByBinary(file: File): Promise<any> {
         console.log('getPdetReportByBinary');
-        // return await OpenAIGeneratedService.getPdetReportByBinary(file);
+        return await AIGeneratedService.getPdetReportByBinary(file);
     }
 
     static async sendFeedback(id: string, reportPredict: boolean, reportComment: string, isAudio = false): Promise<void> {
