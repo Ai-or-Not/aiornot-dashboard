@@ -69,11 +69,12 @@ export class DashboardService {
         }
     }
 
-    public static async delete(): Promise<void> {
+    public static async delete(): Promise<boolean> {
         try {
             const { client } = DashboardService.getInstance();
             AuthService.removeAuth();
-            return await client.delete('');
+            await client.delete('');
+            return true;
         } catch (error) {
             console.error('delete:', error);
         }
