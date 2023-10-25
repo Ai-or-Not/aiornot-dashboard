@@ -6,6 +6,9 @@
 // export const BASE_URL = 'https://v3-atrium-stage-api.optic.xyz';
 // export const BASE_URL = 'http://localhost:8000';
 // export const BASE_URL = 'https://api.ai-or-not.com';
+
+const env = window.location.host.includes('webflow.id') ? 'stage' : 'prod';
+// export const BASE_URL = `https://${env}.ai-or-not.com`;
 export const BASE_URL = 'https://stage.ai-or-not.com';
 // export const BASE_URL = 'https://prod.ai-or-not.com';
 
