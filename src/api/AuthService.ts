@@ -15,11 +15,20 @@ interface KeyData {
     kid: string;
 }
 
+interface UserEntity {
+    user_id: string;
+    is_verified: boolean;
+}
+
 export class AuthService {
     static key = 'isSignUp';
     static token_key = '_ms-mid';
 
     constructor() {}
+
+    static getUserInfo() {
+        return DashboardService.getUserInfo();
+    }
 
     static isAuth(): boolean {
         if (localStorage.getItem(AuthService.token_key) !== null) {
@@ -49,15 +58,6 @@ export class AuthService {
                 console.log(e);
             }
         }
-        // if (AuthService.isAuth()) {
-        //     await DashboardService.signUp();
-        //     AuthService.setAuth();
-        //     await DashboardService.login();
-        // } else {
-        //     await DashboardService.signUp();
-        //     AuthService.setAuth();
-        //     await DashboardService.login();
-        // }
     }
 
     static getToken(): string {
@@ -85,5 +85,10 @@ export class AuthService {
             return true;
         }
         return false;
+    }
+
+    static async sendVerifiedEmail() {
+        console.log('sendVerifiedEmail');
+        await DashboardService.sendVerificationEmail();
     }
 }

@@ -9,15 +9,20 @@ export class DashboardService {
     private static instance: DashboardService | null = null;
     private client: RestClient;
 
-    private constructor() {
+    private constructor(domain: string) {
         const bearerToken = AuthService.getToken();
-        const baseUrl = `${BASE_URL}/aion/users`;
+        const baseUrl = `${BASE_URL}/aion/${domain}`;
         this.client = new RestClient(baseUrl, bearerToken);
     }
 
-    public static getInstance(): DashboardService {
+    public static sendVerificationEmail() {
+        const { client } = DashboardService.getInstance();
+        return client.get('email_verification', {});
+    }
+
+    public static getInstance(domain = 'users'): DashboardService {
         if (!DashboardService.instance) {
-            DashboardService.instance = new DashboardService();
+            DashboardService.instance = new DashboardService(domain);
         }
         return DashboardService.instance;
     }
@@ -123,8 +128,8 @@ export class DashboardService {
         const promises = [DashboardService.fetchSubscriptionData(), paymentClient.getSubscriptionInfo()];
         const [data, subscription] = await Promise.all(promises);
 
-        // console.log(data);
-        // console.log(subscription);
+        console.log(data);
+        console.log(subscription);
 
         if (!data?.plan) {
             // Free plan
@@ -163,7 +168,7 @@ export class DashboardService {
                 'You\'re on the <span class="text-color-green">PRO</span> plan. You have limits of 10000 requests for both web & API.';
             usageInfo.innerHTML = `You have used ${data?.requests?.total || 0} of 10000 checks via both web & API.`;
 
-            if (subscription?.subscription.meta.was_canceled) {
+            if (subscription?.subscription?.meta?.was_canceled) {
                 btnCancel.classList.add('hide');
                 usageInfo.innerHTML =
                     usageInfo.innerHTML +
@@ -205,5 +210,23 @@ export class DashboardService {
                 }
             }
         });
+    }
+
+    public static async getUserInfo() {
+        const { client } = DashboardService.getInstance();
+        try {
+            return await client.get('');
+        } catch (error) {
+            console.error('getUserInfo:', error);
+        }
+    }
+
+    public static async getTransactions() {
+        const { client } = new DashboardService('payments');
+        try {
+            return await client.get('invoices');
+        } catch (error) {
+            console.error('getTransactions:', error);
+        }
     }
 }

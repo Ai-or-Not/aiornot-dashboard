@@ -503,8 +503,6 @@ export const init = () => {
                         console.log(error);
                     }
                 }
-
-                console.log(user_plan);
                 usage.innerHTML = `
             <div style="margin-top: 20px; font-size: 1rem; color: white">
             <span">
