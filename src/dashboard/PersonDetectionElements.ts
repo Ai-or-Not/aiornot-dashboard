@@ -5,7 +5,8 @@ import { activeTab } from '$utils/tabs';
 export const personaDetectionInit = () => {
     //elements
     if (window.location.host.includes('webflow')) {
-        document.querySelector('#pdet-tab')?.classList.remove('swiper-button-disabled');
+        // document.querySelector('#pdet-tab')?.classList.remove('swiper-button-disabled');
+        document.querySelector('#pdet-tab')?.classList.remove('hide');
     }
 
     const testImages = document.querySelectorAll('#pdet-test-image');

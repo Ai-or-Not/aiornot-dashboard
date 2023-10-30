@@ -509,7 +509,7 @@ export class PaymentsClient {
                 .confirmPayment({
                     elements: this.elements,
                     confirmParams: {
-                        return_url: `https://${window.location.host}/dashboard/settings`,
+                        return_url: `https://${window.location.host}/dashboard/settings?payment_success=${plan.name}`,
                     },
                 })
                 .then((result: any) => {

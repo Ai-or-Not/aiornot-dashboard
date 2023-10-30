@@ -1,3 +1,5 @@
+import { showSuccessPaymentNotification } from '$utils/notification';
+
 import { AuthService, DashboardService } from '../../api';
 
 // Elements
@@ -6,6 +8,15 @@ const btnDeleteAccount = document.querySelector('#btn-delete-account') as Elemen
 const transactionsSection = document.querySelector('#transactions-section') as Element;
 const transactionsTable = document.querySelector('#transaction-table') as Element;
 const signOutBtn = document.querySelector('#sign-out') as Element;
+
+// get query params
+const urlParams = new URLSearchParams(window.location.search);
+const payment_success = urlParams.get('payment_success');
+const plan = payment_success?.split(' ')[0];
+
+if (payment_success) {
+    showSuccessPaymentNotification(plan);
+}
 
 const styles = `
     .hide {
