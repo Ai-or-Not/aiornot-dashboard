@@ -1,4 +1,68 @@
-"use strict";(()=>{var h="https://js.stripe.com/v3",w=/^https:\/\/js\.stripe\.com\/v3\/?(\?.*)?$/,m="loadStripe.setLoadParameters was called but an existing Stripe.js script already exists in the document; existing script parameters will be used",b=function(){for(var e=document.querySelectorAll('script[src^="'.concat(h,'"]')),t=0;t<e.length;t++){var r=e[t];if(w.test(r.src))return r}return null},k=function(e){var t=e&&!e.advancedFraudSignals?"?advancedFraudSignals=false":"",r=document.createElement("script");r.src="".concat(h).concat(t);var n=document.head||document.body;if(!n)throw new Error("Expected document.body not to be null. Stripe.js requires a <body> element.");return n.appendChild(r),r},v=function(e,t){!e||!e._registerWrapper||e._registerWrapper({name:"stripe-js",version:"2.1.7",startTime:t})},l=null,_=function(e){return l!==null||(l=new Promise(function(t,r){if(typeof window=="undefined"||typeof document=="undefined"){t(null);return}if(window.Stripe&&e&&console.warn(m),window.Stripe){t(window.Stripe);return}try{var n=b();n&&e?console.warn(m):n||(n=k(e)),n.addEventListener("load",function(){window.Stripe?t(window.Stripe):r(new Error("Stripe.js not available"))}),n.addEventListener("error",function(){r(new Error("Failed to load Stripe.js"))})}catch(o){r(o);return}})),l},x=function(e,t,r){if(e===null)return null;var n=e.apply(void 0,t);return v(n,r),n},u=Promise.resolve().then(function(){return _(null)}),f=!1;u.catch(function(i){f||console.warn(i)});var d=function(){for(var e=arguments.length,t=new Array(e),r=0;r<e;r++)t[r]=arguments[r];f=!0;var n=Date.now();return u.then(function(o){return x(o,t,n)})};var S=window.location.host.includes("webflow")?"stage":"prod",a=`https://${S}.ai-or-not.com`;var y=`
+"use strict";(()=>{var h="https://js.stripe.com/v3",k=/^https:\/\/js\.stripe\.com\/v3\/?(\?.*)?$/,u="loadStripe.setLoadParameters was called but an existing Stripe.js script already exists in the document; existing script parameters will be used",v=function(){for(var e=document.querySelectorAll('script[src^="'.concat(h,'"]')),t=0;t<e.length;t++){var o=e[t];if(k.test(o.src))return o}return null},_=function(e){var t=e&&!e.advancedFraudSignals?"?advancedFraudSignals=false":"",o=document.createElement("script");o.src="".concat(h).concat(t);var n=document.head||document.body;if(!n)throw new Error("Expected document.body not to be null. Stripe.js requires a <body> element.");return n.appendChild(o),o},S=function(e,t){!e||!e._registerWrapper||e._registerWrapper({name:"stripe-js",version:"2.1.7",startTime:t})},p=null,P=function(e){return p!==null||(p=new Promise(function(t,o){if(typeof window=="undefined"||typeof document=="undefined"){t(null);return}if(window.Stripe&&e&&console.warn(u),window.Stripe){t(window.Stripe);return}try{var n=v();n&&e?console.warn(u):n||(n=_(e)),n.addEventListener("load",function(){window.Stripe?t(window.Stripe):o(new Error("Stripe.js not available"))}),n.addEventListener("error",function(){o(new Error("Failed to load Stripe.js"))})}catch(i){o(i);return}})),p},T=function(e,t,o){if(e===null)return null;var n=e.apply(void 0,t);return S(n,o),n},f=Promise.resolve().then(function(){return P(null)}),y=!1;f.catch(function(r){y||console.warn(r)});var m=function(){for(var e=arguments.length,t=new Array(e),o=0;o<e;o++)t[o]=arguments[o];y=!0;var n=Date.now();return f.then(function(i){return T(i,t,n)})};var E=window.location.host.includes("webflow")?"stage":"prod",a=`https://${E}.ai-or-not.com`;var $=`
+#toast {
+  visibility: hidden; /* Hidden by default. Visible on click */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  left: 10rem;
+  right: 10rem;
+  min-height: 100px;
+  background-color: #1E2026;
+  color: #fff;
+  text-align: center;
+  border-radius: 2px;
+  position: fixed;
+  top: 30px;
+  padding: 10px;
+  z-index: 9999
+  border-style: solid;
+  border-width: 1px;
+  border-color: #aefc06;
+}
+
+#toast .close-button {
+  cursor: pointer;
+  position: absolute;
+  top: 5px;
+  right: 10px;
+    
+}
+
+#toast.show {
+  visibility: visible; /* Show the snackbar */
+  -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+  animation: fadein 0.5s, 2.5s;
+  
+  border-style: solid;
+  border-right: none;
+  border-left: none;
+  border-top: none;
+  border-width: 1px;
+  border-color: #aefc06;
+  z-index: 9999
+    
+}
+
+@-webkit-keyframes fadein {
+  from {bottom: 0; opacity: 0;}
+  to {bottom: 30px; opacity: 1;}
+}
+
+@keyframes fadein {
+  from {top: 0; opacity: 0;}
+  to {top: 30px; opacity: 1;}
+}
+
+@-webkit-keyframes fadeout {
+  from {top: 30px; opacity: 1;}
+  to {top: 0; opacity: 0;}
+}
+
+@keyframes fadeout {
+  from {top: 30px; opacity: 1;}
+  to {top: 0; opacity: 0;}
+`,g=document.createElement("style");g.innerHTML=$;document.head.appendChild(g);var l=document.getElementById("toast");function L(r){l.classList.remove("hide");let e=document.createElement("span");e.innerHTML="x",e.className="close-button",e.addEventListener("click",()=>{l.classList.add("hide"),window.location.href=`https://${window.location.host}/dashboard/settings`}),l.innerHTML=r,l.appendChild(e),l.classList.add("show")}var b=(r,e)=>{L(`<p style="font-size: 1.5rem; padding: 2rem;">We are pleased to inform you that you currently have a credit of $${r} from a previous paid subscription after that we successfully update your plan to <span style="color: #aefc06; font-weight: bold ">${e.split(" ")[0]}</span>! If you have any questions please contact us.</p>`)};var w=`
 
 @keyframes blink {
 0% { opacity: 1; }
@@ -185,7 +249,7 @@ font-weight: 600;
 
 }
             
-            `,p=class{constructor(){this.elements=null;this.stripe=null;this.home_element=document.querySelector("#home");this.PRODUCT_ID_BASE_PLAN={id:"price_1O2Ba4Ba9yG4sk8k4y3ZnEVT",msg:"Base plan: $30/month",name:"Base plan",description:"1,000 requests per month",price:"$30",test_id:"price_1O1wSsBa9yG4sk8kej8shNYs"};this.PRODUCT_ID_PRO_PLAN={id:"price_1O2Ku4Ba9yG4sk8kIQBdzpPj",msg:"Pro plan: $250/month",name:"Pro plan",description:"10,000 requests per month",price:"$250",test_id:"price_1O1wTVBa9yG4sk8kQSPeT9rp"};this.is_test_mode=!1}showBlinkMessage(e,t){let r=document.createElement("style");r.innerHTML=y,document.head.appendChild(r),t.innerHTML=`
+            `,d=class{constructor(){this.elements=null;this.stripe=null;this.home_element=document.querySelector("#home");this.PRODUCT_ID_BASE_PLAN={id:"price_1O2Ba4Ba9yG4sk8k4y3ZnEVT",msg:"Base plan: $30/month",name:"Base plan",description:"1,000 requests per month",price:"$30",test_id:"price_1O1wSsBa9yG4sk8kej8shNYs"};this.PRODUCT_ID_PRO_PLAN={id:"price_1O2Ku4Ba9yG4sk8kIQBdzpPj",msg:"Pro plan: $250/month",name:"Pro plan",description:"10,000 requests per month",price:"$250",test_id:"price_1O7HCzBa9yG4sk8kYEld9lNl"};this.is_test_mode=!1}showBlinkMessage(e,t){let o=document.createElement("style");o.innerHTML=w,document.head.appendChild(o),t.innerHTML=`
         <div class="text-blink">${e}</div>
         `}getProduct(e){return e===this.PRODUCT_ID_BASE_PLAN.id?this.PRODUCT_ID_BASE_PLAN:e===this.PRODUCT_ID_PRO_PLAN.id?this.PRODUCT_ID_PRO_PLAN:this.PRODUCT_ID_BASE_PLAN}checkout(e){window.location.href=`https://${window.location.host}/checkout?product_id=${e.id}`}createPaymentForm(e){this.home_element.innerHTML=`
 
@@ -222,7 +286,7 @@ font-weight: 600;
         </div>
             <div id="progress-loader" class="loader" style="border: 16px solid #f3f3f3; border-top: 16px solid #adff00; border-bottom: 16px solid #adff00; border-radius: 50%;width: 120px;height: 120px;animation: spin 2s linear infinite;"></div>
         </div>
-    `,document.querySelector("#submit").addEventListener("click",()=>{this.completePayment(this.PRODUCT_ID_BASE_PLAN)})}createPaymentForm2(e){var o;let t=document.createElement("link");t.rel="stylesheet",t.href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css",t.type="text/css",document.head.appendChild(t);let r=document.createElement("link");r.rel="stylesheet",r.href="https://fonts.googleapis.com/css?family=Montserrat",document.head.appendChild(r);let n=document.createElement("style");n.innerHTML=y,document.head.appendChild(n),document.querySelector("#home-container").innerHTML=`
+    `,document.querySelector("#submit").addEventListener("click",()=>{this.completePayment(this.PRODUCT_ID_BASE_PLAN)})}createPaymentForm2(e){var i;let t=document.createElement("link");t.rel="stylesheet",t.href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css",t.type="text/css",document.head.appendChild(t);let o=document.createElement("link");o.rel="stylesheet",o.href="https://fonts.googleapis.com/css?family=Montserrat",document.head.appendChild(o);let n=document.createElement("style");n.innerHTML=w,document.head.appendChild(n),document.querySelector("#home-container").innerHTML=`
         <main class="page payment-page">
         <section class="payment-form dark">
           <div class="container">
@@ -235,7 +299,7 @@ font-weight: 600;
               <div class="products">
                 <h3 class="title">Checkout</h3>
                 <div class="item">
-                  <span class="price">${e.price}</span>
+                  <span class="price" id="total-price">${e.price}</span>
                   <p class="item-name">${e.name}</p>
                   <p class="price-description">per month</p>
                   <p class="item-description">${e.description}</p>
@@ -258,4 +322,4 @@ font-weight: 600;
           </div>
         </section>
       </main>
-        `,(o=document.querySelector("#submit"))==null||o.addEventListener("click",()=>{this.completePayment(e)})}async createPaymentIntent(e){fetch(`${a}/aion/payments/config`).then(t=>t.json()).then(t=>{d(t.stripe_public_key).then(r=>{this.stripe=r,this.is_test_mode=t.stripe_public_key.includes("test"),fetch(`${a}/aion/payments/create_intent`,{method:"POST",headers:{"Content-Type":"application/json",Authorization:`Bearer ${this.checkUserToken()}`},body:JSON.stringify({product_id:this.is_test_mode?e.test_id:e.id})}).then(n=>n.json()).then(n=>{var s;if(n.code===10)throw console.warn(n.message),alert(n.message),window.location.href=`https://${window.location.host}/`,new Error(n.message);this.elements=this.stripe.elements({clientSecret:n.client_secret});let o=this.elements.create("payment");(s=document.querySelector("#progress-loader"))==null||s.classList.add("hide"),document.querySelector("#submit").style.visibility="visible",o.mount("#payment-element")}).catch(n=>{console.error("Something wrong when create a payment intent",n),alert("Something wrong when create a payment. Please try again.")})})})}checkUserToken(){let e=localStorage.getItem("_ms-mid");if(!e)throw new Error("User token not found");return e}async initPaymentForm(e){console.log("Init payment form...");let t=await this.initStripe();if(this.stripe=t,!t)return;let r={theme:"flat",variables:{colorPrimary:"#30313d",colorText:"#30313d"},roles:{".TermsText":{hide:!0}}},n={},o="auto",s=await this.getClientSecret(e),c=t.elements({clientSecret:s,appearance:r,loader:o});this.elements=c;let P=c.create("payment",n).mount("#payment-element")}async getClientSecret(e){return fetch(`${a}/aion/payments/create_intent`,{method:"POST",headers:{"Content-Type":"application/json",Authorization:`Bearer ${this.checkUserToken()}`},body:JSON.stringify({product_id:this.is_test_mode?e.test_id:e.id})}).then(t=>t.json()).then(t=>{if(t.code===10)throw console.warn(t.message),alert(t.message),window.location.href=`https://${window.location.host}/`,new Error(t.message);return t.client_secret})}initStripe(){return console.log("Init stripe..."),fetch(`${a}/aion/payments/config`).then(e=>e.json()).then(e=>(this.is_test_mode=e.stripe_public_key.includes("test"),d(e.stripe_public_key).then(t=>t))).catch(e=>{console.error("Something wrong when init stripe",e)})}async completePayment(e){console.log("Complete payment...");let t=document.querySelector("#submit");if(t.innerHTML.includes("Payments attempt")){window.location.href=`https://${window.location.host}/#plans`;return}let r=t.innerHTML,n=null,o=null;for(let s=1;s<=5&&(this.showBlinkMessage(`Payments attempt ${s}...`,t),n=await this.stripe.confirmPayment({elements:this.elements,confirmParams:{return_url:`https://${window.location.host}/dashboard/settings?payment_success=${e.name}`}}).then(c=>c.error?(o=c.error.message,"error"):(console.log(c),"success")),t.innerHTML=r,console.log("result: ",n),!(n==="false"||n==="success"));s++);console.log(n,o),n==="error"&&alert(o)}async cancelSubscription(){fetch(`${a}/aion/payments/cancel_subscription`,{method:"POST",headers:{"Content-Type":"application/json",Authorization:`Bearer ${this.checkUserToken()}`}}).then(e=>e.json()).catch(e=>{console.error("Something wrong when create a checkout session",e)})}async getSubscriptionInfo(){try{let e=await fetch(`${a}/aion/payments/subscription`,{method:"GET",headers:{"Content-Type":"application/json",Authorization:`Bearer ${this.checkUserToken()}`}});return await this.handleResponse(e)}catch{return null}}async handleResponse(e){if(!e.ok){let t=await e.json();throw{status:e.status,message:t}}if(e.status!==204)return await e.json()}isValidCreditCardNumber(e){if(e=e.replace(/\s/g,"").split("").reverse().join(""),!/^[0-9]{13,19}$/.test(e))return!1;let t=0;for(let r=0;r<e.length;r++){let n=parseInt(e[r]);r%2===1&&(n*=2,n>9&&(n-=9)),t+=n}return t%10===0}};var g=()=>{console.log("Checkout...");let i=new p,t=new URLSearchParams(window.location.search).get("product_id");if(t===null){console.log("No product id");return}let r=i.getProduct(t);i.createPaymentForm2(r),i.initPaymentForm(r)};g();})();
+        `,(i=document.querySelector("#submit"))==null||i.addEventListener("click",()=>{this.completePayment(e)})}async createPaymentIntent(e){fetch(`${a}/aion/payments/config`).then(t=>t.json()).then(t=>{m(t.stripe_public_key).then(o=>{this.stripe=o,this.is_test_mode=t.stripe_public_key.includes("test"),fetch(`${a}/aion/payments/create_intent`,{method:"POST",headers:{"Content-Type":"application/json",Authorization:`Bearer ${this.checkUserToken()}`},body:JSON.stringify({product_id:this.is_test_mode?e.test_id:e.id})}).then(n=>n.json()).then(n=>{var s;if(n.code===10)throw console.warn(n.message),alert(n.message),window.location.href=`https://${window.location.host}/`,new Error(n.message);this.elements=this.stripe.elements({clientSecret:n.client_secret});let i=this.elements.create("payment");(s=document.querySelector("#progress-loader"))==null||s.classList.add("hide"),document.querySelector("#submit").style.visibility="visible",i.mount("#payment-element")}).catch(n=>{console.error("Something wrong when create a payment intent",n),alert("Something wrong when create a payment. Please try again.")})})})}checkUserToken(){let e=localStorage.getItem("_ms-mid");if(!e)throw new Error("User token not found");return e}async initPaymentForm(e){console.log("Init payment form...");let t=await this.initStripe();if(this.stripe=t,!t)return;let o={theme:"flat",variables:{colorPrimary:"#30313d",colorText:"#30313d"},roles:{".TermsText":{hide:!0}}},n={},i="auto",s=await this.getClientSecret(e);if(!s)return;let c=t.elements({clientSecret:s,appearance:o,loader:i});this.elements=c;let I=c.create("payment",n).mount("#payment-element")}async getClientSecret(e){return fetch(`${a}/aion/payments/create_intent`,{method:"POST",headers:{"Content-Type":"application/json",Authorization:`Bearer ${this.checkUserToken()}`},body:JSON.stringify({product_id:this.is_test_mode?e.test_id:e.id})}).then(t=>t.json()).then(t=>{if(console.log(t),t.code===10){let o=this.is_test_mode?e.test_id:e.id;if(console.log(o,t.plan_id),t.plan_id&&t.plan_id!==o)return this.updateSubscription(e);throw console.warn(t.message),alert(t.message),window.location.href=`https://${window.location.host}/`,new Error(t.message)}return document.getElementById("button-text").innerHTML=`$${t.amount}`,t.client_secret})}async updateSubscription(e){return console.log("Update subscription..."),fetch(`${a}/aion/payments/subscription`,{method:"PUT",headers:{"Content-Type":"application/json",Authorization:`Bearer ${this.checkUserToken()}`},body:JSON.stringify({product_id:this.is_test_mode?e.test_id:e.id})}).then(t=>t.json()).then(t=>{var o;if(console.log(t),t.credit){(o=document.querySelector("#payment-form"))==null||o.classList.add("hide"),b(t.credit,e.name);return}return document.getElementById("button-text").innerHTML=`$${t.amount}`,t.client_secret})}initStripe(){return console.log("Init stripe..."),fetch(`${a}/aion/payments/config`).then(e=>e.json()).then(e=>(this.is_test_mode=e.stripe_public_key.includes("test"),m(e.stripe_public_key).then(t=>t))).catch(e=>{console.error("Something wrong when init stripe",e)})}async completePayment(e){console.log("Complete payment...");let t=document.querySelector("#submit");if(t.innerHTML.includes("Payments attempt")){window.location.href=`https://${window.location.host}/#plans`;return}let o=t.innerHTML,n=null,i=null;for(let s=1;s<=5&&(this.showBlinkMessage(`Payments attempt ${s}...`,t),n=await this.stripe.confirmPayment({elements:this.elements,confirmParams:{return_url:`https://${window.location.host}/dashboard/settings?payment_success=${e.name}`}}).then(c=>c.error?(i=c.error.message,"error"):(console.log(c),"success")),t.innerHTML=o,console.log("result: ",n),!(n==="false"||n==="success"));s++);console.log(n,i),n==="error"&&alert(i)}async cancelSubscription(){fetch(`${a}/aion/payments/cancel_subscription`,{method:"POST",headers:{"Content-Type":"application/json",Authorization:`Bearer ${this.checkUserToken()}`}}).then(e=>e.json()).catch(e=>{console.error("Something wrong when create a checkout session",e)})}async getSubscriptionInfo(){try{let e=await fetch(`${a}/aion/payments/subscription`,{method:"GET",headers:{"Content-Type":"application/json",Authorization:`Bearer ${this.checkUserToken()}`}});return await this.handleResponse(e)}catch{return null}}async handleResponse(e){if(!e.ok){let t=await e.json();throw{status:e.status,message:t}}if(e.status!==204)return await e.json()}isValidCreditCardNumber(e){if(e=e.replace(/\s/g,"").split("").reverse().join(""),!/^[0-9]{13,19}$/.test(e))return!1;let t=0;for(let o=0;o<e.length;o++){let n=parseInt(e[o]);o%2===1&&(n*=2,n>9&&(n-=9)),t+=n}return t%10===0}};var x=()=>{console.log("Checkout...");let r=new d,t=new URLSearchParams(window.location.search).get("product_id");if(t===null){console.log("No product id");return}let o=r.getProduct(t);r.createPaymentForm2(o),r.initPaymentForm(o)};x();})();

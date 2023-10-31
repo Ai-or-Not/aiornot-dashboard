@@ -1,6 +1,7 @@
 import { loadStripe } from '@stripe/stripe-js';
 
 import { BASE_URL } from '@/api/RestClient';
+import { showSuccessDowngradePlanNotification } from '$utils/notification';
 
 interface IProduct {
     id: string;
@@ -219,7 +220,7 @@ export class PaymentsClient {
         name: 'Pro plan',
         description: '10,000 requests per month',
         price: '$250',
-        test_id: 'price_1O1wTVBa9yG4sk8kQSPeT9rp',
+        test_id: 'price_1O7HCzBa9yG4sk8kYEld9lNl',
         // test_id: 'price_1O4iyjBa9yG4sk8k1wRbFjxk',
     } as IProduct;
 
@@ -322,7 +323,7 @@ export class PaymentsClient {
               <div class="products">
                 <h3 class="title">Checkout</h3>
                 <div class="item">
-                  <span class="price">${plan.price}</span>
+                  <span class="price" id="total-price">${plan.price}</span>
                   <p class="item-name">${plan.name}</p>
                   <p class="price-description">per month</p>
                   <p class="item-description">${plan.description}</p>
@@ -442,6 +443,10 @@ export class PaymentsClient {
 
         const clientSecret = await this.getClientSecret(plan);
 
+        if (!clientSecret) {
+            return;
+        }
+
         const elements = stripe.elements({ clientSecret, appearance, loader });
         this.elements = elements;
         const paymentElement = elements.create('payment', options).mount('#payment-element');
@@ -462,12 +467,52 @@ export class PaymentsClient {
                 return result.json();
             })
             .then((data) => {
+                console.log(data);
+
                 if (data.code === 10) {
+                    const plane_id = this.is_test_mode ? product.test_id : product.id;
+                    console.log(plane_id, data.plan_id);
+                    if (data.plan_id && data.plan_id !== plane_id) {
+                        // Update subscription
+                        return this.updateSubscription(product);
+                    }
+
                     console.warn(data.message);
                     alert(data.message);
+
                     window.location.href = `https://${window.location.host}/`;
                     throw new Error(data.message);
                 }
+                (document.getElementById('button-text') as Element).innerHTML = `$${data.amount}`;
+                return data.client_secret;
+            });
+    }
+
+    async updateSubscription(product: IProduct) {
+        console.log('Update subscription...');
+        return fetch(`${BASE_URL}/aion/payments/subscription`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${this.checkUserToken()}`,
+            },
+            body: JSON.stringify({
+                product_id: this.is_test_mode ? product.test_id : product.id,
+            }),
+        })
+            .then((result) => {
+                return result.json();
+            })
+            .then((data) => {
+                console.log(data);
+                if (data.credit) {
+                    // hide checkout form.
+                    document.querySelector('#payment-form')?.classList.add('hide');
+                    showSuccessDowngradePlanNotification(data.credit, product.name);
+                    return;
+                }
+
+                (document.getElementById('button-text') as Element).innerHTML = `$${data.amount}`;
                 return data.client_secret;
             });
     }

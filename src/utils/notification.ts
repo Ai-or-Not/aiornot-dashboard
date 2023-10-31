@@ -16,6 +16,9 @@ const toastCss = `
   top: 30px;
   padding: 10px;
   z-index: 9999
+  border-style: solid;
+  border-width: 1px;
+  border-color: #aefc06;
 }
 
 #toast .close-button {
@@ -23,12 +26,22 @@ const toastCss = `
   position: absolute;
   top: 5px;
   right: 10px;
+    
 }
 
 #toast.show {
   visibility: visible; /* Show the snackbar */
   -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
-  animation: fadein 0.5s, fadeout 0.5s 2.5s;
+  animation: fadein 0.5s, 2.5s;
+  
+  border-style: solid;
+  border-right: none;
+  border-left: none;
+  border-top: none;
+  border-width: 1px;
+  border-color: #aefc06;
+  z-index: 9999
+    
 }
 
 @-webkit-keyframes fadein {
@@ -66,6 +79,7 @@ function showToastNotification(text: string) {
 
     closeBtn.addEventListener('click', () => {
         toast.classList.add('hide');
+        window.location.href = `https://${window.location.host}/dashboard/settings`;
     });
 
     toast.innerHTML = text;
@@ -84,4 +98,13 @@ export const showSuccessPaymentNotification = (plan: 'Pro' | 'Base') => {
     );
 };
 
+export const showSuccessDowngradePlanNotification = (credit: any, plan: string) => {
+    showToastNotification(
+        `<p style="font-size: 1.5rem; padding: 2rem;">We are pleased to inform you that you currently have a credit of $${credit} from a previous paid subscription after that we successfully update your plan to <span style="color: #aefc06; font-weight: bold ">${
+            plan.split(' ')[0]
+        }</span>! If you have any questions please contact us.</p>`
+    );
+};
+
 // showSuccessPaymentNotification('Pro');
+// showSuccessDowngradePlanNotification(10, 'Pro Plan');
