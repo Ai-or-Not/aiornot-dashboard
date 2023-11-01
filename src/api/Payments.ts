@@ -512,8 +512,13 @@ export class PaymentsClient {
                     return;
                 }
 
-                (document.getElementById('button-text') as Element).innerHTML = `$${data.amount}`;
+                (document.getElementById('button-text') as Element).innerHTML = `Pay $${data.amount}`;
                 return data.client_secret;
+            })
+            .catch((error) => {
+                console.error('Something wrong when update a subscription', error);
+                alert('Something wrong when update a subscription. Please try again or contact us.');
+                window.location.href = `https://${window.location.host}/#plans`;
             });
     }
 
