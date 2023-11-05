@@ -128,8 +128,8 @@ export class DashboardService {
         const promises = [DashboardService.fetchSubscriptionData(), paymentClient.getSubscriptionInfo()];
         const [data, subscription] = await Promise.all(promises);
 
-        console.log(data);
-        console.log(subscription);
+        // console.log(data);
+        // console.log(subscription);
 
         if (!data?.plan) {
             // Free plan

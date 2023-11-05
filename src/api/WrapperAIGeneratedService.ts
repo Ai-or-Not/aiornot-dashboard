@@ -52,7 +52,6 @@ export class WrapperAIGeneratedService {
     }
 
     static async getPdetReportByBinary(file: File): Promise<any> {
-        console.log('getPdetReportByBinary');
         return await AIGeneratedService.getPdetReportByBinary(file);
     }
 
