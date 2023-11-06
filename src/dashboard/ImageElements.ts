@@ -1,5 +1,6 @@
 import { uiShowUserUsage } from '$utils/common';
 import { initFingerPrint, visitorId } from '$utils/fingerprint';
+import { showBadImageQualityNotification } from '$utils/notification';
 
 import { AuthService, BASE_URL_RESULTS, RequestCounter, WrapperAIGeneratedService } from '../api';
 
@@ -277,6 +278,10 @@ export const init = () => {
                     imageEl_currentImage.src = pastedUrl;
                     findHighestConfidence(response.verdict);
                     loadingFinish(response.nsfw_detected);
+
+                    if (response.good_quality === false) {
+                        showBadImageQualityNotification();
+                    }
                 })
                 .catch((error) => {
                     if (uiEl_resultCol.classList.contains('hide')) {
@@ -364,6 +369,10 @@ export const init = () => {
                 initial_dropZone();
                 findHighestConfidence(response.verdict);
                 loadingFinish(response.nsfw_detected);
+
+                if (response.good_quality === false) {
+                    showBadImageQualityNotification();
+                }
             })
 
             .catch((error) => {

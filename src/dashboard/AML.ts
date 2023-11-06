@@ -1,5 +1,6 @@
 import { AuthService, WrapperAIGeneratedService } from '@/api';
 import { goSignIn, loadingEnd, loadingStart, uiShowUserUsage } from '$utils/common';
+import { showBadImageQualityNotification } from '$utils/notification';
 import { activeTab } from '$utils/tabs';
 
 export const personaDetectionInit = () => {
@@ -114,6 +115,9 @@ export const personaDetectionInit = () => {
         await WrapperAIGeneratedService.getPdetReportByUrl(pastedUrl)
             .then((response) => {
                 pdetLoadingFinish(response.nsfw_detected, response?.verdict ? 'AI' : 'Human', response.url);
+                if (response.good_quality === false) {
+                    showBadImageQualityNotification();
+                }
             })
             .catch((error) => {
                 loadingEnd();
@@ -134,6 +138,9 @@ export const personaDetectionInit = () => {
         await WrapperAIGeneratedService.getPdetReportByBinary(file)
             .then((response) => {
                 pdetLoadingFinish(response.nsfw_detected, response?.verdict ? 'AI' : 'Human', response.url);
+                if (response.good_quality === false) {
+                    showBadImageQualityNotification();
+                }
             })
             .catch((error) => {
                 loadingEnd();

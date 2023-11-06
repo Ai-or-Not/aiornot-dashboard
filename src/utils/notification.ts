@@ -70,7 +70,7 @@ document.head.appendChild(style);
 
 const toast = document.getElementById('toast') as Element;
 
-function showToastNotification(text: string) {
+function showToastNotification(text: string, msgType: 'info' | 'error' = 'info') {
     toast.classList.remove('hide');
 
     const closeBtn = document.createElement('span');
@@ -79,13 +79,15 @@ function showToastNotification(text: string) {
 
     closeBtn.addEventListener('click', () => {
         toast.classList.add('hide');
-        window.location.href = `https://${window.location.host}/dashboard/settings`;
+        if (msgType !== 'error') {
+            window.location.href = `https://${window.location.host}/dashboard/settings`;
+        }
     });
-
     toast.innerHTML = text;
     toast.appendChild(closeBtn);
 
     toast.classList.add('show');
+    (toast as any).style.borderColor = msgType === 'error' ? 'red' : '#aefc06';
     // setTimeout(function () {
     //     toast.classList.add('hide');
     // }, 5000);
@@ -108,3 +110,12 @@ export const showSuccessDowngradePlanNotification = (credit: any, plan: string) 
 
 // showSuccessPaymentNotification('Pro');
 // showSuccessDowngradePlanNotification(10, 'Pro Plan');
+
+export const showBadImageQualityNotification = () => {
+    showToastNotification(
+        `<p style="font-size: 1.5rem; padding: 2rem; color: red">The current image quality is insufficient, thus the results may be inaccurate.</p>`,
+        'error'
+    );
+};
+
+// showBadImageQualityNotification();

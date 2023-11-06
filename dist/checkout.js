@@ -62,7 +62,7 @@
 @keyframes fadeout {
   from {top: 30px; opacity: 1;}
   to {top: 0; opacity: 0;}
-`,g=document.createElement("style");g.innerHTML=$;document.head.appendChild(g);var l=document.getElementById("toast");function L(r){l.classList.remove("hide");let e=document.createElement("span");e.innerHTML="x",e.className="close-button",e.addEventListener("click",()=>{l.classList.add("hide"),window.location.href=`https://${window.location.host}/dashboard/settings`}),l.innerHTML=r,l.appendChild(e),l.classList.add("show")}var w=(r,e)=>{L(`<p style="font-size: 1.5rem; padding: 2rem;">We are pleased to inform you that you currently have a credit of $${r} from a previous paid subscription after that we successfully update your plan to <span style="color: #aefc06; font-weight: bold ">${e.split(" ")[0]}</span>! If you have any questions please contact us.</p>`)};var b=`
+`,g=document.createElement("style");g.innerHTML=$;document.head.appendChild(g);var l=document.getElementById("toast");function L(r,e="info"){l.classList.remove("hide");let t=document.createElement("span");t.innerHTML="x",t.className="close-button",t.addEventListener("click",()=>{l.classList.add("hide"),e!=="error"&&(window.location.href=`https://${window.location.host}/dashboard/settings`)}),l.innerHTML=r,l.appendChild(t),l.classList.add("show"),l.style.borderColor=e==="error"?"red":"#aefc06"}var w=(r,e)=>{L(`<p style="font-size: 1.5rem; padding: 2rem;">We are pleased to inform you that you currently have a credit of $${r} from a previous paid subscription after that we successfully update your plan to <span style="color: #aefc06; font-weight: bold ">${e.split(" ")[0]}</span>! If you have any questions please contact us.</p>`)};var b=`
 
 @keyframes blink {
 0% { opacity: 1; }
