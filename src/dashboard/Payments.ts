@@ -43,7 +43,7 @@ export const plansInit = () => {
             window.location.href = `https://${window.location.host}/signup`;
             return;
         }
-        paymentClient.checkout(paymentClient.PRODUCT_ID_BASE_PLAN);
+        paymentClient.checkout(paymentClient.PRODUCT_ID_BASE_9USD_PLAN);
     });
 
     buttonPayProPlan?.addEventListener('click', () => {
