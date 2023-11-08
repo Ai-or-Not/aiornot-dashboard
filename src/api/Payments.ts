@@ -206,6 +206,15 @@ export class PaymentsClient {
     private stripe: any = null;
     private home_element = document.querySelector('#home') as Element;
 
+    public PRODUCT_ID_BASE_9USD_PLAN = {
+        id: 'price_1OABgwBa9yG4sk8kc2owagiH',
+        msg: 'Base plan: $9/month',
+        name: 'Base plan',
+        description: '300 requests per month',
+        price: '$9',
+        test_id: 'price_1OABdXBa9yG4sk8kcXyILlLm',
+    } as IProduct;
+
     public PRODUCT_ID_BASE_PLAN = {
         id: 'price_1O2Ba4Ba9yG4sk8k4y3ZnEVT',
         msg: 'Base plan: $30/month',
