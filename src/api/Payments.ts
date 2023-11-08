@@ -252,6 +252,10 @@ export class PaymentsClient {
         if (product_id === this.PRODUCT_ID_PRO_PLAN.id) {
             return this.PRODUCT_ID_PRO_PLAN;
         }
+        if (product_id === this.PRODUCT_ID_BASE_9USD_PLAN.id) {
+            return this.PRODUCT_ID_BASE_9USD_PLAN;
+        }
+
         return this.PRODUCT_ID_BASE_PLAN;
     }
 
