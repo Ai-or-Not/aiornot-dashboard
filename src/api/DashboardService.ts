@@ -141,12 +141,12 @@ export class DashboardService {
             planInfo.classList.remove('hide');
             usageInfo.classList.remove('hide');
         }
-        if (data?.plan.requests_limits.quantity === 1000) {
+        if (data?.plan.requests_limits.quantity <= 1000) {
+            const limit = data?.plan.requests_limits.quantity;
             // Base plan
-            planInfo.innerHTML =
-                'You\'re on the <span class="text-color-green">Base</span> plan. You have limits of 1000 requests for both web & API.';
+            planInfo.innerHTML = `You\'re on the <span class="text-color-green">Base</span> plan. You have limits of ${limit} requests for both web & API.`;
 
-            usageInfo.innerHTML = `You have used ${data?.requests?.total || 0} of 1000 checks via both web API.`;
+            usageInfo.innerHTML = `You have used ${data?.requests?.total || 0} of ${limit} checks via both web API.`;
 
             if (subscription?.subscription.meta?.was_canceled) {
                 btnCancel.classList.add('hide');
