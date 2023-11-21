@@ -223,6 +223,7 @@ export class PaymentsClient {
         price: '$30',
         test_id: 'price_1O1wSsBa9yG4sk8kej8shNYs',
     } as IProduct;
+
     public PRODUCT_ID_PRO_PLAN = {
         id: 'price_1O2Ku4Ba9yG4sk8kIQBdzpPj',
         msg: 'Pro plan: $250/month',
@@ -230,7 +231,6 @@ export class PaymentsClient {
         description: '10,000 requests per month',
         price: '$250',
         test_id: 'price_1O7HCzBa9yG4sk8kYEld9lNl',
-        // test_id: 'price_1O4iyjBa9yG4sk8k1wRbFjxk',
     } as IProduct;
 
     private is_test_mode = false;

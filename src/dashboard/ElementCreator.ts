@@ -93,12 +93,12 @@ export class ElementCreator {
 
             apiKeyCard.style.display = 'flex';
 
-            const apiCopyButton = document.getElementById('api-copy');
-            if (!apiCopyButton) return;
-
-            apiCopyButton.onclick = () => {
-                copyToClipboard(data.key);
-            };
+            // const apiCopyButton = document.getElementById('api-copy');
+            // if (!apiCopyButton) return;
+            //
+            // apiCopyButton.onclick = () => {
+            //     copyToClipboard(data.key);
+            // };
         }
     }
 
