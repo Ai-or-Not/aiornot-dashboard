@@ -33,6 +33,12 @@ export const initAudio = () => {
     const dropZoneRequestCounter = document.querySelector('#ai-or-not-dropzone-counter') as Element;
     const dropZoneRequestCounterContainer = document.querySelector('#ai-or-not-dropzone-counter-w') as Element;
 
+    const btnAudTab = document.getElementById('audio-tab') as Element; // Person detection tab button
+
+    btnAudTab.addEventListener('click', () => {
+        screen_homeShow();
+    });
+
     let fileSizeAllow: any;
     let currentResultId: any;
 
@@ -293,7 +299,7 @@ export const initAudio = () => {
             fileSizeAllow = true;
             fileSizeMessage_ok();
         }
-        if (fileSizeAllow == true) {
+        if (fileSizeAllow === true) {
             // Upload Audio Binary
             await uploadBinaryFileAudio(file);
         } else {
@@ -302,7 +308,7 @@ export const initAudio = () => {
     });
 
     fileInput?.addEventListener('change', async (event: any) => {
-        if (fileSizeAllow == true) {
+        if (fileSizeAllow === true) {
             const file = fileInput.files[0];
             await uploadBinaryFileAudio(file);
         } else {
@@ -375,7 +381,7 @@ export const initAudio = () => {
     });
 
     checkYoutubeLinkButton?.addEventListener('click', () => {
-        if (youtubeLinkInput.value != '') {
+        if (youtubeLinkInput.value !== '') {
             // console.log('youtubeLinkInput.value');
             submitYoutubeLink(youtubeLinkInput.value);
         }
@@ -383,7 +389,7 @@ export const initAudio = () => {
 
     youtubeLinkInput?.addEventListener('keypress', (e: any) => {
         if (e.key === 'Enter') {
-            if (youtubeLinkInput.value != '') {
+            if (youtubeLinkInput.value !== '') {
                 submitYoutubeLink(youtubeLinkInput.value);
             }
         }
@@ -447,7 +453,7 @@ export const initAudio = () => {
     });
 
     reportInput?.addEventListener('change', () => {
-        if (reportInput.value != '') {
+        if (reportInput.value !== '') {
             reportButton_submit.classList.remove('is-disabled');
         } else {
             reportButton_submit.classList.add('is-disabled');
@@ -455,7 +461,7 @@ export const initAudio = () => {
     });
 
     reportInput?.addEventListener('input', () => {
-        if (reportInput.value != '') {
+        if (reportInput.value !== '') {
             reportButton_submit.classList.remove('is-disabled');
         } else {
             reportButton_submit.classList.add('is-disabled');

@@ -36,8 +36,6 @@ export const init = () => {
     const btnImgTab = document.getElementById('image-tab') as Element; // Person detection tab button
 
     btnImgTab.addEventListener('click', () => {
-        // Set init tab state.
-        console.log('start loading...');
         screen_homeShow();
     });
 
