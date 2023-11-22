@@ -11,7 +11,7 @@ async function initUsagePage() {
     const apiCopyButton = document.getElementById('api-copy') as any;
 
     apiCopyButton.classList.add('hide');
-    changeView();
+    await changeView();
 
     refreshApiTokenButton.onclick = async () => {
         const { token } = await DashboardService.refreshApiToken();
@@ -20,37 +20,33 @@ async function initUsagePage() {
 
     getApiTokenButton.onclick = async () => {
         const { token } = await DashboardService.fetchApiToken();
-        await changeView();
-        copyToClipboardWrap(token);
+        await changeView(token);
     };
 
-    async function changeView() {
+    async function changeView(token: string | null = null) {
         const usage: any = await DashboardService.fetchUsageApi();
 
         if (usage.access) {
-            // console.log('usage', usage);
             dashAPIEmptyBlock.style.display = 'none';
             dashAPIContentBlock.style.display = 'block';
-            //	refreshApiTokenButton.style.display = 'flex'
-            //	getApiTokenButton.style.display = 'none'
             ElementCreator.fillApiKeyCard(usage);
         } else {
-            // console.log('usage else', usage);
             dashAPIEmptyBlock.style.display = 'flex';
             dashAPIContentBlock.style.display = 'none';
-            //	refreshApiTokenButton.style.display = 'none'
-            //	getApiTokenButton.style.display = 'flex'
         }
+
+        copyToClipboardWrap(token);
     }
 
-    function copyToClipboardWrap(token: string) {
-        console.log('copyToClipboard', token);
-        if (token) apiCopyButton.classList.remove('hide');
-        if (!apiCopyButton) return;
-        apiCopyButton.onclick = () => {
-            copyToClipboard(token);
-            apiCopyButton.classList.add('hide');
-        };
+    function copyToClipboardWrap(token: string | null = null) {
+        if (token) {
+            apiCopyButton.classList.remove('hide');
+            if (!apiCopyButton) return;
+            apiCopyButton.onclick = () => {
+                copyToClipboard(token);
+                apiCopyButton.classList.add('hide');
+            };
+        }
     }
 }
 
