@@ -134,9 +134,9 @@ export class DashboardService {
         if (!data?.plan) {
             // Free plan
             planInfo.innerHTML = `You\'re on the <span class="text-color-green">Free</span> plan. You have limits of 20 & 100 checks per month via web & API, respectively. If you need more, check out our <a class="text-color-green" href='https://${window.location.host}/#plans' >plans</a>.`;
-            usageInfo.innerHTML = `You have used ${
-                (data?.requests?.total || 0) - (data?.api?.usage?.daily || 0)
-            } of 20 checks via web and ${data?.api?.usage?.daily || 0} of 100 checks via API.`;
+            usageInfo.innerHTML = `You have used ${data?.requests?.total || 0} of 20 checks via web and ${
+                data?.api?.usage?.daily || 0
+            } of 100 checks via API.`;
 
             planInfo.classList.remove('hide');
             usageInfo.classList.remove('hide');
@@ -146,7 +146,9 @@ export class DashboardService {
             // Base plan
             planInfo.innerHTML = `You\'re on the <span class="text-color-green">Base</span> plan. You have limits of ${limit} requests for both web & API.`;
 
-            usageInfo.innerHTML = `You have used ${data?.requests?.total || 0} of ${limit} checks via both web API.`;
+            usageInfo.innerHTML = `You have used ${
+                (data?.requests?.total || 0) + (data?.api?.usage?.daily || 0)
+            } of ${limit} checks via both web API.`;
 
             if (subscription?.subscription.meta?.was_canceled) {
                 btnCancel.classList.add('hide');
