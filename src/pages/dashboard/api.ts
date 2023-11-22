@@ -39,6 +39,7 @@ async function initUsagePage() {
     }
 
     function copyToClipboardWrap(token: string | null = null) {
+        console.log('token', token);
         if (token) {
             apiCopyButton.classList.remove('hide');
             if (!apiCopyButton) return;
