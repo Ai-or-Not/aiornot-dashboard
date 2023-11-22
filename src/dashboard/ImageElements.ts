@@ -33,6 +33,13 @@ export const init = () => {
     // const testImages = document.querySelectorAll('.test-image');
     const testImages = document.querySelectorAll('#image-test-image');
 
+    const btnImgTab = document.getElementById('image-tab') as Element; // Person detection tab button
+
+    btnImgTab.addEventListener('click', () => {
+        // Set init tab state.
+        screen_homeShow();
+    });
+
     const notionLink = document.querySelector('#w-node-_80502d56-29f7-2965-16f1-d6c6c4ebbd86-c4ebbd86') as Element;
     notionLink.classList.add('hide');
     buttonEl_sharedButtons.classList.add('hide');
@@ -325,7 +332,7 @@ export const init = () => {
             fileSizeAllow = true;
             fileSizeMessage_ok();
         }
-        if (fileSizeAllow == true) {
+        if (fileSizeAllow === true) {
             await uploadBinaryFile(file);
         } else {
             fileSizeMessage_error();
@@ -333,7 +340,7 @@ export const init = () => {
     });
 
     inputEl_fileInput?.addEventListener('change', async (event: any) => {
-        if (fileSizeAllow == true) {
+        if (fileSizeAllow === true) {
             const fileInput = inputEl_fileInput as any;
             console.log(fileInput);
             const file = fileInput.files[0];
@@ -408,7 +415,7 @@ export const init = () => {
     });
 
     buttonEl_urlCheck?.addEventListener('click', () => {
-        if (inputEl_urlWaiter.value != '') {
+        if (inputEl_urlWaiter.value !== '') {
             pastedUrl = inputEl_urlWaiter.value;
             postToApi_url();
         }
@@ -418,7 +425,7 @@ export const init = () => {
 
     element?.addEventListener('keypress', function (e: any) {
         if (e.key === 'Enter') {
-            if (inputEl_urlWaiter.value != '') {
+            if (inputEl_urlWaiter.value !== '') {
                 pastedUrl = inputEl_urlWaiter.value;
                 postToApi_url();
             }
@@ -439,9 +446,8 @@ export const init = () => {
         WrapperAIGeneratedService.sendFeedback(currentResultId, true, '');
     });
 
-    reportButton_false?.addEventListener('click', () => {});
-
-    reportButton_close?.addEventListener('click', () => {});
+    reportButton_false?.classList.add('hide');
+    reportButton_close?.classList.add('hide');
 
     reportButton_submit?.addEventListener('click', () => {
         WrapperAIGeneratedService.sendFeedback(currentResultId, false, reportInput.value);
@@ -457,7 +463,7 @@ export const init = () => {
     });
 
     reportInput?.addEventListener('change', () => {
-        if (reportInput.value != '') {
+        if (reportInput.value !== '') {
             reportButton_submit.classList.remove('is-disabled');
         } else {
             reportButton_submit.classList.add('is-disabled');
@@ -465,7 +471,7 @@ export const init = () => {
     });
 
     reportInput?.addEventListener('input', () => {
-        if (reportInput.value != '') {
+        if (reportInput.value !== '') {
             reportButton_submit.classList.remove('is-disabled');
         } else {
             reportButton_submit.classList.add('is-disabled');
