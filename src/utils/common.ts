@@ -33,14 +33,7 @@ export const fetchUserUsage = (): void => {
         DashboardService.fetchSubscriptionData().then((user_plan) => {
             if (user_plan) {
                 const { quantity } = user_plan.plan?.requests_limits || { quantity: 20 };
-                let { total } = user_plan.requests;
-                if (!user_plan.plan) {
-                    try {
-                        total -= user_plan.api.usage?.daily || 0;
-                    } catch (error) {
-                        console.log(error);
-                    }
-                }
+                const { total } = user_plan.requests;
                 const usage = {
                     total: total,
                     quantity: quantity,
