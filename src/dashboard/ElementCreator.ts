@@ -61,7 +61,8 @@ export class ElementCreator {
         });
     }
 
-    static fillApiKeyCard(data: Data): void {
+    static fillApiKeyCard(data: Data, func: Function, token: string): void {
+        func(token);
         const formattedDate = (dateStr: string): string => {
             const date = new Date(dateStr);
             const options: any = {

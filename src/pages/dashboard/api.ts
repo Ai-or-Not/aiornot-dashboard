@@ -11,7 +11,6 @@ async function initUsagePage() {
     const apiCopyButton = document.getElementById('api-copy') as any;
 
     apiCopyButton.classList.add('hide');
-    await changeView();
 
     refreshApiTokenButton.onclick = async () => {
         const { token } = await DashboardService.refreshApiToken();
@@ -29,17 +28,14 @@ async function initUsagePage() {
         if (usage.access) {
             dashAPIEmptyBlock.style.display = 'none';
             dashAPIContentBlock.style.display = 'block';
-            ElementCreator.fillApiKeyCard(usage);
+            ElementCreator.fillApiKeyCard(usage, copyToClipboardWrap, token);
         } else {
             dashAPIEmptyBlock.style.display = 'flex';
             dashAPIContentBlock.style.display = 'none';
         }
-
-        copyToClipboardWrap(token);
     }
 
     function copyToClipboardWrap(token: string | null = null) {
-        console.log('token', token);
         if (token) {
             apiCopyButton.classList.remove('hide');
             if (!apiCopyButton) return;
@@ -49,6 +45,8 @@ async function initUsagePage() {
             };
         }
     }
+
+    await changeView();
 }
 
 (document.getElementById('sign-out') as any).onclick = () => {
