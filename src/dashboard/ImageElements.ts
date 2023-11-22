@@ -37,7 +37,7 @@ export const init = () => {
 
     btnImgTab.addEventListener('click', () => {
         // Set init tab state.
-        screen_homeShow();
+        loadingStart();
     });
 
     const notionLink = document.querySelector('#w-node-_80502d56-29f7-2965-16f1-d6c6c4ebbd86-c4ebbd86') as Element;
