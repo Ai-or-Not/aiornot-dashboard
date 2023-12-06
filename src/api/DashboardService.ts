@@ -140,15 +140,22 @@ export class DashboardService {
 
             planInfo.classList.remove('hide');
             usageInfo.classList.remove('hide');
-        }
-        if (data?.plan.requests_limits.quantity <= 1000) {
-            const limit = data?.plan.requests_limits.quantity;
-            // Base plan
-            planInfo.innerHTML = `You\'re on the <span class="text-color-green">Base</span> plan. You have limits of ${limit} requests for both web & API.`;
+        } else {
+            let text = `You\'re on the <span class="text-color-green">${data?.plan.name}</span> plan.`;
+
+            let i = 0;
+            text = text + `<p>  You have quotas:</p>`;
+            data.plan.quotas.forEach((quota: any) => {
+                i += 1;
+                text =
+                    text +
+                    `<p style="margin-left: 1rem"> <span>${i}.</span> <span style="margin-left: 0.4rem"> ${quota.limit} requests to check ${quota.resource} for both web & API.</span></p>`;
+            });
+            planInfo.innerHTML = text;
 
             usageInfo.innerHTML = `You have used ${
                 (data?.requests?.total || 0) + (data?.api?.usage?.daily || 0)
-            } of ${limit} checks via both web API.`;
+            } checks via both web API.`;
 
             if (subscription?.subscription.meta?.was_canceled) {
                 btnCancel.classList.add('hide');
@@ -164,44 +171,10 @@ export class DashboardService {
             planInfo.classList.remove('hide');
             usageInfo.classList.remove('hide');
         }
-        if (data?.plan.requests_limits.quantity === 10000) {
-            // Pro plan
-            planInfo.innerHTML =
-                'You\'re on the <span class="text-color-green">PRO</span> plan. You have limits of 10000 requests for both web & API.';
-            usageInfo.innerHTML = `You have used ${
-                (data?.requests?.total || 0) + (data?.api?.usage?.daily || 0)
-            } of 10000 checks via both web & API.`;
-
-            if (subscription?.subscription?.meta?.was_canceled) {
-                btnCancel.classList.add('hide');
-                usageInfo.innerHTML =
-                    usageInfo.innerHTML +
-                    ` Your subscription has been canceled, expires on ${new Date(
-                        subscription?.subscription.expiration_dt
-                    ).toLocaleDateString()}.`;
-            } else {
-                btnCancel.classList.remove('hide');
-            }
-
-            planInfo.classList.remove('hide');
-            usageInfo.classList.remove('hide');
-        }
-        if (data?.plan.requests_limits.quantity > 10000) {
-            // Pro plan
-            planInfo.innerHTML = `You\'re on the <span class="text-color-green">Custom</span> plan. You have limits of ${data?.plan.requests_limits.quantity} requests for both web & API.`;
-            usageInfo.innerHTML = `You have used ${
-                (data?.requests?.total || 0) + (data?.api?.usage?.daily || 0)
-            } of 10000 checks via both web & API.`;
-            btnCancel.innerHTML = 'Contact US  to update your plan.';
-
-            btnCancel.classList.remove('hide');
-            planInfo.classList.remove('hide');
-            usageInfo.classList.remove('hide');
-        }
 
         btnCancel.addEventListener('click', async () => {
             // For Custom plan change to contact us form
-            if (data?.plan.requests_limits.quantity > 10000) {
+            if (data?.plan.name !== 'Base' && data?.plan.name !== 'Pro') {
                 window.location.href = `https://${window.location.host}/contact-us`;
             } else {
                 if (confirm('Are you sure you want to cancel your subscription?')) {
