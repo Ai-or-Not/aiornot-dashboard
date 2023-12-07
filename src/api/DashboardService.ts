@@ -144,9 +144,11 @@ export class DashboardService {
             let text = `You\'re on the <span class="text-color-green">${data?.plan.name}</span> plan.`;
 
             let i = 0;
+            let img_limit = 0;
             text = text + `<p>  You have quotas:</p>`;
             data.plan.quotas.forEach((quota: any) => {
                 i += 1;
+                if (quota.resource === 'image') img_limit = quota.limit;
                 text =
                     text +
                     `<p style="margin-left: 1rem"> <span>${i}.</span> <span style="margin-left: 0.4rem"> ${quota.limit} requests to check ${quota.resource} for both web & API.</span></p>`;
@@ -155,7 +157,7 @@ export class DashboardService {
 
             usageInfo.innerHTML = `You have used ${
                 (data?.requests?.total || 0) + (data?.api?.usage?.daily || 0)
-            } checks via both web API.`;
+            } checks from ${img_limit} via both web & API.`;
 
             if (subscription?.subscription.meta?.was_canceled) {
                 btnCancel.classList.add('hide');
