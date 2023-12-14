@@ -4,6 +4,7 @@
 const env = window.location.host.includes('webflow') ? 'stage' : 'prod';
 export const BASE_URL = `https://${env}.ai-or-not.com`;
 // export const BASE_URL = 'http://localhost:8000';
+// export const BASE_URL = 'http://localhost';
 
 export const BASE_URL_RESULTS = 'https://results.aiornot.com';
 

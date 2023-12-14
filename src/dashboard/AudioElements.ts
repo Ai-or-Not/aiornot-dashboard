@@ -511,5 +511,5 @@ export const initAudio = () => {
         signInModalElement.style.zIndex = 0;
     });
 
-    uiShowUserUsage(document.querySelector('#audio-quotas') as Element);
+    uiShowUserUsage(document.querySelector('#audio-quotas') as Element, 'audio');
 };

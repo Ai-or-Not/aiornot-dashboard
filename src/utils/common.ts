@@ -32,29 +32,46 @@ export const fetchUserUsage = (): void => {
     if (AuthService.isAuth()) {
         DashboardService.fetchSubscriptionData().then((user_plan) => {
             if (user_plan) {
-                const { quantity } = user_plan.plan?.requests_limits || { quantity: 20 };
-                const { total } = user_plan.requests;
-                const usage = {
-                    total: total,
-                    quantity: quantity,
-                };
+                // console.log('user_plan', user_plan);
+                // const { quantity } = user_plan.plan?.requests_limits || { quantity: 20 };
+                // const { total } = user_plan.requests;
+                //
+                // const usage = {
+                //     total: total,
+                //     quantity: quantity,
+                // };
                 // save to local storage
-                localStorage.setItem('usage', JSON.stringify(usage));
+                localStorage.setItem('user_plan', JSON.stringify(user_plan));
             }
         });
     }
 };
 
-export const uiShowUserUsage = (usage_element: Element): void => {
+export const uiShowUserUsage = (usage_element: Element, resource: 'image' | 'audio' = 'image'): void => {
     if (AuthService.isAuth()) {
         // Gte usage from local storage
-        const { total, quantity } = JSON.parse(localStorage.getItem('usage')) || {};
+        const plan = JSON.parse(localStorage.getItem('user_plan')) || {};
+        if (plan) {
+            let limit;
+            let q_interface;
+            plan.plan?.quotas.forEach((quota) => {
+                if (quota.resource === resource && quota.interface.includes('web')) {
+                    limit = quota.limit;
+                    q_interface = quota.interface;
+                }
+            });
+            let usage = 0;
+            if (q_interface.length > 0) {
+                q_interface.forEach((interface_name) => {
+                    // console.log('interface_name', interface_name, plan.usage[interface_name][resource], usage);
+                    usage = usage + plan.usage[interface_name][resource];
+                });
+            }
 
-        if (total && quantity) {
             usage_element.innerHTML = `
             <div style="margin-top: 20px; font-size: 1rem; color: white">
             <span">
-                Available ${quantity - total} from ${quantity} requests
+                Available ${usage} from ${limit} web checks
             </span>
             </div>`;
         }

@@ -131,12 +131,20 @@ export class DashboardService {
         // console.log(data);
         // console.log(subscription);
 
-        if (!data?.plan) {
+        if (data?.plan.name === 'Free') {
             // Free plan
-            planInfo.innerHTML = `You\'re on the <span class="text-color-green">Free</span> plan. You have limits of 20 & 100 checks per month via web & API, respectively. If you need more, check out our <a class="text-color-green" href='https://${window.location.host}/#plans' >plans</a>.`;
-            usageInfo.innerHTML = `You have used ${data?.requests?.total || 0} of 20 checks via web and ${
-                data?.api?.usage?.daily || 0
-            } of 100 checks via API.`;
+            planInfo.innerHTML = `<p>You\'re on the <span class="text-color-green">Free</span> plan. You have limits of 20 & 100 image and 5 audio checks per month via web & API, respectively.</p> 
+                                  <p>If you need more, check out our <a class="text-color-green" href='https://${window.location.host}/#plans' >plans</a>.</p>`;
+            usageInfo.innerHTML = `<p> You have used:</p> 
+                                    <p style="margin-left: 1rem"> ${
+                                        data?.usage?.web.image || 0
+                                    } of 20 checks of image via web;</p> 
+                                    <p style="margin-left: 1rem"> ${
+                                        data?.usage?.api.image || 0
+                                    } of 100 checks of image via API;</p> 
+                                    <p style="margin-left: 1rem"> ${
+                                        data?.usage?.web.audio + data?.usage?.api.audio
+                                    } of 5 checks of audio for both web & API;</p>`;
 
             planInfo.classList.remove('hide');
             usageInfo.classList.remove('hide');
@@ -145,19 +153,25 @@ export class DashboardService {
 
             let i = 0;
             let img_limit = 0;
+            let aud_limit = 0;
             text = text + `<p>  You have quotas:</p>`;
             data.plan.quotas.forEach((quota: any) => {
                 i += 1;
                 if (quota.resource === 'image') img_limit = quota.limit;
+                if (quota.resource === 'audio') aud_limit = quota.limit;
                 text =
                     text +
                     `<p style="margin-left: 1rem"> <span>${i}.</span> <span style="margin-left: 0.4rem"> ${quota.limit} requests to check ${quota.resource} for both web & API.</span></p>`;
             });
             planInfo.innerHTML = text;
 
-            usageInfo.innerHTML = `You have used ${
-                (data?.requests?.total || 0) + (data?.api?.usage?.daily || 0)
-            } checks from ${img_limit} via both web & API.`;
+            usageInfo.innerHTML = `<p> You have used:</p> 
+                                    <p style="margin-left: 1rem"> ${
+                                        data?.usage?.web.image + data?.usage?.api.image
+                                    } of ${img_limit} checks of image via both web & API;</p> 
+                                    <p style="margin-left: 1rem"> ${
+                                        data?.usage?.web.audio + data?.usage?.api.audio
+                                    } of ${aud_limit} checks of audio for both web & API;</p>`;
 
             if (subscription?.subscription.meta?.was_canceled) {
                 btnCancel.classList.add('hide');
