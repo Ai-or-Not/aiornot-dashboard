@@ -337,7 +337,7 @@ font-weight: 600;
         }`)}static async getYoutubeVerict(e){return l.isExpiredToken()?await q.getYoutubeVerdict(e):await L.getYoutubeVerdict(e)}static async getPdetReportByUrl(e){return await L.getPdetReportByUrl(e)}static async getPdetReportByBinary(e){return await L.getPdetReportByBinary(e)}static async sendFeedback(e,t,n,s=!1){return await q.sendFeedback(e,t,n,s)}};var O=(i,e="image")=>{var t;if(l.isAuth()){let n=JSON.parse(localStorage.getItem("user_plan"))||{};if(n){let s,o;(t=n.plan)==null||t.quotas.forEach(d=>{d.resource===e&&d.interface.includes("web")&&(s=d.limit,o=d.interface)});let a=0;o.length>0&&o.forEach(d=>{a=a+n.usage[d][e]}),i.innerHTML=`
             <div style="margin-top: 20px; font-size: 1rem; color: white">
             <span">
-                Available ${a} from ${s} web checks
+                Available ${s-a} from ${s} web checks
             </span>
             </div>`}}};var Wt=document.getElementById("image-tab"),Gt=document.getElementById("audio-tab"),Jt=document.getElementById("pdet-tab");var N=class{constructor(e,t,n,s){this.progressInterval=0;this.audio=e,this.playPauseBtn=t,this.progressSlider=n,this.track=s,this.dragging=!1,this.progressInterval=0,this.audio.volume=.3,this.playPauseBtn.addEventListener("click",o=>this.playPauseAudio(o)),this.progressSlider.addEventListener("mousedown",o=>this.mouseDown(o)),document.addEventListener("mousemove",o=>this.mouseMove(o)),document.addEventListener("mouseup",()=>this.mouseUp())}playPauseAudio(e){e.stopPropagation(),this.audio.paused?(this.audio.play(),this.playPauseBtn.innerHTML=`
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">

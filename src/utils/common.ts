@@ -71,7 +71,7 @@ export const uiShowUserUsage = (usage_element: Element, resource: 'image' | 'aud
             usage_element.innerHTML = `
             <div style="margin-top: 20px; font-size: 1rem; color: white">
             <span">
-                Available ${usage} from ${limit} web checks
+                Available ${limit - usage} from ${limit} web checks
             </span>
             </div>`;
         }
