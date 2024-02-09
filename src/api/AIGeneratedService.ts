@@ -51,7 +51,7 @@ export class AIGeneratedService {
             }
             if (error.status === 429) {
                 alert(
-                    `It looks like you have reached your plan limit of ${error.message.msg.current_limit} requests. To continue, please upgrade to a new plan.`
+                    `It looks like you have reached your plan limit of ${error.message.current_limit} requests. To continue, please upgrade to a new plan.`
                 );
                 window.location.href = `https://${window.location.host}/#plans`;
             }
