@@ -62,11 +62,9 @@ export class RestClient {
         } catch (error) {
             console.error('Request error', error);
             if (error.status === 429) {
-                if (error.message.msg.type === 'requests') {
-                    alert(
-                        `It looks like you have reached your plan limit of ${error.message.current_limit} requests. To continue, please upgrade to a new plan.`
-                    );
-                }
+                alert(
+                    `It looks like you have reached your plan limit of ${error.message.current_limit} requests. To continue, please upgrade to a new plan.`
+                );
             }
             throw error;
         }
@@ -90,11 +88,11 @@ export class RestClient {
         } catch (error) {
             console.error('Binary request error:', error);
             if (error.status === 429) {
-                if (error.message.msg.type === 'requests') {
-                    alert(
-                        `It looks like you have reached your plan limit of ${error.message.current_limit} requests. To continue, please upgrade to a new plan.`
-                    );
-                }
+                // if (error.message.msg.type === 'requests') {
+                alert(
+                    `It looks like you have reached your plan limit of ${error.message.current_limit} requests. To continue, please upgrade to a new plan.`
+                );
+                // }
             }
             throw error;
         }
