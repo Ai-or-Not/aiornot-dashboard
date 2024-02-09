@@ -64,7 +64,7 @@ export class RestClient {
             if (error.status === 429) {
                 if (error.message.msg.type === 'requests') {
                     alert(
-                        `It looks like you have reached your plan limit of ${error.message.msg.current_limit} requests. To continue, please upgrade to a new plan.`
+                        `It looks like you have reached your plan limit of ${error.message.current_limit} requests. To continue, please upgrade to a new plan.`
                     );
                 }
             }
@@ -92,7 +92,7 @@ export class RestClient {
             if (error.status === 429) {
                 if (error.message.msg.type === 'requests') {
                     alert(
-                        `It looks like you have reached your plan limit of ${error.message.msg.current_limit} requests. To continue, please upgrade to a new plan.`
+                        `It looks like you have reached your plan limit of ${error.message.current_limit} requests. To continue, please upgrade to a new plan.`
                     );
                 }
             }
