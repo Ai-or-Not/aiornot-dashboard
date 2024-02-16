@@ -38,8 +38,8 @@ export class AuthService {
         return false;
     }
 
-    static setAuth(): void {
-        localStorage.setItem(AuthService.key, 'true');
+    static setAuth(data: string): void {
+        localStorage.setItem(AuthService.key, data);
     }
 
     static removeAuth(): void {
@@ -47,13 +47,19 @@ export class AuthService {
     }
 
     static async init(): Promise<void> {
-        if (localStorage.getItem('_aion_in') === null) {
+        const data = localStorage.getItem('_ms-mem');
+        const id_ = localStorage.getItem(this.key);
+        const id = data !== null ? JSON.parse(data).id : null;
+
+        if (id !== id) {
+            AuthService.removeAuth();
+        }
+
+        if (id_ !== null) {
             try {
                 await DashboardService.signUp();
-                AuthService.setAuth();
+                AuthService.setAuth(id);
                 await DashboardService.login();
-
-                localStorage.setItem('_aion_in', 'true');
             } catch (e) {
                 console.log(e);
             }
