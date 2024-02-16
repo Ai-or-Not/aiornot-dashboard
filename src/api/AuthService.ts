@@ -55,7 +55,7 @@ export class AuthService {
             AuthService.removeAuth();
         }
 
-        if (id_ !== null) {
+        if (id_ === null) {
             try {
                 await DashboardService.signUp();
                 AuthService.setAuth(id);
