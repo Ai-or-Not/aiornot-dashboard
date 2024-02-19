@@ -207,30 +207,21 @@ export class PaymentsClient {
     private home_element = document.querySelector('#home') as Element;
 
     public PRODUCT_ID_BASE_9USD_PLAN = {
-        id: 'price_1OABgwBa9yG4sk8kc2owagiH',
+        id: 'base-plan',
         msg: 'Base plan: $9/month',
         name: 'Base plan',
         description: '300 requests per month',
         price: '$9',
-        test_id: 'price_1OABdXBa9yG4sk8kcXyILlLm',
-    } as IProduct;
-
-    public PRODUCT_ID_BASE_PLAN = {
-        id: 'price_1O2Ba4Ba9yG4sk8k4y3ZnEVT',
-        msg: 'Base plan: $30/month',
-        name: 'Base plan',
-        description: '1,000 requests per month',
-        price: '$30',
-        test_id: 'price_1O1wSsBa9yG4sk8kej8shNYs',
+        test_id: 'base-plan',
     } as IProduct;
 
     public PRODUCT_ID_PRO_PLAN = {
-        id: 'price_1O2Ku4Ba9yG4sk8kIQBdzpPj',
+        id: 'pro-plan',
         msg: 'Pro plan: $250/month',
         name: 'Pro plan',
         description: '10,000 requests per month',
         price: '$250',
-        test_id: 'price_1O7HCzBa9yG4sk8kYEld9lNl',
+        test_id: 'pro-plan',
     } as IProduct;
 
     private is_test_mode = false;
@@ -246,17 +237,12 @@ export class PaymentsClient {
     }
 
     getProduct(product_id: string): IProduct {
-        if (product_id === this.PRODUCT_ID_BASE_PLAN.id) {
-            return this.PRODUCT_ID_BASE_PLAN;
-        }
         if (product_id === this.PRODUCT_ID_PRO_PLAN.id) {
             return this.PRODUCT_ID_PRO_PLAN;
         }
         if (product_id === this.PRODUCT_ID_BASE_9USD_PLAN.id) {
             return this.PRODUCT_ID_BASE_9USD_PLAN;
         }
-
-        return this.PRODUCT_ID_BASE_PLAN;
     }
 
     checkout(product: IProduct) {

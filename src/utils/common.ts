@@ -50,14 +50,15 @@ export const fetchUserUsage = (): void => {
 export const uiShowUserUsage = (usage_element: Element, resource: 'image' | 'audio' = 'image'): void => {
     if (AuthService.isAuth()) {
         // Gte usage from local storage
-        const plan = JSON.parse(localStorage.getItem('user_plan')) || {};
+        const plan = JSON.parse(localStorage.getItem('user_plan')) || null;
+
         if (plan) {
             let limit;
             let q_interface;
             plan.plan?.quotas.forEach((quota) => {
-                if (quota.resource === resource && quota.interface.includes('web')) {
+                if (quota.resource === resource && quota.interfaces.includes('web')) {
                     limit = quota.limit;
-                    q_interface = quota.interface;
+                    q_interface = quota.interfaces;
                 }
             });
             let usage = 0;
