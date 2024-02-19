@@ -452,39 +452,57 @@ export class PaymentsClient {
     }
 
     async getClientSecret(product: IProduct) {
-        return fetch(`${BASE_URL}/aion/payments/create_intent`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${this.checkUserToken()}`,
-            },
-            body: JSON.stringify({
-                product_id: this.is_test_mode ? product.test_id : product.id,
-            }),
-        })
-            .then((result) => {
-                return result.json();
+        console.log('Get client secret...');
+        const subs = await this.getSubscriptionInfo();
+        console.log(subs);
+        console.log(product);
+        if (subs === null) {
+            console.log('Create a new subscription...');
+            return fetch(`${BASE_URL}/aion/payments/create_intent`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${this.checkUserToken()}`,
+                },
+                body: JSON.stringify({
+                    product_id: this.is_test_mode ? product.test_id : product.id,
+                }),
             })
-            .then((data) => {
-                console.log(data);
+                .then((result) => {
+                    return result.json();
+                })
+                .then((data) => {
+                    console.log(data);
 
-                if (data.code === 10) {
-                    const plane_id = this.is_test_mode ? product.test_id : product.id;
-                    console.log(plane_id, data.plan_id);
-                    if (data.plan_id && data.plan_id !== plane_id) {
-                        // Update subscription
-                        return this.updateSubscription(product);
+                    if (data.code === 10) {
+                        const plane_id = this.is_test_mode ? product.test_id : product.id;
+                        console.log(plane_id, data.plan_id);
+                        if (data.plan_id && data.plan_id !== plane_id) {
+                            // Update subscription
+                            return this.updateSubscription(product);
+                        }
+
+                        console.warn(data.message);
+                        alert(data.message);
+
+                        window.location.href = `https://${window.location.host}/`;
+                        throw new Error(data.message);
                     }
-
-                    console.warn(data.message);
-                    alert(data.message);
-
-                    window.location.href = `https://${window.location.host}/`;
-                    throw new Error(data.message);
-                }
-                (document.getElementById('button-text') as Element).innerHTML = `$${data.amount}`;
-                return data.client_secret;
-            });
+                    (document.getElementById('button-text') as Element).innerHTML = `$${data.amount}`;
+                    return data.client_secret;
+                });
+        }
+        if (subs.subscription.plan.name.toLowerCase() === product.name.toLowerCase()) {
+            console.log('You already have this subscription.');
+            alert('You already have this subscription.');
+            window.location.href = `https://${window.location.host}/#plans`;
+        } else {
+            console.log('Update subscription...');
+            if (confirm('You already have a subscription. Do you want to change it?')) {
+                return this.updateSubscription(product);
+            }
+            window.location.href = `https://${window.location.host}/#plans`;
+        }
     }
 
     async updateSubscription(product: IProduct) {
@@ -523,7 +541,13 @@ export class PaymentsClient {
 
     private initStripe() {
         console.log('Init stripe...');
-        return fetch(`${BASE_URL}/aion/payments/config`)
+        return fetch(`${BASE_URL}/aion/payments/config`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${this.checkUserToken()}`,
+            },
+        })
             .then((result) => {
                 return result.json();
             })
@@ -589,8 +613,8 @@ export class PaymentsClient {
     }
 
     async cancelSubscription() {
-        fetch(`${BASE_URL}/aion/payments/cancel_subscription`, {
-            method: 'POST',
+        fetch(`${BASE_URL}/aion/payments/subscription`, {
+            method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
                 Authorization: `Bearer ${this.checkUserToken()}`,
