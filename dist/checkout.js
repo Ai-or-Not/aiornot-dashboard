@@ -1,4 +1,119 @@
-"use strict";(()=>{var h="https://js.stripe.com/v3",x=/^https:\/\/js\.stripe\.com\/v3\/?(\?.*)?$/,u="loadStripe.setLoadParameters was called but an existing Stripe.js script already exists in the document; existing script parameters will be used",k=function(){for(var e=document.querySelectorAll('script[src^="'.concat(h,'"]')),t=0;t<e.length;t++){var o=e[t];if(x.test(o.src))return o}return null},v=function(e){var t=e&&!e.advancedFraudSignals?"?advancedFraudSignals=false":"",o=document.createElement("script");o.src="".concat(h).concat(t);var n=document.head||document.body;if(!n)throw new Error("Expected document.body not to be null. Stripe.js requires a <body> element.");return n.appendChild(o),o},S=function(e,t){!e||!e._registerWrapper||e._registerWrapper({name:"stripe-js",version:"2.1.7",startTime:t})},p=null,P=function(e){return p!==null||(p=new Promise(function(t,o){if(typeof window=="undefined"||typeof document=="undefined"){t(null);return}if(window.Stripe&&e&&console.warn(u),window.Stripe){t(window.Stripe);return}try{var n=k();n&&e?console.warn(u):n||(n=v(e)),n.addEventListener("load",function(){window.Stripe?t(window.Stripe):o(new Error("Stripe.js not available"))}),n.addEventListener("error",function(){o(new Error("Failed to load Stripe.js"))})}catch(i){o(i);return}})),p},T=function(e,t,o){if(e===null)return null;var n=e.apply(void 0,t);return S(n,o),n},f=Promise.resolve().then(function(){return P(null)}),y=!1;f.catch(function(r){y||console.warn(r)});var m=function(){for(var e=arguments.length,t=new Array(e),o=0;o<e;o++)t[o]=arguments[o];y=!0;var n=Date.now();return f.then(function(i){return T(i,t,n)})};var E=window.location.host.includes("webflow")?"stage":"prod",a=`https://${E}.ai-or-not.com`;var $=`
+"use strict";
+(() => {
+  // bin/live-reload.js
+  new EventSource(`${"http://localhost:3000"}/esbuild`).addEventListener("change", () => location.reload());
+
+  // node_modules/@stripe/stripe-js/dist/stripe.esm.js
+  var V3_URL = "https://js.stripe.com/v3";
+  var V3_URL_REGEX = /^https:\/\/js\.stripe\.com\/v3\/?(\?.*)?$/;
+  var EXISTING_SCRIPT_MESSAGE = "loadStripe.setLoadParameters was called but an existing Stripe.js script already exists in the document; existing script parameters will be used";
+  var findScript = function findScript2() {
+    var scripts = document.querySelectorAll('script[src^="'.concat(V3_URL, '"]'));
+    for (var i = 0; i < scripts.length; i++) {
+      var script = scripts[i];
+      if (!V3_URL_REGEX.test(script.src)) {
+        continue;
+      }
+      return script;
+    }
+    return null;
+  };
+  var injectScript = function injectScript2(params) {
+    var queryString = params && !params.advancedFraudSignals ? "?advancedFraudSignals=false" : "";
+    var script = document.createElement("script");
+    script.src = "".concat(V3_URL).concat(queryString);
+    var headOrBody = document.head || document.body;
+    if (!headOrBody) {
+      throw new Error("Expected document.body not to be null. Stripe.js requires a <body> element.");
+    }
+    headOrBody.appendChild(script);
+    return script;
+  };
+  var registerWrapper = function registerWrapper2(stripe, startTime) {
+    if (!stripe || !stripe._registerWrapper) {
+      return;
+    }
+    stripe._registerWrapper({
+      name: "stripe-js",
+      version: "2.1.7",
+      startTime
+    });
+  };
+  var stripePromise = null;
+  var loadScript = function loadScript2(params) {
+    if (stripePromise !== null) {
+      return stripePromise;
+    }
+    stripePromise = new Promise(function(resolve, reject) {
+      if (typeof window === "undefined" || typeof document === "undefined") {
+        resolve(null);
+        return;
+      }
+      if (window.Stripe && params) {
+        console.warn(EXISTING_SCRIPT_MESSAGE);
+      }
+      if (window.Stripe) {
+        resolve(window.Stripe);
+        return;
+      }
+      try {
+        var script = findScript();
+        if (script && params) {
+          console.warn(EXISTING_SCRIPT_MESSAGE);
+        } else if (!script) {
+          script = injectScript(params);
+        }
+        script.addEventListener("load", function() {
+          if (window.Stripe) {
+            resolve(window.Stripe);
+          } else {
+            reject(new Error("Stripe.js not available"));
+          }
+        });
+        script.addEventListener("error", function() {
+          reject(new Error("Failed to load Stripe.js"));
+        });
+      } catch (error) {
+        reject(error);
+        return;
+      }
+    });
+    return stripePromise;
+  };
+  var initStripe = function initStripe2(maybeStripe, args, startTime) {
+    if (maybeStripe === null) {
+      return null;
+    }
+    var stripe = maybeStripe.apply(void 0, args);
+    registerWrapper(stripe, startTime);
+    return stripe;
+  };
+  var stripePromise$1 = Promise.resolve().then(function() {
+    return loadScript(null);
+  });
+  var loadCalled = false;
+  stripePromise$1["catch"](function(err) {
+    if (!loadCalled) {
+      console.warn(err);
+    }
+  });
+  var loadStripe = function loadStripe2() {
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+    loadCalled = true;
+    var startTime = Date.now();
+    return stripePromise$1.then(function(maybeStripe) {
+      return initStripe(maybeStripe, args, startTime);
+    });
+  };
+
+  // src/api/RestClient.ts
+  var env = window.location.host.includes("webflow") ? "stage" : "prod";
+  var BASE_URL = `https://${env}.ai-or-not.com`;
+
+  // src/utils/notification.ts
+  var toastCss = `
 #toast {
   visibility: hidden; /* Hidden by default. Visible on click */
   display: flex;
@@ -62,7 +177,35 @@
 @keyframes fadeout {
   from {top: 30px; opacity: 1;}
   to {top: 0; opacity: 0;}
-`,g=document.createElement("style");g.innerHTML=$;document.head.appendChild(g);var l=document.getElementById("toast");function L(r,e="info"){l.classList.remove("hide");let t=document.createElement("span");t.innerHTML="x",t.className="close-button",t.addEventListener("click",()=>{l.classList.add("hide"),e!=="error"&&(window.location.href=`https://${window.location.host}/dashboard/settings`)}),l.innerHTML=r,l.appendChild(t),l.classList.add("show"),l.style.borderColor=e==="error"?"red":"#aefc06"}var w=(r,e)=>{L(`<p style="font-size: 1.5rem; padding: 2rem;">We are pleased to inform you that you currently have a credit of $${r} from a previous paid subscription after that we successfully update your plan to <span style="color: #aefc06; font-weight: bold ">${e.split(" ")[0]}</span>! If you have any questions please contact us.</p>`)};var b=`
+`;
+  var style = document.createElement("style");
+  style.innerHTML = toastCss;
+  document.head.appendChild(style);
+  var toast = document.getElementById("toast");
+  function showToastNotification(text, msgType = "info") {
+    toast.classList.remove("hide");
+    const closeBtn = document.createElement("span");
+    closeBtn.innerHTML = "x";
+    closeBtn.className = "close-button";
+    closeBtn.addEventListener("click", () => {
+      toast.classList.add("hide");
+      if (msgType !== "error") {
+        window.location.href = `https://${window.location.host}/dashboard/settings`;
+      }
+    });
+    toast.innerHTML = text;
+    toast.appendChild(closeBtn);
+    toast.classList.add("show");
+    toast.style.borderColor = msgType === "error" ? "red" : "#aefc06";
+  }
+  var showSuccessDowngradePlanNotification = (credit, plan) => {
+    showToastNotification(
+      `<p style="font-size: 1.5rem; padding: 2rem;">We are pleased to inform you that you currently have a credit of $${credit} from a previous paid subscription after that we successfully update your plan to <span style="color: #aefc06; font-weight: bold ">${plan.split(" ")[0]}</span>! If you have any questions please contact us.</p>`
+    );
+  };
+
+  // src/api/Payments.ts
+  var styles = `
 
 @keyframes blink {
 0% { opacity: 1; }
@@ -249,9 +392,61 @@ font-weight: 600;
 
 }
             
-            `,d=class{constructor(){this.elements=null;this.stripe=null;this.home_element=document.querySelector("#home");this.PRODUCT_ID_BASE_9USD_PLAN={id:"price_1OABgwBa9yG4sk8kc2owagiH",msg:"Base plan: $9/month",name:"Base plan",description:"300 requests per month",price:"$9",test_id:"price_1OABdXBa9yG4sk8kcXyILlLm"};this.PRODUCT_ID_BASE_PLAN={id:"price_1O2Ba4Ba9yG4sk8k4y3ZnEVT",msg:"Base plan: $30/month",name:"Base plan",description:"1,000 requests per month",price:"$30",test_id:"price_1O1wSsBa9yG4sk8kej8shNYs"};this.PRODUCT_ID_PRO_PLAN={id:"price_1O2Ku4Ba9yG4sk8kIQBdzpPj",msg:"Pro plan: $250/month",name:"Pro plan",description:"10,000 requests per month",price:"$250",test_id:"price_1O7HCzBa9yG4sk8kYEld9lNl"};this.is_test_mode=!1}showBlinkMessage(e,t){let o=document.createElement("style");o.innerHTML=b,document.head.appendChild(o),t.innerHTML=`
-        <div class="text-blink">${e}</div>
-        `}getProduct(e){return e===this.PRODUCT_ID_BASE_PLAN.id?this.PRODUCT_ID_BASE_PLAN:e===this.PRODUCT_ID_PRO_PLAN.id?this.PRODUCT_ID_PRO_PLAN:e===this.PRODUCT_ID_BASE_9USD_PLAN.id?this.PRODUCT_ID_BASE_9USD_PLAN:this.PRODUCT_ID_BASE_PLAN}checkout(e){window.location.href=`https://${window.location.host}/checkout?product_id=${e.id}`}createPaymentForm(e){this.home_element.innerHTML=`
+            `;
+  var PaymentsClient = class {
+    elements = null;
+    stripe = null;
+    home_element = document.querySelector("#home");
+    PRODUCT_ID_BASE_9USD_PLAN = {
+      id: "price_1OABgwBa9yG4sk8kc2owagiH",
+      msg: "Base plan: $9/month",
+      name: "Base plan",
+      description: "300 requests per month",
+      price: "$9",
+      test_id: "price_1OABdXBa9yG4sk8kcXyILlLm"
+    };
+    PRODUCT_ID_BASE_PLAN = {
+      id: "price_1O2Ba4Ba9yG4sk8k4y3ZnEVT",
+      msg: "Base plan: $30/month",
+      name: "Base plan",
+      description: "1,000 requests per month",
+      price: "$30",
+      test_id: "price_1O1wSsBa9yG4sk8kej8shNYs"
+    };
+    PRODUCT_ID_PRO_PLAN = {
+      id: "price_1O2Ku4Ba9yG4sk8kIQBdzpPj",
+      msg: "Pro plan: $250/month",
+      name: "Pro plan",
+      description: "10,000 requests per month",
+      price: "$250",
+      test_id: "price_1O7HCzBa9yG4sk8kYEld9lNl"
+    };
+    is_test_mode = false;
+    showBlinkMessage(text, element) {
+      const style2 = document.createElement("style");
+      style2.innerHTML = styles;
+      document.head.appendChild(style2);
+      element.innerHTML = `
+        <div class="text-blink">${text}</div>
+        `;
+    }
+    getProduct(product_id) {
+      if (product_id === this.PRODUCT_ID_BASE_PLAN.id) {
+        return this.PRODUCT_ID_BASE_PLAN;
+      }
+      if (product_id === this.PRODUCT_ID_PRO_PLAN.id) {
+        return this.PRODUCT_ID_PRO_PLAN;
+      }
+      if (product_id === this.PRODUCT_ID_BASE_9USD_PLAN.id) {
+        return this.PRODUCT_ID_BASE_9USD_PLAN;
+      }
+      return this.PRODUCT_ID_BASE_PLAN;
+    }
+    checkout(product) {
+      window.location.href = `https://${window.location.host}/checkout?product_id=${product.id}`;
+    }
+    createPaymentForm(text) {
+      this.home_element.innerHTML = `
 
         <div style="background: white; position: fixed; top: 0; left: 0; right: 0; bottom: 0; display: flex; flex-direction: column; justify-content: center; align-items: center">
            <div class="payment-container" style="overflow-y: auto">
@@ -260,7 +455,7 @@ font-weight: 600;
 
            <div class="sr-root" style="display: flex; flex-direction: row; align-items: center; justify-content: center; min-width: 380px;">
             <div class="sr-main">
-                <h3 style="color: black; font-size: 2.5rem; justify-content: center">${e}</h3>
+                <h3 style="color: black; font-size: 2.5rem; justify-content: center">${text}</h3>
                 <br>
                 <footer id="payment-form-static">
                 <label>Card number</label>
@@ -286,7 +481,26 @@ font-weight: 600;
         </div>
             <div id="progress-loader" class="loader" style="border: 16px solid #f3f3f3; border-top: 16px solid #adff00; border-bottom: 16px solid #adff00; border-radius: 50%;width: 120px;height: 120px;animation: spin 2s linear infinite;"></div>
         </div>
-    `,document.querySelector("#submit").addEventListener("click",()=>{this.completePayment(this.PRODUCT_ID_BASE_PLAN)})}createPaymentForm2(e){var i;let t=document.createElement("link");t.rel="stylesheet",t.href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css",t.type="text/css",document.head.appendChild(t);let o=document.createElement("link");o.rel="stylesheet",o.href="https://fonts.googleapis.com/css?family=Montserrat",document.head.appendChild(o);let n=document.createElement("style");n.innerHTML=b,document.head.appendChild(n),document.querySelector("#home-container").innerHTML=`
+    `;
+      const btn = document.querySelector("#submit");
+      btn.addEventListener("click", () => {
+        this.completePayment(this.PRODUCT_ID_BASE_PLAN);
+      });
+    }
+    createPaymentForm2(plan) {
+      const cssLink = document.createElement("link");
+      cssLink.rel = "stylesheet";
+      cssLink.href = "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css";
+      cssLink.type = "text/css";
+      document.head.appendChild(cssLink);
+      const fontLink = document.createElement("link");
+      fontLink.rel = "stylesheet";
+      fontLink.href = "https://fonts.googleapis.com/css?family=Montserrat";
+      document.head.appendChild(fontLink);
+      const style2 = document.createElement("style");
+      style2.innerHTML = styles;
+      document.head.appendChild(style2);
+      document.querySelector("#home-container").innerHTML = `
         <main class="page payment-page">
         <section class="payment-form dark">
           <div class="container">
@@ -299,10 +513,10 @@ font-weight: 600;
               <div class="products">
                 <h3 class="title">Checkout</h3>
                 <div class="item">
-                  <span class="price" id="total-price">${e.price}</span>
-                  <p class="item-name">${e.name}</p>
+                  <span class="price" id="total-price">${plan.price}</span>
+                  <p class="item-name">${plan.name}</p>
                   <p class="price-description">per month</p>
-                  <p class="item-description">${e.description}</p>
+                  <p class="item-description">${plan.description}</p>
                 </div>
               
               </div>
@@ -313,7 +527,7 @@ font-weight: 600;
               </div>
             <button type="button" id="submit" class="btn btn-block submit-btn", style="display: flex; flex-direction: row; align-items: center; justify-content: center">
                 
-                <span id="button-text">Pay ${e.price}</span>
+                <span id="button-text">Pay ${plan.price}</span>
 <!--                <span id="progress" class="loader"></span>-->
                 
             </button>
@@ -322,4 +536,271 @@ font-weight: 600;
           </div>
         </section>
       </main>
-        `,(i=document.querySelector("#submit"))==null||i.addEventListener("click",()=>{this.completePayment(e)})}async createPaymentIntent(e){fetch(`${a}/aion/payments/config`).then(t=>t.json()).then(t=>{m(t.stripe_public_key).then(o=>{this.stripe=o,this.is_test_mode=t.stripe_public_key.includes("test"),fetch(`${a}/aion/payments/create_intent`,{method:"POST",headers:{"Content-Type":"application/json",Authorization:`Bearer ${this.checkUserToken()}`},body:JSON.stringify({product_id:this.is_test_mode?e.test_id:e.id})}).then(n=>n.json()).then(n=>{var s;if(n.code===10)throw console.warn(n.message),alert(n.message),window.location.href=`https://${window.location.host}/`,new Error(n.message);this.elements=this.stripe.elements({clientSecret:n.client_secret});let i=this.elements.create("payment");(s=document.querySelector("#progress-loader"))==null||s.classList.add("hide"),document.querySelector("#submit").style.visibility="visible",i.mount("#payment-element")}).catch(n=>{console.error("Something wrong when create a payment intent",n),alert("Something wrong when create a payment. Please try again.")})})})}checkUserToken(){let e=localStorage.getItem("_ms-mid");if(!e)throw new Error("User token not found");return e}async initPaymentForm(e){console.log("Init payment form...");let t=await this.initStripe();if(this.stripe=t,!t)return;let o={theme:"flat",variables:{colorPrimary:"#30313d",colorText:"#30313d"},roles:{".TermsText":{hide:!0}}},n={},i="auto",s=await this.getClientSecret(e);if(!s)return;let c=t.elements({clientSecret:s,appearance:o,loader:i});this.elements=c;let I=c.create("payment",n).mount("#payment-element")}async getClientSecret(e){return fetch(`${a}/aion/payments/create_intent`,{method:"POST",headers:{"Content-Type":"application/json",Authorization:`Bearer ${this.checkUserToken()}`},body:JSON.stringify({product_id:this.is_test_mode?e.test_id:e.id})}).then(t=>t.json()).then(t=>{if(console.log(t),t.code===10){let o=this.is_test_mode?e.test_id:e.id;if(console.log(o,t.plan_id),t.plan_id&&t.plan_id!==o)return this.updateSubscription(e);throw console.warn(t.message),alert(t.message),window.location.href=`https://${window.location.host}/`,new Error(t.message)}return document.getElementById("button-text").innerHTML=`$${t.amount}`,t.client_secret})}async updateSubscription(e){return console.log("Update subscription..."),fetch(`${a}/aion/payments/subscription`,{method:"PUT",headers:{"Content-Type":"application/json",Authorization:`Bearer ${this.checkUserToken()}`},body:JSON.stringify({product_id:this.is_test_mode?e.test_id:e.id})}).then(t=>t.json()).then(t=>{var o;if(console.log(t),t.credit){(o=document.querySelector("#payment-form"))==null||o.classList.add("hide"),w(t.credit,e.name);return}return document.getElementById("button-text").innerHTML=`Pay $${t.amount}`,t.client_secret}).catch(t=>{console.error("Something wrong when update a subscription",t),alert("Something wrong when update a subscription. Please try again or contact us."),window.location.href=`https://${window.location.host}/#plans`})}initStripe(){return console.log("Init stripe..."),fetch(`${a}/aion/payments/config`).then(e=>e.json()).then(e=>(this.is_test_mode=e.stripe_public_key.includes("test"),m(e.stripe_public_key).then(t=>t))).catch(e=>{console.error("Something wrong when init stripe",e)})}async completePayment(e){console.log("Complete payment...");let t=document.querySelector("#submit");if(t.innerHTML.includes("Payments attempt")){window.location.href=`https://${window.location.host}/#plans`;return}let o=t.innerHTML,n=null,i=null;for(let s=1;s<=5&&(this.showBlinkMessage(`Payments attempt ${s}...`,t),n=await this.stripe.confirmPayment({elements:this.elements,confirmParams:{return_url:`https://${window.location.host}/dashboard/settings?payment_success=${e.name}`}}).then(c=>c.error?(i=c.error.message,"error"):(console.log(c),"success")),t.innerHTML=o,console.log("result: ",n),!(n==="false"||n==="success"));s++);console.log(n,i),n==="error"&&alert(i)}async cancelSubscription(){fetch(`${a}/aion/payments/cancel_subscription`,{method:"POST",headers:{"Content-Type":"application/json",Authorization:`Bearer ${this.checkUserToken()}`}}).then(e=>e.json()).catch(e=>{console.error("Something wrong when create a checkout session",e)})}async getSubscriptionInfo(){try{let e=await fetch(`${a}/aion/payments/subscription`,{method:"GET",headers:{"Content-Type":"application/json",Authorization:`Bearer ${this.checkUserToken()}`}});return await this.handleResponse(e)}catch{return null}}async handleResponse(e){if(!e.ok){let t=await e.json();throw{status:e.status,message:t}}if(e.status!==204)return await e.json()}isValidCreditCardNumber(e){if(e=e.replace(/\s/g,"").split("").reverse().join(""),!/^[0-9]{13,19}$/.test(e))return!1;let t=0;for(let o=0;o<e.length;o++){let n=parseInt(e[o]);o%2===1&&(n*=2,n>9&&(n-=9)),t+=n}return t%10===0}};var _=()=>{console.log("Checkout...");let r=new d,t=new URLSearchParams(window.location.search).get("product_id");if(t===null){console.log("No product id");return}let o=r.getProduct(t);r.createPaymentForm2(o),r.initPaymentForm(o)};_();})();
+        `;
+      document.querySelector("#submit")?.addEventListener("click", () => {
+        this.completePayment(plan);
+      });
+    }
+    async createPaymentIntent(product) {
+      fetch(`${BASE_URL}/aion/payments/config`).then((result) => {
+        return result.json();
+      }).then((data) => {
+        loadStripe(data.stripe_public_key).then((stripe) => {
+          this.stripe = stripe;
+          this.is_test_mode = data.stripe_public_key.includes("test");
+          fetch(`${BASE_URL}/aion/payments/create_intent`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${this.checkUserToken()}`
+            },
+            body: JSON.stringify({
+              product_id: this.is_test_mode ? product.test_id : product.id
+            })
+          }).then((result) => {
+            return result.json();
+          }).then((data2) => {
+            if (data2.code === 10) {
+              console.warn(data2.message);
+              alert(data2.message);
+              window.location.href = `https://${window.location.host}/`;
+              throw new Error(data2.message);
+            }
+            this.elements = this.stripe.elements({ clientSecret: data2.client_secret });
+            const paymentElement = this.elements.create("payment");
+            document.querySelector("#progress-loader")?.classList.add("hide");
+            document.querySelector("#submit").style.visibility = "visible";
+            paymentElement.mount("#payment-element");
+          }).catch((error) => {
+            console.error("Something wrong when create a payment intent", error);
+            alert("Something wrong when create a payment. Please try again.");
+          });
+        });
+      });
+    }
+    checkUserToken() {
+      const userAccessToken = localStorage.getItem("_ms-mid");
+      if (!userAccessToken) {
+        throw new Error("User token not found");
+      }
+      return userAccessToken;
+    }
+    async initPaymentForm(plan) {
+      console.log("Init payment form...");
+      const stripe = await this.initStripe();
+      this.stripe = stripe;
+      if (!stripe) {
+        return;
+      }
+      const appearance = {
+        theme: "flat",
+        // labels: 'floating',
+        variables: {
+          colorPrimary: "#30313d",
+          colorText: "#30313d"
+        },
+        roles: {
+          ".TermsText": {
+            hide: true
+          }
+        }
+      };
+      const options = {
+        // fields: {
+        //     billingDetails: 'never',
+        // },
+      };
+      const loader = "auto";
+      const clientSecret = await this.getClientSecret(plan);
+      if (!clientSecret) {
+        return;
+      }
+      const elements = stripe.elements({ clientSecret, appearance, loader });
+      this.elements = elements;
+      const paymentElement = elements.create("payment", options).mount("#payment-element");
+    }
+    async getClientSecret(product) {
+      return fetch(`${BASE_URL}/aion/payments/create_intent`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${this.checkUserToken()}`
+        },
+        body: JSON.stringify({
+          product_id: this.is_test_mode ? product.test_id : product.id
+        })
+      }).then((result) => {
+        return result.json();
+      }).then((data) => {
+        console.log(data);
+        if (data.code === 10) {
+          const plane_id = this.is_test_mode ? product.test_id : product.id;
+          console.log(plane_id, data.plan_id);
+          if (data.plan_id && data.plan_id !== plane_id) {
+            return this.updateSubscription(product);
+          }
+          console.warn(data.message);
+          alert(data.message);
+          window.location.href = `https://${window.location.host}/`;
+          throw new Error(data.message);
+        }
+        document.getElementById("button-text").innerHTML = `$${data.amount}`;
+        return data.client_secret;
+      });
+    }
+    async updateSubscription(product) {
+      console.log("Update subscription...");
+      return fetch(`${BASE_URL}/aion/payments/subscription`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${this.checkUserToken()}`
+        },
+        body: JSON.stringify({
+          product_id: this.is_test_mode ? product.test_id : product.id
+        })
+      }).then((result) => {
+        return result.json();
+      }).then((data) => {
+        console.log(data);
+        if (data.credit) {
+          document.querySelector("#payment-form")?.classList.add("hide");
+          showSuccessDowngradePlanNotification(data.credit, product.name);
+          return;
+        }
+        document.getElementById("button-text").innerHTML = `Pay $${data.amount}`;
+        return data.client_secret;
+      }).catch((error) => {
+        console.error("Something wrong when update a subscription", error);
+        alert("Something wrong when update a subscription. Please try again or contact us.");
+        window.location.href = `https://${window.location.host}/#plans`;
+      });
+    }
+    initStripe() {
+      console.log("Init stripe...");
+      return fetch(`${BASE_URL}/aion/payments/config`).then((result) => {
+        return result.json();
+      }).then((data) => {
+        this.is_test_mode = data.stripe_public_key.includes("test");
+        return loadStripe(data.stripe_public_key).then((stripe) => {
+          return stripe;
+        });
+      }).catch((error) => {
+        console.error("Something wrong when init stripe", error);
+      });
+    }
+    async completePayment(plan) {
+      console.log("Complete payment...");
+      const element = document.querySelector("#submit");
+      if (element.innerHTML.includes("Payments attempt")) {
+        window.location.href = `https://${window.location.host}/#plans`;
+        return;
+      }
+      const prev_value = element.innerHTML;
+      let result = null;
+      let msg = null;
+      for (let i = 1; i <= 5; i++) {
+        this.showBlinkMessage(`Payments attempt ${i}...`, element);
+        result = await this.stripe.confirmPayment({
+          elements: this.elements,
+          confirmParams: {
+            return_url: `https://${window.location.host}/dashboard/settings?payment_success=${plan.name}`
+          }
+        }).then((result2) => {
+          if (result2.error) {
+            msg = result2.error.message;
+            return "error";
+          }
+          console.log(result2);
+          return "success";
+        });
+        element.innerHTML = prev_value;
+        console.log("result: ", result);
+        if (result === "false") {
+          break;
+        }
+        if (result === "success") {
+          break;
+        }
+      }
+      console.log(result, msg);
+      if (result === "error") {
+        alert(msg);
+      }
+    }
+    async cancelSubscription() {
+      fetch(`${BASE_URL}/aion/payments/cancel_subscription`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${this.checkUserToken()}`
+        }
+      }).then((result) => {
+        return result.json();
+      }).catch((error) => {
+        console.error("Something wrong when create a checkout session", error);
+      });
+    }
+    async getSubscriptionInfo() {
+      try {
+        const response = await fetch(`${BASE_URL}/aion/payments/subscription`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${this.checkUserToken()}`
+          }
+        });
+        return await this.handleResponse(response);
+      } catch (error) {
+        return null;
+      }
+    }
+    async handleResponse(response) {
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw { status: response.status, message: errorData };
+      }
+      if (response.status !== 204) {
+        const data = await response.json();
+        return data;
+      }
+    }
+    isValidCreditCardNumber(cardNumber) {
+      cardNumber = cardNumber.replace(/\s/g, "").split("").reverse().join("");
+      if (!/^[0-9]{13,19}$/.test(cardNumber)) {
+        return false;
+      }
+      let sum = 0;
+      for (let i = 0; i < cardNumber.length; i++) {
+        let digit = parseInt(cardNumber[i]);
+        if (i % 2 === 1) {
+          digit *= 2;
+          if (digit > 9) {
+            digit -= 9;
+          }
+        }
+        sum += digit;
+      }
+      return sum % 10 === 0;
+    }
+  };
+
+  // src/dashboard/Payments.ts
+  var initPay = () => {
+    console.log("Checkout...");
+    const paymentClient = new PaymentsClient();
+    const urlParams = new URLSearchParams(window.location.search);
+    const product_id = urlParams.get("product_id");
+    if (product_id === null) {
+      console.log("No product id");
+      return;
+    }
+    const product = paymentClient.getProduct(product_id);
+    paymentClient.createPaymentForm2(product);
+    paymentClient.initPaymentForm(product);
+  };
+
+  // src/checkout.ts
+  initPay();
+})();
+//# sourceMappingURL=checkout.js.map
